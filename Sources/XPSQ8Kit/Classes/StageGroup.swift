@@ -8,7 +8,7 @@
 import Foundation
 
 class StageGroup {
-    var stages:[StageGroup] = []
+    var stages:[Stage] = []
     let stageGroupName: String
     
     public init(stageGroupName:String) {
