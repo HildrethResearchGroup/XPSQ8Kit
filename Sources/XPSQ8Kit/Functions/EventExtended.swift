@@ -118,7 +118,7 @@ public extension XPSQ8Controller.EventExtendedController {
 		let message = "EventExtendedStart(int *)"
 		
 		try controller.communicator.write(string: message)
-		let id = controller.communicator.read(as: Int.self)
+		let id = try controller.communicator.read(as: Int.self)
 		
 		return id
 	}
