@@ -19,7 +19,7 @@ public class Stage {
 	let stageName: String
 	
     
-    /// Creates a Stage instance  and links it to the provided StageGroup and sets the name of the stage "stageName".  Additionally, it adds the instance to the StageGroup's stages array.
+    /// Creates a Stage instance, links it to the provided StageGroup, and sets the name of the stage "stageName".  Additionally, it adds the instance to the StageGroup's stages array.
     ///
     /// - Parameters:
     ///     - stageGroup:  The StageGroup that the Stage instance belongs to.  This is actually set on the hardware itself.  The StageGroup is used to hold the name of the Group (e.g. "MacroStages") and the stageName holds the name of the specific stage (e.g. "X" for a stage that moves in the "x" direction).  Setting these values will make sure function calls can pass the stage and the stage will provide the necessary characterstring (e.g. MacroStages.X) using the completeStageName function
