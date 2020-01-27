@@ -53,7 +53,9 @@ public extension XPSQ8Controller.GroupController {
 	
     
 	internal func moveRelative(stage: Stage, targetDisplacment: Double) throws {
-		let command = "GroupMoveRelative(\(stage.completeStageName),\(targetDisplacment))"
+        let completeStageName = stage.completeStageName()
+        
+		let command = "GroupMoveRelative(\(completeStageName),\(targetDisplacment))"
 		
 		try controller.communicator.write(string: command)
 		try controller.communicator.validateNoReturn()
