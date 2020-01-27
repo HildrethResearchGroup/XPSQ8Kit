@@ -17,6 +17,7 @@ class StageGroup {
     /// An array of Stages that belong to the StageGroup
     var stages:[Stage] = []
     
+    // TODO: Fix groupName to thrown an error if the String is larger than 250 characters (instrument is limited to 250 character strings)
     /// The name of the Stage Group.  This name must match the Stage Group Name defined on the XPS Hardware Controller.
     let stageGroupName: String
     
