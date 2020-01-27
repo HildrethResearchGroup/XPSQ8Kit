@@ -21,6 +21,15 @@ public extension XPSQ8Controller {
 		try communicator.write(string: "CloseAllOtherSockets()")
 		try communicator.validateNoReturn()
 	}
+    
+    
+    /// Get  XPS Controller hardware's current Firmware Version
+    func getFirmwareVersion() throws -> String {
+        try communicator.write(string: "FirmwareVersionGet(char *)")
+        let string = try communicator.read(as: String.self)
+        
+        return string
+    }
 	
 	/// Get controller motion kernel time load.
 	func getMotionKernalTimeLoad() throws -> (cpuTotalLoadRatio: Double, cpuCorrectorLoadRatio: Double, cpuProfilerLoadRatio: Double, cpuServitudesLoadRatio: Double) {
