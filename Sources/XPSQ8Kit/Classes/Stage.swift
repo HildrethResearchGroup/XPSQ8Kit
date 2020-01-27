@@ -24,7 +24,7 @@ public class Stage {
     /// - Parameters:
     ///     - stageGroup:  The StageGroup that the Stage instance belongs to.  This is actually set on the hardware itself.  The StageGroup is used to hold the name of the Group (e.g. "MacroStages") and the stageName holds the name of the specific stage (e.g. "X" for a stage that moves in the "x" direction).  Setting these values will make sure function calls can pass the stage and the stage will provide the necessary characterstring (e.g. MacroStages.X) using the completeStageName function
     ///     - stageName:  The name of the stage as set on the hardware itself.
-    init(stageGroup: StageGroup, stageName: String) {
+    public init(stageGroup: StageGroup, stageName: String) {
 		self.stageGroup = stageGroup
 		self.stageName = stageName
         
@@ -42,7 +42,7 @@ public class Stage {
     
     /// Returns the complete stage name for the stage.  The complete stage name is a combination of the name of the StageGroup and the name of the Stage.  For example: "MacroStages.X" where "MacroStages" is the name of the group, "X" is the name of the stage, and "." is the deliniator.  These variables are set on the XPS hardware through the Administrator account.
     /// - Returns: A string containing the complete name of the Stage with the group.
-	func completeStageName() -> String {
+	public func completeStageName() -> String {
         return groupName() + "." + stageName
 	}
 	
