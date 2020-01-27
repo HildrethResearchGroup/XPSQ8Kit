@@ -27,7 +27,7 @@ public class StageGroup {
     ///   - controller: The XPSQ8Controller that is handling communication to the XPS Controller.
     ///   - stageGroupName: The name of the Stage Group.  This name must match the Stage Group Name defined on the XPS Hardware Controller.
     
-    public init(controller: XPSQ8Controller, stageGroupName:String) {
+    public init(controller: XPSQ8Controller?, stageGroupName:String) {
         self.controller = controller
         self.stageGroupName = stageGroupName
     }
