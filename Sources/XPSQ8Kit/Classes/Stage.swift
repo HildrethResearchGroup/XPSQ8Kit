@@ -57,10 +57,7 @@ public extension Stage {
     ///
     /// - Parameters:
     ///   - targetDisplacement: The distance that the stage should be moved by using the moveRelative command.
-    public func moveRelative(targetDisplacement: Double) throws {
-        // Generate the stageName
-        let completeStageName = stage.completeStageName()
-        
+    func moveRelative(targetDisplacement: Double) throws {
         try self.stageGroup.moveRelative(stage: self, targetDisplacement: targetDisplacement)
     }
 }
