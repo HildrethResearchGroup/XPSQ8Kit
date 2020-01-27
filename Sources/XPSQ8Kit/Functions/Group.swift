@@ -43,22 +43,16 @@ public extension XPSQ8Controller.GroupController {
 	}
 */
 	
-    
+    /// This function moves the provided stage by the provided target displacement.
+    ///
+    /// - Parameters:
+    ///   - stageName: The name of the stage that will be moved.  This name should be set in the XPS hardward controller softare.  An example stageName would be: "MacroStages.X", where "MacroStages" is the name of the group that the stage belongs to while "X" is the name of the specific stage you want to move.
+    ///   - targetDisplacement: The distance in mm to move the specified stage.
     func moveRelative(stageName: String, targetDisplacment: Double) throws {
         let command = "GroupMoveRelative(\(stageName),\(targetDisplacment))"
         
         try controller.communicator.write(string: command)
         try controller.communicator.validateNoReturn()
     }
-	
-    
-	func moveRelative(stage: Stage, targetDisplacment: Double) throws {
-        let completeStageName = stage.completeStageName()
-        
-		let command = "GroupMoveRelative(\(completeStageName),\(targetDisplacment))"
-		
-		try controller.communicator.write(string: command)
-		try controller.communicator.validateNoReturn()
-	}
 }
 

@@ -13,6 +13,7 @@ import Foundation
 
 class StageGroup {
     
+    let controller: XPSQ8Controller?
     /// An array of Stages that belong to the StageGroup
     var stages:[Stage] = []
     
@@ -22,9 +23,32 @@ class StageGroup {
     /// Creates an instance with the specified  Stage Group Name.
     ///
     /// - Parameters:
+    ///   - controller: The XPSQ8Controller that is handling communication to the XPS Controller.
     ///   - stageGroupName: The name of the Stage Group.  This name must match the Stage Group Name defined on the XPS Hardware Controller.
     
-    public init(stageGroupName:String) {
+    public init(controller: XPSQ8Controller, stageGroupName:String) {
+        self.controller = controller
         self.stageGroupName = stageGroupName
+    }
+    
+    // MARK: Functions
+    
+    
+    /// This function moves the provided stage by the provided target displacement.
+    ///
+    /// - Parameters:
+    ///   - stage: The Stage that will be moved.
+    ///   - targetDisplacement: The distance in mm to move the specified stage.
+    ///
+    
+    func moveRelative(stage: Stage, targetDisplacment: Double) throws {
+        // Generate the stageName
+        let completeStageName = stage.completeStageName()
+        
+        do {
+            try self.controller?.group.moveRelative(stageName: completeStageName, targetDisplacment: targetDisplacment)
+        } catch {
+            print(error)
+        }
     }
 }
