@@ -27,7 +27,6 @@ public extension XPSQ8Controller {
      Get  XPS Controller hardware's current Firmware Version.  Implements the FirmwareVersionGet(char *) XPS function.
      
      - returns: A string containing the current firmware vision.
-     #Example: #
      
             do {
                 let firmwareVersion = try controller?.getFirmwareVersion()
