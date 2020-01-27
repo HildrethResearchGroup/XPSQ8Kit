@@ -37,9 +37,6 @@ public extension XPSQ8Controller.GroupController {
     ///   - targetDisplacement: The distance in mm to move the specified stage.
     func moveRelative(stageName: String, targetDisplacement: Double) throws {
         let command = "GroupMoveRelative(\(stageName),\(targetDisplacement))"
-        
-        print(command)
-        
         try controller.communicator.write(string: command)
         try controller.communicator.validateNoReturn()
     }
