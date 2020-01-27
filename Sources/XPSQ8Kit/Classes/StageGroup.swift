@@ -11,7 +11,7 @@ import Foundation
 ///
 /// This class groups stages together and implements group-specific commends owned by various controllers
 
-class StageGroup {
+public class StageGroup {
     
     let controller: XPSQ8Controller?
     /// An array of Stages that belong to the StageGroup
