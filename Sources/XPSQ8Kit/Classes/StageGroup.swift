@@ -31,9 +31,11 @@ public class StageGroup {
         self.controller = controller
         self.stageGroupName = stageGroupName
     }
-    
-    // MARK: Functions
-    
+}
+
+
+// MARK: Move Functions
+public extension StageGroup {
     
     /// This function moves the provided stage by the provided target displacement.
     ///
@@ -42,14 +44,10 @@ public class StageGroup {
     ///   - targetDisplacement: The distance in mm to move the specified stage.
     ///
     
-    public func moveRelative(stage: Stage, targetDisplacement: Double) throws {
+    func moveRelative(stage: Stage, targetDisplacement: Double) throws {
         // Generate the stageName
         let completeStageName = stage.completeStageName()
         
-        do {
-            try self.controller?.group.moveRelative(stageName: completeStageName, targetDisplacement: targetDisplacement)
-        } catch {
-            print(error)
-        }
+        try self.controller?.group.moveRelative(stageName: completeStageName, targetDisplacement: targetDisplacement)
     }
 }
