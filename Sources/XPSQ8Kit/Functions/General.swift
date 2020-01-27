@@ -23,7 +23,19 @@ public extension XPSQ8Controller {
 	}
     
     
-    /// Get  XPS Controller hardware's current Firmware Version
+    /**
+     Get  XPS Controller hardware's current Firmware Version.  Implements the FirmwareVersionGet(char *) XPS function.
+     
+     - returns: A string containing the current firmware vision.
+     #Example: #
+     
+            do {
+                let firmwareVersion = try controller?.getFirmwareVersion()
+                print(firmwareVersion ?? "No firmware version text recieved")
+            } catch {
+                print(error)
+            }
+     */
     func getFirmwareVersion() throws -> String {
         try communicator.write(string: "FirmwareVersionGet(char *)")
         let string = try communicator.read(as: String.self)
@@ -31,7 +43,7 @@ public extension XPSQ8Controller {
         return string
     }
 	
-	/// Get controller motion kernel time load.
+    /// Get controller motion kernel time load.
 	func getMotionKernalTimeLoad() throws -> (cpuTotalLoadRatio: Double, cpuCorrectorLoadRatio: Double, cpuProfilerLoadRatio: Double, cpuServitudesLoadRatio: Double) {
 		try communicator.write(string: "ControllerMotionKernelTimeLoadGet(double  *,double  *,double  *,double  *)")
 		let load = try communicator.read(as: (Double.self, Double.self, Double.self, Double.self))
@@ -42,7 +54,7 @@ public extension XPSQ8Controller {
 						cpuServitudesLoadRatio: load.3)
 	}
 	
-	/// Get controller current status and reset the status.
+    /// Get controller current status and reset the status.
 	func getStatus() throws -> Status {
 		try communicator.write(string: "ControllerStatusGet(int  *)")
 		let code = try communicator.read(as: Int.self)
