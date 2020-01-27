@@ -42,12 +42,12 @@ class StageGroup {
     ///   - targetDisplacement: The distance in mm to move the specified stage.
     ///
     
-    func moveRelative(stage: Stage, targetDisplacment: Double) throws {
+    func moveRelative(stage: Stage, targetDisplacement: Double) throws {
         // Generate the stageName
         let completeStageName = stage.completeStageName()
         
         do {
-            try self.controller?.group.moveRelative(stageName: completeStageName, targetDisplacment: targetDisplacment)
+            try self.controller?.group.moveRelative(stageName: completeStageName, targetDisplacement: targetDisplacement)
         } catch {
             print(error)
         }
