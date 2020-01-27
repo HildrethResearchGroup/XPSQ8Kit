@@ -34,4 +34,18 @@ public extension XPSQ8Controller.GatheringController {
 		try controller.communicator.write(string: "GatheringConfigurationGet(char *)")
 		return try controller.communicator.read(as: String.self)
 	}
+    
+    
+    // void GatheringConfigurationSet(char Type[250])
+    // TODO: make a list of accetpable configurations
+    func setConfiguration(type: String) throws {
+        let command = "GatheringConfigurationSet(\(type))"
+        try controller.communicator.write(string: command)
+    }
+    
+    
+    
 }
+
+
+
