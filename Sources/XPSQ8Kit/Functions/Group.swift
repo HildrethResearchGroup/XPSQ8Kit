@@ -7,12 +7,8 @@
 
 import Foundation
 public extension XPSQ8Controller {
-	// TODO: Fix groupName to thrown an error if the String is larger than 250 characters (instrument is limited to 250 character strings)
 	struct GroupController {
 		var controller: XPSQ8Controller
-		//var stages: [Stage] = []
-		//let globalGroupName: String
-		//let stageName: String?
 	}
 }
 
@@ -33,15 +29,6 @@ public extension XPSQ8Controller {
 
 // MARK: Functions
 public extension XPSQ8Controller.GroupController {
-	/*func groupName () -> String {
-		if let stageName = stageName {
-			return globalGroupName + "." + stageName
-		}
-		else {
-			return globalGroupName
-		}
-	}
-*/
 	
     /// This function moves the provided stage by the provided target displacement.
     ///
