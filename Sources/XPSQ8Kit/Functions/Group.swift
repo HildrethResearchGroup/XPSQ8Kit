@@ -7,12 +7,8 @@
 
 import Foundation
 public extension XPSQ8Controller {
-	// TODO: Fix groupName to thrown an error if the String is larger than 250 characters (instrument is limited to 250 character strings)
 	struct GroupController {
 		var controller: XPSQ8Controller
-		//var stages: [Stage] = []
-		//let globalGroupName: String
-		//let stageName: String?
 	}
 }
 
@@ -33,36 +29,19 @@ public extension XPSQ8Controller {
 
 // MARK: Functions
 public extension XPSQ8Controller.GroupController {
-	/*func groupName () -> String {
-		if let stageName = stageName {
-			return globalGroupName + "." + stageName
-		}
-		else {
-			return globalGroupName
-		}
-	}
-*/
 	
-    
-    func moveRelative(stageName: String, targetDisplacment: Double) throws {
-        let command = "GroupMoveRelative(\(stageName),\(targetDisplacment))"
+    /// This function moves the provided stage by the provided target displacement.
+    ///
+    /// - Parameters:
+    ///   - stageName: The name of the stage that will be moved.  This name should be set in the XPS hardward controller softare.  An example stageName would be: "MacroStages.X", where "MacroStages" is the name of the group that the stage belongs to while "X" is the name of the specific stage you want to move.
+    ///   - targetDisplacement: The distance in mm to move the specified stage.
+    func moveRelative(stageName: String, targetDisplacement: Double) throws {
+        let command = "GroupMoveRelative(\(stageName),\(targetDisplacement))"
         
         print(command)
         
         try controller.communicator.write(string: command)
         try controller.communicator.validateNoReturn()
     }
-	
-    
-	func moveRelative(stage: Stage, targetDisplacment: Double) throws {
-        let completeStageName = stage.completeStageName()
-        
-		let command = "GroupMoveRelative(\(completeStageName),\(targetDisplacment))"
-		
-        print(command)
-        
-		try controller.communicator.write(string: command)
-		try controller.communicator.validateNoReturn()
-	}
 }
 
