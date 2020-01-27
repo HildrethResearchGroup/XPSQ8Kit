@@ -47,3 +47,20 @@ public class Stage {
 	}
 	
 }
+
+
+
+// MARK: Move Functions
+public extension Stage {
+    
+    /// Moves the stage using the moveRelative command by the target displacement
+    ///
+    /// - Parameters:
+    ///   - targetDisplacement: The distance that the stage should be moved by using the moveRelative command.
+    public func moveRelative(targetDisplacement: Double) throws {
+        // Generate the stageName
+        let completeStageName = stage.completeStageName()
+        
+        try self.stageGroup.moveRelative(stage: self, targetDisplacement: targetDisplacement)
+    }
+}
