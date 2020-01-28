@@ -35,14 +35,24 @@ public extension XPSQ8Controller.GatheringController {
 		return try controller.communicator.read(as: String.self)
 	}
     
-    
-    // void GatheringConfigurationSet(char Type[250])
     // TODO: make a list of accetpable configurations
+    /**
+    Sets the configuration of the controller
+       
+     Implements  the void GatheringConfigurationSet(char Type[250]) XPS function
+     
+            do {
+                let configurationString = "Some correct configuration string"
+                try controller?.setConfiguration(configurationString)
+            } catch {print(error)}
+     
+     - parameters:
+       - type: A string containing a valid configuration command.  See XPS documentation for examples.
+     */
     func setConfiguration(type: String) throws {
         let command = "GatheringConfigurationSet(\(type))"
         try controller.communicator.write(string: command)
     }
-    
     
     
 }
