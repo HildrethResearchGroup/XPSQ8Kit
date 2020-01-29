@@ -44,7 +44,7 @@ public extension XPSQ8Controller.GatheringController {
      
             do {
                 let configurationString = "Some correct configuration string"
-                try controller?.setConfiguration(configurationString)
+                try controller?.gathering.setConfiguration(configurationString)
             } catch {print(error)}
      
      - parameters:
@@ -56,16 +56,20 @@ public extension XPSQ8Controller.GatheringController {
     }
     
 
-    /** Returns the current maximum number of samples and current number during acquisition as set by the configuration.
+    /**
+     Returns the current maximum number of samples and current number during acquisition as set by the configuration.
      
-    Implements  the void GatheringCurrentNumberGet(int* CurrentNumber, int* MaximumSamplesNumber)) XPS function
-    
+      Implements  the void GatheringCurrentNumberGet(int* CurrentNumber, int* MaximumSamplesNumber)) XPS function
+     
             do {
-                let tuple = try controller?.getCurrentNumber()
+                let tuple = try controller?.gathering.getCurrentNumber()
                 let currentNumber = tuple.currentNumber
                 let maximumSamples = tupple.maximumSamples
             } catch {print(error)}
      
+     - returns:
+       - currentNumber:  The current number of samples that have been gathered.
+       - maximumSamples:  The maximum number of samples that can be gathered.
     */
     func getCurrentNumber() throws -> (currentNumber: Int, maximumSamples: Int) {
         let message = "GatheringCurrentNumberGet(int *,int *)"
@@ -76,8 +80,19 @@ public extension XPSQ8Controller.GatheringController {
         return (currentNumber: configuration.0, maximumSamples: configuration.1)
     }
     
-    
+    /**
+    Acquire a configured data
+       
+     Implements the void GatheringDataAcquire() XPS function
+     
+            do {
+                try controller?.gathering.acquireData()
+            } catch {print(error)}
+     */
+    func acquireData() throws {
+        let message = "GatheringDataAcquire()"
+        try controller.communicator.write(string: message)
+    }
 }
-
 
 
