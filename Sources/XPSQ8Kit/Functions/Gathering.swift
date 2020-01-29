@@ -63,8 +63,10 @@ public extension XPSQ8Controller.GatheringController {
      
             do {
                 let tuple = try controller?.gathering.getCurrentNumber()
-                let currentNumber = tuple.currentNumber
-                let maximumSamples = tupple.maximumSamples
+                let currentNumber = tuple?.currentNumber
+                let maximumSamples = tuple?.maximumSamples
+                print("currentNumber = \(currentNumber ?? -1)")
+                print("maximumSamples = \(maximumSamples ?? -1)")
             } catch {print(error)}
      
      - returns:
@@ -92,6 +94,31 @@ public extension XPSQ8Controller.GatheringController {
     func acquireData() throws {
         let message = "GatheringDataAcquire()"
         try controller.communicator.write(string: message)
+    }
+    
+    
+    
+
+    /**
+    Get a data line from gathering buffer.  Implements the void GatheringDataGet(int IndexPoint, char DataBufferLine[]) XPS function.
+     
+     - parameters:
+       - indexPoint: The starting index of the data buffer.
+    
+     - returns: A string containing the current firmware vision.
+    
+           do {
+            let indexPoint = 0
+            let data = try controller.gathering.getData(indexpoint)
+           } catch {
+               print(error)
+           }
+    */
+    func getData(indexPoint: Int) throws -> String {
+        let message = "GatheringDataGet(\(indexPoint), char *)"
+        try controller.communicator.write(string: message)
+        let data = try controller.communicator.read(as: (String.self))
+        return data
     }
 }
 
