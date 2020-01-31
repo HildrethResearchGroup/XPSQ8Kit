@@ -108,7 +108,7 @@ public extension XPSQ8Controller.GatheringController {
      - returns: A string containing the current firmware vision.
     
            do {
-            let data = try controller?.gathering.getData(indexpoint: 0)
+            let data = try controller?.gathering.getData(fromIndex: 0)
            } catch {print(error)}
     */
     func getData(fromIndex indexPoint: Int) throws -> String {
@@ -130,10 +130,10 @@ public extension XPSQ8Controller.GatheringController {
      - returns: A string containing the current firmware vision.
     
            do {
-            let data = try controller.gathering.getData(indexpoint: 0, numberOfLines: 10)
+            let data = try controller.gathering.getData(fromIndex: 0, forMultipleLines: 10)
            } catch {print(error)}
     */
-    func getData(fromIndexPoint indexPoint: Int, forMultipleLines numberOfLines: Int) throws -> String {
+    func getData(fromIndex indexPoint: Int, forMultipleLines numberOfLines: Int) throws -> String {
         var data = ""
         if numberOfLines == 0 {return data}
         
@@ -163,7 +163,7 @@ public extension XPSQ8Controller.GatheringController {
      - returns:
        - type: A string with the external configuration.
      */
-    func getExternalConfiguration(type: String) throws -> String {
+    func getExternalConfiguration() throws -> String {
         let message = "GatheringExternalConfigurationGet(char *)"
         try controller.communicator.write(string: message)
         let externalConfiguration = try controller.communicator.read(as: (String.self))
