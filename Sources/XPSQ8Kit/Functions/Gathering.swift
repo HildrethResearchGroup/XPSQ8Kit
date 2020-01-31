@@ -50,7 +50,7 @@ public extension XPSQ8Controller.GatheringController {
      - parameters:
        - type: A string containing a valid configuration command.  See XPS documentation for examples.
      */
-    func setConfiguration(type: String) throws {
+    func setConfiguration(with type: String) throws {
         let message = "GatheringConfigurationSet(\(type))"
         try controller.communicator.write(string: message)
     }
@@ -111,7 +111,7 @@ public extension XPSQ8Controller.GatheringController {
             let data = try controller?.gathering.getData(indexpoint: 0)
            } catch {print(error)}
     */
-    func getData(indexPoint: Int) throws -> String {
+    func getData(from indexPoint: Int) throws -> String {
         let message = "GatheringDataGet(\(indexPoint), char *)"
         try controller.communicator.write(string: message)
         let data = try controller.communicator.read(as: (String.self))
@@ -138,7 +138,7 @@ public extension XPSQ8Controller.GatheringController {
                print(error)
            }
     */
-    func getData(indexPoint: Int, numberOfLines: Int) throws -> String {
+    func getData(from indexPoint: Int, with numberOfLines: Int) throws -> String {
         var data = ""
         if numberOfLines == 0 {return data}
         
