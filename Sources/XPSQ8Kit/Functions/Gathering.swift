@@ -50,7 +50,7 @@ public extension XPSQ8Controller.GatheringController {
      - parameters:
        - type: A string containing a valid configuration command.  See XPS documentation for examples.
      */
-    func setConfiguration(with type: String) throws {
+    func setConfiguration(withConfiguration type: String) throws {
         let message = "GatheringConfigurationSet(\(type))"
         try controller.communicator.write(string: message)
     }
@@ -111,15 +111,11 @@ public extension XPSQ8Controller.GatheringController {
             let data = try controller?.gathering.getData(indexpoint: 0)
            } catch {print(error)}
     */
-    func getData(from indexPoint: Int) throws -> String {
+    func getData(fromIndex indexPoint: Int) throws -> String {
         let message = "GatheringDataGet(\(indexPoint), char *)"
         try controller.communicator.write(string: message)
         let data = try controller.communicator.read(as: (String.self))
         return data
-    }
-    
-    func getData() throws -> String {
-        return "test"
     }
     
     // void GatheringDataMultipleLinesGet(int IndexPoint, int NumberOfLines, char DataBufferLine[])
@@ -128,17 +124,16 @@ public extension XPSQ8Controller.GatheringController {
     Get a data line from gathering buffer.  Implements the void GatheringDataMultipleLinesGet(int IndexPoint, int NumberOfLines, char DataBufferLine[]) XPS function.
      
      - parameters:
-       - indexPoint: The starting index of the data buffer.
+        - indexPoint: The starting index of the data buffer.
+        - numberOfLines: The number of lines to collect data
     
      - returns: A string containing the current firmware vision.
     
            do {
             let data = try controller.gathering.getData(indexpoint: 0, numberOfLines: 10)
-           } catch {
-               print(error)
-           }
+           } catch {print(error)}
     */
-    func getData(from indexPoint: Int, with numberOfLines: Int) throws -> String {
+    func getData(fromIndexPoint indexPoint: Int, forMultipleLines numberOfLines: Int) throws -> String {
         var data = ""
         if numberOfLines == 0 {return data}
         
