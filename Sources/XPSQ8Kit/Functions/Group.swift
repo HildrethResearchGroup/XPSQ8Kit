@@ -13,7 +13,7 @@ public extension XPSQ8Controller {
 }
 
 
-// MARK: Access Gathering Namespace
+// MARK: - Access Group Namespace
 public extension XPSQ8Controller {
 	/// The set of commands dealing with globals.
 	//func group(named name: String) -> GroupController {
@@ -27,7 +27,7 @@ public extension XPSQ8Controller {
 
 
 
-// MARK: Functions
+// MARK: - Group Functions
 public extension XPSQ8Controller.GroupController {
 	
     /// This function moves the provided stage by the provided target displacement.

@@ -13,7 +13,7 @@ public extension XPSQ8Controller {
 	}
 }
 
-// MARK: Functions
+// MARK: - Functions
 
 public extension XPSQ8Controller {
 	/// Close all socket beside the one used to send this command.

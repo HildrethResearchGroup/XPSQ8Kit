@@ -21,8 +21,7 @@ public extension XPSQ8Controller {
 	}
 }
 
-// MARK: Access
-
+// MARK: - Access
 public extension XPSQ8Controller {
 	/// The set of commands dealing with globals.
 	var global: GlobalController {
@@ -42,8 +41,8 @@ public extension XPSQ8Controller.GlobalController {
 	}
 }
 
-// MARK: Functions
 
+// MARK: - Functions
 public extension XPSQ8Controller.GlobalController.DoubleArrayController {
 	/// Gets a value in the global double array at the given index.
 	/// - Parameter index: The index of the array.
@@ -61,6 +60,7 @@ public extension XPSQ8Controller.GlobalController.DoubleArrayController {
 		try controller.communicator.validateNoReturn()
 	}
 }
+
 
 public extension XPSQ8Controller.GlobalController.StringArrayController {
 	func get(at index: Int) throws -> String {

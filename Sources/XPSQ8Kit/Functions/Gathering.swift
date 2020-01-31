@@ -24,7 +24,7 @@ public extension XPSQ8Controller {
 
 
 
-// MARK: - Functions
+// MARK: - Gathering Functions
 public extension XPSQ8Controller.GatheringController {
 	/// Gets a value in the global double array at the given index.
     ///
