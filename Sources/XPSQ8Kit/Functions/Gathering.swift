@@ -108,17 +108,18 @@ public extension XPSQ8Controller.GatheringController {
      - returns: A string containing the current firmware vision.
     
            do {
-            let indexPoint = 0
-            let data = try controller.gathering.getData(indexpoint)
-           } catch {
-               print(error)
-           }
+            let data = try controller?.gathering.getData(indexpoint: 0)
+           } catch {print(error)}
     */
     func getData(indexPoint: Int) throws -> String {
         let message = "GatheringDataGet(\(indexPoint), char *)"
         try controller.communicator.write(string: message)
         let data = try controller.communicator.read(as: (String.self))
         return data
+    }
+    
+    func getData() throws -> String {
+        return "test"
     }
     
     // void GatheringDataMultipleLinesGet(int IndexPoint, int NumberOfLines, char DataBufferLine[])
@@ -139,10 +140,10 @@ public extension XPSQ8Controller.GatheringController {
     */
     func getData(indexPoint: Int, numberOfLines: Int) throws -> String {
         var data = ""
-        if numberOfLines = 0 {return data}
+        if numberOfLines == 0 {return data}
         
         for line in 1 ... numberOfLines {
-            let index = indexPoint + (line - 1) * 1024)
+            let index = indexPoint + ((line - 1) * 1024)
             let message = "GatheringDataGet(\(index), char *)"
             try controller.communicator.write(string: message)
             let nextLine = try controller.communicator.read(as: (String.self))
