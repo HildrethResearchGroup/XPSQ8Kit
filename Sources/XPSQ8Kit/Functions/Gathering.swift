@@ -145,9 +145,9 @@ public extension XPSQ8Controller.GatheringController {
     
     
     /**
-    Empty the gathered data in memory to start new gathering from scratch
+    Empty the gathered data in memory to start new gathering from scratch.
        
-     Implements the void GatheringReset() XPS function
+     Implements the void GatheringReset() XPS function.
      
             do {
                 try controller?.gathering.rest()
@@ -159,6 +159,40 @@ public extension XPSQ8Controller.GatheringController {
     }
     
     
+    /**
+    Re-start the stopped gathering to add new data.
+     
+     Implements the void GatheringRunAppend() XPS function.
+     
+        do {
+            let data = try controller.gathering.run(fromDataNumber: 0, withDivisor:  4)
+        } catch {print(error)}
+     
+
+    */
+    func runAppend() throws {
+        let message = "GatheringRun(\(dataNumber), \(divisor))"
+        try controller.communicator.write(string: message)
+    }
+    
+    
+    /**
+    Start a new gathering.
+     
+     Implements the void GatheringRun(int DataNumber, int Divisor) XPS function.
+     
+        do {
+            let data = try controller.gathering.run(fromDataNumber: 0, withDivisor:  4)
+        } catch {print(error)}
+     
+     - parameters:
+        - dataNumber: The number of data to collect? (need to consult XPS documentation).
+        - divisor: The divisor separating the data.
+    */
+    func run(fromDataNumber dataNumber: Int, withDivisor divisor: Int) throws {
+        let message = "GatheringRun(\(dataNumber), \(divisor))"
+        try controller.communicator.write(string: message)
+    }
     
 }
 
@@ -269,9 +303,6 @@ public extension XPSQ8Controller.GatheringController {
         let message = "GatheringExternalStopAndSave()"
         try controller.communicator.write(string: message)
     }
-    
-    
-    
 }
 
 
