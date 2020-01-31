@@ -30,7 +30,8 @@ public extension XPSQ8Controller.GatheringController {
     ///
 	/// - returns:  A String containing the current configuration.
 	func getConfiguration() throws -> String {
-		try controller.communicator.write(string: "GatheringConfigurationGet(char *)")
+        let message = "GatheringConfigurationGet(char *)"
+		try controller.communicator.write(string: message)
 		return try controller.communicator.read(as: String.self)
 	}
     
@@ -135,7 +136,7 @@ public extension XPSQ8Controller.GatheringController {
         
         for line in 1 ... numberOfLines {
             let index = indexPoint + ((line - 1) * 1024)
-            let message = "GatheringDataGet(\(index), char *)"
+            let message = "GatheringDataMultipleLinesGet(\(index), char *)"
             try controller.communicator.write(string: message)
             let nextLine = try controller.communicator.read(as: (String.self))
             data.append(contentsOf: nextLine)
@@ -150,7 +151,7 @@ public extension XPSQ8Controller.GatheringController {
      Implements the void GatheringReset() XPS function.
      
             do {
-                try controller?.gathering.rest()
+                try controller?.gathering.reset()
             } catch {print(error)}
      */
     func reset() throws {
@@ -165,7 +166,7 @@ public extension XPSQ8Controller.GatheringController {
      Implements the void GatheringRunAppend() XPS function.
      
         do {
-            let data = try controller.gathering.run(fromDataNumber: 0, withDivisor:  4)
+            let data = try controller.gathering.runAppend()
         } catch {print(error)}
      
 
@@ -191,6 +192,38 @@ public extension XPSQ8Controller.GatheringController {
     */
     func run(fromDataNumber dataNumber: Int, withDivisor divisor: Int) throws {
         let message = "GatheringRun(\(dataNumber), \(divisor))"
+        try controller.communicator.write(string: message)
+    }
+    
+    /**
+    Stop acquisition and save data.
+     
+     Implements the void GatheringStopAndSave() XPS function.
+     
+        do {
+            let data = try controller.gathering.stopAndSave()
+        } catch {print(error)}
+     
+
+    */
+    func stopAndSave() throws {
+        let message = "GatheringStopAndSave()"
+        try controller.communicator.write(string: message)
+    }
+    
+    
+    
+    /**
+    Stop the data gathering (without saving to file).
+     
+     Implements the void GatheringStop() XPS function.
+     
+        do {
+            let data = try controller.gathering.stop()
+        } catch {print(error)}
+    */
+    func stop() throws {
+        let message = "GatheringStop()"
         try controller.communicator.write(string: message)
     }
     
