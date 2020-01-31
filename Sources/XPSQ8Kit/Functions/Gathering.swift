@@ -24,9 +24,7 @@ public extension XPSQ8Controller {
 
 
 
-// MARK: Functions
-
-// func Gathering.getConfiguration() -> String
+// MARK: - Functions
 public extension XPSQ8Controller.GatheringController {
 	/// Gets a value in the global double array at the given index.
     ///
@@ -146,8 +144,29 @@ public extension XPSQ8Controller.GatheringController {
     }
     
     
+    /**
+    Empty the gathered data in memory to start new gathering from scratch
+       
+     Implements the void GatheringReset() XPS function
+     
+            do {
+                try controller?.gathering.rest()
+            } catch {print(error)}
+     */
+    func reset() throws {
+        let message = "GatheringReset()"
+        try controller.communicator.write(string: message)
+    }
     
-    // MARK: External Functions
+    
+    
+}
+
+    
+    
+// MARK: - External Functions
+public extension XPSQ8Controller.GatheringController {
+
     // TODO: make a list of accetpable configurations
     /**
     Sets the configuration of the controller using a differnt mnumonique type.
@@ -235,6 +254,22 @@ public extension XPSQ8Controller.GatheringController {
         let data = try controller.communicator.read(as: (String.self))
         return data
     }
+    
+    
+    /**
+    Stop acquisition and save data
+       
+     Implements the void GatheringExternalStopAndSave() XPS function
+     
+            do {
+                try controller?.gathering.externalStopAndSave()
+            } catch {print(error)}
+     */
+    func externalStopAndSave() throws {
+        let message = "GatheringExternalStopAndSave()"
+        try controller.communicator.write(string: message)
+    }
+    
     
     
 }
