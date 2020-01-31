@@ -169,6 +169,7 @@ public extension XPSQ8Controller.GatheringController {
         return externalConfiguration
     }
 
+    
     // TODO: make a list of accetpable configurations
     /**
     Sets the configuration of the controller using an External Configuration acquisition
@@ -214,6 +215,27 @@ public extension XPSQ8Controller.GatheringController {
         
         return (currentNumber: configuration.0, maximumSamples: configuration.1)
     }
+    
+    
+    /**
+    Get a data line from an external gathering buffer.  Implements the void GatheringExternalDataGet(int IndexPoint, char DataBufferLine[]) XPS function.
+     
+     - parameters:
+       - indexPoint: The starting index of the data buffer.
+    
+     - returns: A string containing the current firmware vision.
+    
+           do {
+            let data = try controller?.gathering.getExternalData(fromIndex: 0)
+           } catch {print(error)}
+    */
+    func getExternalData(fromIndex indexPoint: Int) throws -> String {
+        let message = "GatheringExternalDataGet(\(indexPoint), char *)"
+        try controller.communicator.write(string: message)
+        let data = try controller.communicator.read(as: (String.self))
+        return data
+    }
+    
     
 }
 
