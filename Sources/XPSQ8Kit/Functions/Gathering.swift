@@ -171,7 +171,7 @@ public extension XPSQ8Controller.GatheringController {
 
     */
     func runAppend() throws {
-        let message = "GatheringRun(\(dataNumber), \(divisor))"
+        let message = "GatheringRunAppend()"
         try controller.communicator.write(string: message)
     }
     
