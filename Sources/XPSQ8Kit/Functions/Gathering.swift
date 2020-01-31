@@ -120,6 +120,8 @@ public extension XPSQ8Controller.GatheringController {
         let data = try controller.communicator.read(as: (String.self))
         return data
     }
+    
+
 }
 
 
