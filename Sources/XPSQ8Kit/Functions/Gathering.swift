@@ -96,8 +96,6 @@ public extension XPSQ8Controller.GatheringController {
         try controller.communicator.write(string: message)
     }
     
-    
-    
 
     /**
     Get a data line from gathering buffer.  Implements the void GatheringDataGet(int IndexPoint, char DataBufferLine[]) XPS function.
@@ -118,7 +116,7 @@ public extension XPSQ8Controller.GatheringController {
         return data
     }
     
-    // void GatheringDataMultipleLinesGet(int IndexPoint, int NumberOfLines, char DataBufferLine[])
+
 
     /**
     Get a data line from gathering buffer.  Implements the void GatheringDataMultipleLinesGet(int IndexPoint, int NumberOfLines, char DataBufferLine[]) XPS function.
@@ -171,8 +169,51 @@ public extension XPSQ8Controller.GatheringController {
         return externalConfiguration
     }
 
+    // TODO: make a list of accetpable configurations
+    /**
+    Sets the configuration of the controller using an External Configuration acquisition
+       
+     Implements  the void GatheringExternalConfigurationSet(char Type[250]) XPS function
+     
+            do {
+                let configurationString = "Some correct configuration string"
+                try controller?.gathering.setExternalConfiguration(configurationString)
+            } catch {print(error)}
+     
+     - parameters:
+       - type: A string containing a valid configuration command.  See XPS documentation for examples.
+     */
+    func setExternalConfiguration(withConfiguration type: String) throws {
+        let message = "GatheringExternalConfigurationSet(\(type))"
+        try controller.communicator.write(string: message)
+    }
     
     
+    /**
+     Returns the current maximum number of samples and current number during acquisition as set by the External configuration.
+     
+      Implements  the void GatheringExternalCurrentNumberGet(int* CurrentNumber, int* MaximumSamplesNumber)) XPS function
+     
+            do {
+                let tuple = try controller?.gathering.getExternalCurrentNumber()
+                let currentNumber = tuple?.currentNumber
+                let maximumSamples = tuple?.maximumSamples
+                print("currentNumber = \(currentNumber ?? -1)")
+                print("maximumSamples = \(maximumSamples ?? -1)")
+            } catch {print(error)}
+     
+     - returns:
+       - currentNumber:  The current number of samples that have been gathered.
+       - maximumSamples:  The maximum number of samples that can be gathered.
+    */
+    func getExternalCurrentNumber() throws -> (currentNumber: Int, maximumSamples: Int) {
+        let message = "GatheringExternalCurrentNumberGet(int *,int *)"
+        
+        try controller.communicator.write(string: message)
+        let configuration = try controller.communicator.read(as: (Int.self, Int.self))
+        
+        return (currentNumber: configuration.0, maximumSamples: configuration.1)
+    }
     
 }
 
