@@ -121,7 +121,63 @@ public extension XPSQ8Controller.GatheringController {
         return data
     }
     
+    // void GatheringDataMultipleLinesGet(int IndexPoint, int NumberOfLines, char DataBufferLine[])
 
+    /**
+    Get a data line from gathering buffer.  Implements the void GatheringDataMultipleLinesGet(int IndexPoint, int NumberOfLines, char DataBufferLine[]) XPS function.
+     
+     - parameters:
+       - indexPoint: The starting index of the data buffer.
+    
+     - returns: A string containing the current firmware vision.
+    
+           do {
+            let data = try controller.gathering.getData(indexpoint: 0, numberOfLines: 10)
+           } catch {
+               print(error)
+           }
+    */
+    func getData(indexPoint: Int, numberOfLines: Int) throws -> String {
+        var data = ""
+        if numberOfLines = 0 {return data}
+        
+        for line in 1 ... numberOfLines {
+            let index = indexPoint + (line - 1) * 1024)
+            let message = "GatheringDataGet(\(index), char *)"
+            try controller.communicator.write(string: message)
+            let nextLine = try controller.communicator.read(as: (String.self))
+            data.append(contentsOf: nextLine)
+        }
+        return data
+    }
+    
+    
+    
+    // MARK: External Functions
+    // TODO: make a list of accetpable configurations
+    /**
+    Sets the configuration of the controller using a differnt mnumonique type.
+       
+     Implements  the void GatheringExternalConfigurationGet(char Type[])) XPS function
+     
+            do {
+                let externalConfiguration = try controller?.gathering.getExternalConfiguration()
+            } catch {print(error)}
+     
+     - returns:
+       - type: A string with the external configuration.
+     */
+    func getExternalConfiguration(type: String) throws -> String {
+        let message = "GatheringExternalConfigurationGet(char *)"
+        try controller.communicator.write(string: message)
+        let externalConfiguration = try controller.communicator.read(as: (String.self))
+        
+        return externalConfiguration
+    }
+
+    
+    
+    
 }
 
 
