@@ -21,7 +21,7 @@ public extension XPSQ8Controller {
 	}
 }
 
-// MARK: - Access
+// MARK: - Access Arrays Namespace
 public extension XPSQ8Controller {
 	/// The set of commands dealing with globals.
 	var global: GlobalController {
@@ -42,7 +42,7 @@ public extension XPSQ8Controller.GlobalController {
 }
 
 
-// MARK: - Functions
+// MARK: - Arrays Functions
 public extension XPSQ8Controller.GlobalController.DoubleArrayController {
 	/// Gets a value in the global double array at the given index.
 	/// - Parameter index: The index of the array.
