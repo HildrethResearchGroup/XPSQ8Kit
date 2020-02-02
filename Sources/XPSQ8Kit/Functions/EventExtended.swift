@@ -13,8 +13,7 @@ public extension XPSQ8Controller {
 	}
 }
 
-// MARK: Access
-
+// MARK: - Access Event Extended Namespace
 public extension XPSQ8Controller {
 	/// The set of commands dealing with extended events.
 	var eventExtended: EventExtendedController {
@@ -22,8 +21,8 @@ public extension XPSQ8Controller {
 	}
 }
 
-// MARK: Functions
 
+// MARK: - Event Extended Functions
 public extension XPSQ8Controller.EventExtendedController {
 	/// Returns all event and action configurations.
 	func getAllConfigurations() throws -> String {
