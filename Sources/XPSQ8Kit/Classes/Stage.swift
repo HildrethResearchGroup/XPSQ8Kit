@@ -86,7 +86,7 @@ public extension Stage {
     - Parameters:
         - toLocation: The location in mm to move the stage to.
      */
-    func moveAbsolution(toLocation: Double) throws {
+    func moveAbsolute(toLocation: Double) throws {
         try self.stageGroup.moveAbsolute(stage: self, toLocation: toLocation)
     }
 }
