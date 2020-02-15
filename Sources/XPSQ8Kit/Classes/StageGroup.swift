@@ -48,6 +48,6 @@ public extension StageGroup {
         // Generate the stageName
         let completeStageName = stage.completeStageName()
         
-        try self.controller?.group.moveRelative(stageName: completeStageName, targetDisplacement: targetDisplacement)
+        try self.controller?.group.moveRelative(stage: completeStageName, byDisplacement: targetDisplacement)
     }
 }
