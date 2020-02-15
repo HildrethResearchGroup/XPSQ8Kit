@@ -37,17 +37,42 @@ public class StageGroup {
 // MARK: Move Functions
 public extension StageGroup {
     
-    /// This function moves the provided stage by the provided target displacement.
-    ///
-    /// - Parameters:
-    ///   - stage: The Stage that will be moved.
-    ///   - targetDisplacement: The distance in mm to move the specified stage.
-    ///
+    /** Move the specified stage by the target displacement in mm.
     
+        let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+        let stageGroup = StageGroup(controller: controller, stageGroupName: "M")
+        let stage = Stage(stageGroup: stageGroup, stageName: "X")
+        do {
+            try group.moveRelative(stage, targetDisplacement: -5)
+        } catch {print(error)}
+    
+    - parameters:
+        - stage: The Stage that will be moved.
+        - targetDisplacement: The distance in mm to move the specified stage.
+    */
+   
     func moveRelative(stage: Stage, targetDisplacement: Double) throws {
         // Generate the stageName
         let completeStageName = stage.completeStageName()
         
         try self.controller?.group.moveRelative(stage: completeStageName, byDisplacement: targetDisplacement)
     }
+    
+    
+     /** Move the specified stage to the target location in mm.
+     
+        let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+        let stageGroup = StageGroup(controller: controller, stageGroupName: "M")
+        let stage = Stage(stageGroup: stageGroup, stageName: "X")
+        
+        do {
+             try group.moveRelative(stage, targetDisplacement: -5)
+        } catch {print(error)}
+     */
+     func moveAbsolute(stage: Stage, toLocation targetLocation: Double) throws {
+         // Generate the complete stage name for the stage.
+         let completeStageName = stage.completeStageName()
+         
+         try self.controller?.group.moveAbsolute(stage: completeStageName, toLocation: targetLocation)
+     }
 }

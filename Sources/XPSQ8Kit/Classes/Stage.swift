@@ -53,11 +53,40 @@ public class Stage {
 // MARK: Move Functions
 public extension Stage {
     
-    /// Moves the stage using the moveRelative command by the target displacement
-    ///
-    /// - Parameters:
-    ///   - targetDisplacement: The distance that the stage should be moved by using the moveRelative command.
+    /**  Moves the stage using the moveRelative command by the target displacement
+        
+        let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+        let stageGroup = StageGroup(controller: controller, stageGroupName: "M")
+        let stage = Stage(stageGroup: stageGroup, stageName: "X")
+        
+        do {
+            try stage.moveRelative(targetDisplacement: -5)
+        } catch {print(error)}
+        
+        
+    - Parameters:
+        - targetDisplacement: The distance that the stage should be moved by using the moveRelative command
+    */
     func moveRelative(targetDisplacement: Double) throws {
         try self.stageGroup.moveRelative(stage: self, targetDisplacement: targetDisplacement)
+    }
+    
+    
+    /**  Moves the stage using the moveAbsolution commadn to the target location.
+     
+        let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+        let stageGroup = StageGroup(controller: controller, stageGroupName: "M")
+        let stage = Stage(stageGroup: stageGroup, stageName: "X")
+        
+        do {
+            try stage.moveAbsolute(toLocation: -5)
+        } catch {print(error)}
+     
+     
+    - Parameters:
+        - toLocation: The location in mm to move the stage to.
+     */
+    func moveAbsolution(toLocation: Double) throws {
+        try self.stageGroup.moveAbsolute(stage: self, toLocation: toLocation)
     }
 }
