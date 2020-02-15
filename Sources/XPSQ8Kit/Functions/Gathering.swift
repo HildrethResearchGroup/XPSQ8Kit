@@ -10,6 +10,10 @@ import Foundation
 public extension XPSQ8Controller {
 	struct GatheringController {
 		var controller: XPSQ8Controller
+        
+        public struct ExternalController {
+            var controller: XPSQ8Controller
+        }
 	}
 }
 
@@ -20,6 +24,13 @@ public extension XPSQ8Controller {
 	var gathering: GatheringController {
 		return GatheringController(controller: self)
 	}
+}
+
+public extension XPSQ8Controller.GatheringController {
+    // The set of commands deailed with gathering external data
+    var external: ExternalController {
+        return ExternalController(controller: controller)
+    }
 }
 
 
@@ -232,7 +243,7 @@ public extension XPSQ8Controller.GatheringController {
     
     
 // MARK: - External Functions
-public extension XPSQ8Controller.GatheringController {
+public extension XPSQ8Controller.GatheringController.ExternalController {
 
     // TODO: make a list of accetpable configurations
     /**
@@ -241,13 +252,13 @@ public extension XPSQ8Controller.GatheringController {
      Implements  the void GatheringExternalConfigurationGet(char Type[])) XPS function
      
             do {
-                let externalConfiguration = try controller?.gathering.getExternalConfiguration()
+                let externalConfiguration = try controller?.gathering.external.getConfiguration()
             } catch {print(error)}
      
      - returns:
        - type: A string with the external configuration.
      */
-    func getExternalConfiguration() throws -> String {
+    func getConfiguration() throws -> String {
         let message = "GatheringExternalConfigurationGet(char *)"
         try controller.communicator.write(string: message)
         let externalConfiguration = try controller.communicator.read(as: (String.self))
@@ -264,13 +275,13 @@ public extension XPSQ8Controller.GatheringController {
      
             do {
                 let configurationString = "Some correct configuration string"
-                try controller?.gathering.setExternalConfiguration(configurationString)
+                try controller?.gathering.external..setConfiguration(configurationString)
             } catch {print(error)}
      
      - parameters:
        - type: A string containing a valid configuration command.  See XPS documentation for examples.
      */
-    func setExternalConfiguration(withConfiguration type: String) throws {
+    func setConfiguration(withConfiguration type: String) throws {
         let message = "GatheringExternalConfigurationSet(\(type))"
         try controller.communicator.write(string: message)
     }
@@ -282,7 +293,7 @@ public extension XPSQ8Controller.GatheringController {
       Implements  the void GatheringExternalCurrentNumberGet(int* CurrentNumber, int* MaximumSamplesNumber)) XPS function
      
             do {
-                let tuple = try controller?.gathering.getExternalCurrentNumber()
+                let tuple = try controller?.gathering.external.getCurrentNumber()
                 let currentNumber = tuple?.currentNumber
                 let maximumSamples = tuple?.maximumSamples
                 print("currentNumber = \(currentNumber ?? -1)")
@@ -293,7 +304,7 @@ public extension XPSQ8Controller.GatheringController {
        - currentNumber:  The current number of samples that have been gathered.
        - maximumSamples:  The maximum number of samples that can be gathered.
     */
-    func getExternalCurrentNumber() throws -> (currentNumber: Int, maximumSamples: Int) {
+    func getCurrentNumber() throws -> (currentNumber: Int, maximumSamples: Int) {
         let message = "GatheringExternalCurrentNumberGet(int *,int *)"
         
         try controller.communicator.write(string: message)
@@ -312,10 +323,10 @@ public extension XPSQ8Controller.GatheringController {
      - returns: A string containing the current firmware vision.
     
            do {
-            let data = try controller?.gathering.getExternalData(fromIndex: 0)
+            let data = try controller?.gathering.external.getData(fromIndex: 0)
            } catch {print(error)}
     */
-    func getExternalData(fromIndex indexPoint: Int) throws -> String {
+    func getData(fromIndex indexPoint: Int) throws -> String {
         let message = "GatheringExternalDataGet(\(indexPoint), char *)"
         try controller.communicator.write(string: message)
         let data = try controller.communicator.read(as: (String.self))
@@ -329,10 +340,10 @@ public extension XPSQ8Controller.GatheringController {
      Implements the void GatheringExternalStopAndSave() XPS function
      
             do {
-                try controller?.gathering.externalStopAndSave()
+                try controller?.gathering.external.stopAndSave()
             } catch {print(error)}
      */
-    func externalStopAndSave() throws {
+    func stopAndSave() throws {
         let message = "GatheringExternalStopAndSave()"
         try controller.communicator.write(string: message)
     }
