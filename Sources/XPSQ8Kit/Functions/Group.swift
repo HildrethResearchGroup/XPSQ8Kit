@@ -49,15 +49,19 @@ public extension XPSQ8Controller.GroupController {
     }
     
     
-    /**  Move the specified stage to the specified position in mm.
-       
-        do {
-            let data = try controller?.group.moveAbsolute(stage: "M.X", toLocation: 10)
-        } catch {print(error)}
+    /**
+     Move the specified stage to the specified position in mm.
      
      - parameters:
        - stageName: The name of the stage that will be moved.  This name should be set in the XPS hardward controller softare.  An example stageName would be: "MacroStages.X", where "MacroStages" is the name of the group that the stage belongs to while "X" is the name of the specific stage you want to move.
        - toLocation: The absolute position in mm to move the specified stage.
+     
+     # Example #
+     ````
+     do {
+        let data = try controller?.group.moveAbsolute(stage: "M.X", toLocation: 10)
+     } catch {print(error)}
+     ````
     */
     func moveAbsolute(stage stageName: String, toLocation targetLocation: Double) throws {
         let command = "GroupMoveAbsolute(\(stageName),\(targetLocation))"
@@ -65,8 +69,6 @@ public extension XPSQ8Controller.GroupController {
         try controller.communicator.validateNoReturn()
     }
     
-    
-    
-    
+
 }
 

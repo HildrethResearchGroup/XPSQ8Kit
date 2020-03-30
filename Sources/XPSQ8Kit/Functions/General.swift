@@ -21,7 +21,7 @@ public extension XPSQ8Controller {
     
      Implements the ````closeAllOtherSockets()```` XPS function.
      
-     # Example: #
+     # Example #
      ````
      do {
         try controller?.closeAllOtherSockets()
@@ -43,7 +43,7 @@ public extension XPSQ8Controller {
      
      - returns: A string containing the current firmware vision.
      
-     # Example: #
+     # Example #
      ````
      do {
         let firmwareVersion = try controller?.getFirmwareVersion()
