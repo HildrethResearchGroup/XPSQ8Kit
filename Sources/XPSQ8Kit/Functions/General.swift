@@ -16,15 +16,19 @@ public extension XPSQ8Controller {
 // MARK: - Functions
 
 public extension XPSQ8Controller {
-	/** Close all socket beside the one used to send this command.
+	/**
+     Close all socket beside the one used to send this command.
     
-    Implements the CloseAllOtherSockets() XPS function.  Example below.
+     Implements the ````closeAllOtherSockets()```` XPS function.
      
-        do {
-            try controller?.closeAllOtherSockets()
-        } catch {
-            print(error)
-        }
+     # Example: #
+     ````
+     do {
+        try controller?.closeAllOtherSockets()
+     } catch {
+        print(error)
+     }
+     ````
     */
 	func closeAllOtherSockets() throws {
 		try communicator.write(string: "CloseAllOtherSockets()")
@@ -35,17 +39,19 @@ public extension XPSQ8Controller {
     /**
      Get  XPS Controller hardware's current Firmware Version.
      
-     Implements the FirmwareVersionGet(char *) XPS function.
+     Implements the ````firmwareVersionGet(char *)````  XPS function.
      
      - returns: A string containing the current firmware vision.
      
      # Example: #
-            do {
-                let firmwareVersion = try controller?.getFirmwareVersion()
-                print(firmwareVersion ?? "No firmware version text recieved")
-            } catch {
-                print(error)
-            }
+     ````
+     do {
+        let firmwareVersion = try controller?.getFirmwareVersion()
+        print(firmwareVersion ?? "No firmware version text recieved")
+     } catch {
+        print(error)
+     }
+     ````
      */
     func getFirmwareVersion() throws -> String {
         try communicator.write(string: "FirmwareVersionGet(char *)")
