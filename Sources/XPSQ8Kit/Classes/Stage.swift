@@ -60,14 +60,16 @@ public extension Stage {
         - targetDisplacement: The distance in millimeters that the stage should be moved by using the moveRelative command
      
      # Example #
-      ````
-         let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
-         let stageGroup = StageGroup(controller: controller, stageGroupName: "M")
-         let stage = Stage(stageGroup: stageGroup, stageName: "X")
-         
-         do {
-             try stage.moveRelative(targetDisplacement: -5)
-         } catch {print(error)}
+     ````
+     // Setup Controller, StageGroup, and Stage
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     let stageGroup = StageGroup(controller: controller, stageGroupName: "M")
+     let stage = Stage(stageGroup: stageGroup, stageName: "X")
+    
+     // Tell stage to move
+     do {
+        try stage.moveRelative(targetDisplacement: -5)
+     } catch {print(error)}
      ````
     */
     func moveRelative(targetDisplacement: Double) throws {
@@ -83,13 +85,15 @@ public extension Stage {
      
      # Example #
      ````
-        let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
-        let stageGroup = StageGroup(controller: controller, stageGroupName: "M")
-        let stage = Stage(stageGroup: stageGroup, stageName: "X")
+     // Setup Controller, StageGroup, and Stage
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     let stageGroup = StageGroup(controller: controller, stageGroupName: "M")
+     let stage = Stage(stageGroup: stageGroup, stageName: "X")
         
-        do {
-            try stage.moveAbsolute(toLocation: -5)
-        } catch {print(error)}
+     // Tell stage to move
+     do {
+        try stage.moveAbsolute(toLocation: -5)
+    } catch {print(error)}
      ````
      */
     func moveAbsolute(toLocation: Double) throws {
