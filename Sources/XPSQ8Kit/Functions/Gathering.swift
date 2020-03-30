@@ -50,12 +50,14 @@ public extension XPSQ8Controller.GatheringController {
     /**
     Sets the configuration of the controller
        
-     Implements  the void GatheringConfigurationSet(char Type[250]) XPS function
+     Implements  the ````void GatheringConfigurationSet(char Type[250])````  XPS function
      
-            do {
-                let configurationString = "Some correct configuration string"
-                try controller?.gathering.setConfiguration(configurationString)
-            } catch {print(error)}
+     ````
+    do {
+        let configurationString = "Some correct configuration string"
+        try controller?.gathering.setConfiguration(configurationString)
+     } catch {print(error)}
+     ````
      
      - parameters:
        - type: A string containing a valid configuration command.  See XPS documentation for examples.
@@ -69,16 +71,18 @@ public extension XPSQ8Controller.GatheringController {
     /**
      Returns the current maximum number of samples and current number during acquisition as set by the configuration.
      
-      Implements  the void GatheringCurrentNumberGet(int* CurrentNumber, int* MaximumSamplesNumber)) XPS function
+      Implements  the ````void GatheringCurrentNumberGet(int* CurrentNumber, int* MaximumSamplesNumber))```` XPS function
      
-            do {
-                let tuple = try controller?.gathering.getCurrentNumber()
-                let currentNumber = tuple?.currentNumber
-                let maximumSamples = tuple?.maximumSamples
-                print("currentNumber = \(currentNumber ?? -1)")
-                print("maximumSamples = \(maximumSamples ?? -1)")
-            } catch {print(error)}
-     
+     ````
+     do {
+        let tuple = try controller?.gathering.getCurrentNumber()
+        let currentNumber = tuple?.currentNumber
+        let maximumSamples = tuple?.maximumSamples
+        print("currentNumber = \(currentNumber ?? -1)")
+        print("maximumSamples = \(maximumSamples ?? -1)")
+    } catch {print(error)}
+     ````
+     `
      - returns:
        - currentNumber:  The current number of samples that have been gathered.
        - maximumSamples:  The maximum number of samples that can be gathered.
@@ -95,11 +99,13 @@ public extension XPSQ8Controller.GatheringController {
     /**
     Acquire a configured data
        
-     Implements the void GatheringDataAcquire() XPS function
+     Implements the ````void GatheringDataAcquire()```` XPS function
      
-            do {
-                try controller?.gathering.acquireData()
-            } catch {print(error)}
+     ````
+     do {
+        try controller?.gathering.acquireData()
+     } catch {print(error)}
+     ````
      */
     func acquireData() throws {
         let message = "GatheringDataAcquire()"
@@ -108,16 +114,17 @@ public extension XPSQ8Controller.GatheringController {
     
 
     /**
-    Get a data line from gathering buffer.  Implements the void GatheringDataGet(int IndexPoint, char DataBufferLine[]) XPS function.
+    Get a data line from gathering buffer.  Implements the ````void GatheringDataGet(int IndexPoint, char DataBufferLine[])````  XPS function.
      
      - parameters:
        - indexPoint: The starting index of the data buffer.
     
      - returns: A string containing the current firmware vision.
-    
-           do {
-            let data = try controller?.gathering.getData(fromIndex: 0)
-           } catch {print(error)}
+    ````
+    do {
+        let data = try controller?.gathering.getData(fromIndex: 0)
+     } catch {print(error)}
+     ````
     */
     func getData(fromIndex indexPoint: Int) throws -> String {
         let message = "GatheringDataGet(\(indexPoint), char *)"
@@ -129,17 +136,18 @@ public extension XPSQ8Controller.GatheringController {
 
 
     /**
-    Get a data line from gathering buffer.  Implements the void GatheringDataMultipleLinesGet(int IndexPoint, int NumberOfLines, char DataBufferLine[]) XPS function.
+    Get a data line from gathering buffer.  Implements the ````void GatheringDataMultipleLinesGet(int IndexPoint, int NumberOfLines, char DataBufferLine[])````  XPS function.
      
      - parameters:
         - indexPoint: The starting index of the data buffer.
         - numberOfLines: The number of lines to collect data
     
      - returns: A string containing the current firmware vision.
-    
-           do {
-            let data = try controller.gathering.getData(fromIndex: 0, forMultipleLines: 10)
-           } catch {print(error)}
+    ````
+    do {
+        let data = try controller.gathering.getData(fromIndex: 0, forMultipleLines: 10)
+    } catch {print(error)}
+     ````
     */
     func getData(fromIndex indexPoint: Int, forMultipleLines numberOfLines: Int) throws -> String {
         var data = ""
@@ -159,11 +167,12 @@ public extension XPSQ8Controller.GatheringController {
     /**
     Empty the gathered data in memory to start new gathering from scratch.
        
-     Implements the void GatheringReset() XPS function.
-     
-            do {
-                try controller?.gathering.reset()
-            } catch {print(error)}
+     Implements the ````void GatheringReset()````  XPS function.
+    ````
+     do {
+        try controller?.gathering.reset()
+     } catch {print(error)}
+     ````
      */
     func reset() throws {
         let message = "GatheringReset()"
@@ -174,13 +183,12 @@ public extension XPSQ8Controller.GatheringController {
     /**
     Re-start the stopped gathering to add new data.
      
-     Implements the void GatheringRunAppend() XPS function.
-     
-        do {
-            let data = try controller.gathering.runAppend()
-        } catch {print(error)}
-     
-
+     Implements the ````void GatheringRunAppend()````  XPS function.
+     ````
+    do {
+        let data = try controller.gathering.runAppend()
+    } catch {print(error)}
+     ````
     */
     func runAppend() throws {
         let message = "GatheringRunAppend()"
