@@ -46,7 +46,7 @@ public class StageGroup {
 }
 
 
-// MARK: Move Functions
+// MARK: - Move Functions
 public extension StageGroup {
     
     /**
@@ -100,3 +100,13 @@ public extension StageGroup {
          try self.controller?.group.moveAbsolute(stage: completeStageName, toLocation: targetLocation)
      }
 }
+
+// MARK: - Jog Functions
+public extension StageGroup {
+    func jogGetCurrent(stage: Stage) throws -> (velocity: Double, acceleration: Double) {
+        // Generate the complete stage name for the stage.
+        let completeStageName = stage.completeStageName()
+        let currentVelocityAndAcceleration = try controller?.group.jog.getCurrent(stage: stage)
+        return currentVelocityAndAcceleration
+}
+

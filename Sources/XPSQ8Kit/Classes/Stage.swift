@@ -134,3 +134,12 @@ public extension Stage {
         try self.stageGroup.moveAbsolute(stage: self, toLocation: toLocation)
     }
 }
+
+// MARK: - Jog Functions
+public extension StageGroup {
+    func jogGetCurrent() throws -> (velocity: Double, acceleration: Double) {
+        
+        let currentVelocityAndAcceleration = try StageGroup.jogCurrent(self)
+        return currentVelocityAndAcceleration
+        
+}

@@ -20,10 +20,6 @@ public extension XPSQ8Controller {
 // MARK: - Access Group Namespace
 public extension XPSQ8Controller {
 	/// The set of commands dealing with globals.
-	//func group(named name: String) -> GroupController {
-	//	return GroupController(controller: self, globalGroupName: name)
-	//}
-
 	var group: GroupController {
 		return GroupController(controller: self)
 	}
@@ -99,7 +95,33 @@ public extension XPSQ8Controller.GroupController {
 // MARK: - Group.Jog Functions
 public extension XPSQ8Controller.GroupController.JogController {
     
-    // func Group.Jog.getCurrent() -> (velocity: Double, acceleration: Double)    Get Jog current on selected group
+    /**
+     Returns a tuple containing the current velocity and acceration of the specified stage.
+     
+      Implements  the ````void GatheringCurrentNumberGet(int* CurrentNumber, int* MaximumSamplesNumber))```` XPS function
+     
+     - returns:
+        - velocity:  The current velocity in mm/s of the specified stage.
+        - acceleration:   The current acceration in mm/s^2 of the specified stage.
+     - parameters:
+        - stage: The name of the stage that will be moved.
+     
+     # Example #
+     ````
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     
+     do {
+         if let current = try controller?.group.jog.getCurrent(stage: "M.X") {
+             let velocity = current.velocity
+             let acceleration = current.acceleration
+             print("Velocity = \(velocity)")
+             print("Acceleartion = \(acceleration)")
+         } else { print("current = nil") }
+     } catch {
+         print(error)
+     }
+     ````
+    */
     
     func getCurrent(stage stageName: String) throws -> (velocity: Double, acceleration: Double) {
         // implements void GroupJogCurrentGet(char GroupName[250], double* Velocity, double* Acceleration)
