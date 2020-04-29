@@ -136,10 +136,10 @@ public extension Stage {
 }
 
 // MARK: - Jog Functions
-public extension StageGroup {
-    func jogGetCurrent() throws -> (velocity: Double, acceleration: Double) {
+public extension Stage {
+    func jogGetCurrent() throws -> (velocity: Double, acceleration: Double)? {
         
-        let currentVelocityAndAcceleration = try StageGroup.jogCurrent(self)
+        let currentVelocityAndAcceleration = try self.stageGroup.jogGetCurrent(stage: self)
         return currentVelocityAndAcceleration
-        
+    }
 }

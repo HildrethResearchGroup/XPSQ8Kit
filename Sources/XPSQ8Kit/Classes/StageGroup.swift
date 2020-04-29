@@ -103,10 +103,11 @@ public extension StageGroup {
 
 // MARK: - Jog Functions
 public extension StageGroup {
-    func jogGetCurrent(stage: Stage) throws -> (velocity: Double, acceleration: Double) {
+    func jogGetCurrent(stage: Stage) throws -> (velocity: Double, acceleration: Double)? {
         // Generate the complete stage name for the stage.
         let completeStageName = stage.completeStageName()
-        let currentVelocityAndAcceleration = try controller?.group.jog.getCurrent(stage: stage)
+        let currentVelocityAndAcceleration = try controller?.group.jog.getCurrent(stage: completeStageName)
         return currentVelocityAndAcceleration
+    }
 }
 
