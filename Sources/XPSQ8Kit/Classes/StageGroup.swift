@@ -21,12 +21,24 @@ public class StageGroup {
     /// The name of the Stage Group.  This name must match the Stage Group Name defined on the XPS Hardware Controller.
     let stageGroupName: String
     
-    /// Creates an instance with the specified  Stage Group Name.
-    ///
-    /// - Parameters:
-    ///   - controller: The XPSQ8Controller that is handling communication to the XPS Controller.
-    ///   - stageGroupName: The name of the Stage Group.  This name must match the Stage Group Name defined on the XPS Hardware Controller.
+    /**
+     Creates an instance of Stage Group with the specified  Stage Group Name.
+     
+     From the XPS Controller manual, all stages belong to a Stage Group and are addressed by stageGroupName.stageName.   This is actually set on the hardware itself.  The StageGroup is used to hold the name of the Group (e.g. "MacroStages") and the stageName holds the name of the specific stage (e.g. "X" for a stage that moves in the "x" direction).  Setting these values will make sure function calls can pass the stage and the stage will provide the necessary characterstring (e.g. MacroStages.X) using the completeStageName function.
+     
+     This initilizer creates a Stage Group with the specificed StageGroupName.  Stages that belong to this controller are stored in the stages array.
     
+     - Parameters:
+       - controller: The XPSQ8Controller that is handling communication to the XPS Controller.
+       - stageGroupName: The name of the Stage Group.  This name must match the Stage Group Name defined on the XPS Hardware Controller.
+    
+     # Example #
+    ````
+     // Setup Controller, StageGroup, and Stage
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     let stageGroup = StageGroup(controller: controller, stageGroupName: "M")
+    ````
+     */
     public init(controller: XPSQ8Controller?, stageGroupName:String) {
         self.controller = controller
         self.stageGroupName = stageGroupName
