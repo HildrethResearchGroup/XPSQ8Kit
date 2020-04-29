@@ -9,6 +9,10 @@ import Foundation
 public extension XPSQ8Controller {
 	struct GroupController {
 		var controller: XPSQ8Controller
+        
+        public struct JogController {
+            var controller: XPSQ8Controller
+        }
 	}
 }
 
@@ -25,23 +29,37 @@ public extension XPSQ8Controller {
 	}
 }
 
+public extension XPSQ8Controller.GroupController {
+    ///The set of commands dealing with Jog
+    var jog: JogController {
+        return JogController(controller: controller)
+    }
+}
+
 
 
 // MARK: - Group Functions
 public extension XPSQ8Controller.GroupController {
-	
-    /** This function moves the provided stage by the provided target displacement.
+    /**
+     This function moves the provided stage by the provided target displacement in mm.
      
-     do {
+     This name should be set in the XPS hardward controller softare.  An example stageName would be: "MacroStages.X", where "MacroStages" is the name of the group that the stage belongs to while "X" is the name of the specific stage you want to move.
+     
+     - Parameters:
+       - stage: The name of the stage that will be moved.
+       - byDisplacement: The distance in mm to move the specified stage.
+     
+     # Example #
+      ````
+      // Setup Controller
+      let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     
+      // use moveRelative function
+        do {
          let data = try controller?.group.moveRelative(stage: "M.X", byDisplacement: 10)
-     } catch {print(error)}
-
-    - parameters:
-      - stage: The name of the stage that will be moved.  This name should be set in the XPS hardward controller softare.  An example stageName would be: "MacroStages.X", where "MacroStages" is the name of the group that the stage belongs to while "X" is the name of the specific stage you want to move.
-      - byDisplacement: The distance in mm to move the specified stage.
-     
+        } catch {print(error)}
+       ````
      */
-    
     func moveRelative(stage stageName: String, byDisplacement targetDisplacement: Double) throws {
         let command = "GroupMoveRelative(\(stageName),\(targetDisplacement))"
         try controller.communicator.write(string: command)
@@ -52,12 +70,17 @@ public extension XPSQ8Controller.GroupController {
     /**
      Move the specified stage to the specified position in mm.
      
+     This name should be set in the XPS hardward controller softare.  An example stageName would be: "MacroStages.X", where "MacroStages" is the name of the group that the stage belongs to while "X" is the name of the specific stage you want to move.
+     
      - parameters:
-       - stageName: The name of the stage that will be moved.  This name should be set in the XPS hardward controller softare.  An example stageName would be: "MacroStages.X", where "MacroStages" is the name of the group that the stage belongs to while "X" is the name of the specific stage you want to move.
+       - stageName: The name of the stage that will be moved.
        - toLocation: The absolute position in mm to move the specified stage.
      
      # Example #
      ````
+     // Setup Controller
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     
      do {
         let data = try controller?.group.moveAbsolute(stage: "M.X", toLocation: 10)
      } catch {print(error)}
@@ -72,3 +95,22 @@ public extension XPSQ8Controller.GroupController {
 
 }
 
+
+// MARK: - Group.Jog Functions
+public extension XPSQ8Controller.GroupController.JogController {
+    
+    // func Group.Jog.getCurrent() -> (velocity: Double, acceleration: Double)    Get Jog current on selected group
+    
+    func getCurrent(stage stageName: String) throws -> (velocity: Double, acceleration: Double) {
+        // implements void GroupJogCurrentGet(char GroupName[250], double* Velocity, double* Acceleration)
+        // GroupJogCurrentGet(M.X,double *,double *)
+        let message = "GroupJogCurrentGet(\(stageName), double *, double *)"
+        
+        try controller.communicator.write(string: message)
+        
+        let currentJog = try controller.communicator.read(as: (Double.self, Double.self))
+        
+        return (velocity: currentJog.0, acceleration: currentJog.1)
+    }
+    
+}
