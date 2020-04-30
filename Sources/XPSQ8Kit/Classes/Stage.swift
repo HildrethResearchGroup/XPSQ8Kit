@@ -137,9 +137,37 @@ public extension Stage {
 
 // MARK: - Jog Functions
 public extension Stage {
+    
+    /**
+     Returns a tuple containing the current velocity and acceration of the specified stage.
+     
+      Implements  the ````void GatheringCurrentNumberGet(int* CurrentNumber, int* MaximumSamplesNumber))```` XPS function at the Stage Group through the Controller getCurrent function.
+     
+     - returns:
+        - velocity:  The current velocity in mm/s of the specified stage.
+        - acceleration:   The current acceration in mm/s^2 of the specified stage.
+     
+     # Example #
+     ````
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     let stageGroup = StageGroup(controller: controller, stageGroupName: "M")
+     let stage = Stage(stageGroup: stageGroup, stageName: "X")
+     
+     do {
+         if let current = try stage.jogGetCurrent() {
+             let velocity = current.velocity
+             let acceleration = current.acceleration
+             print("Velocity = \(velocity)")
+             print("Acceleartion = \(acceleration)")
+         } else { print("current = nil") }
+     } catch {
+         print(error)
+     }
+     ````
+    */
     func jogGetCurrent() throws -> (velocity: Double, acceleration: Double)? {
         
-        let currentVelocityAndAcceleration = try self.stageGroup.jogGetCurrent(stage: self)
+        let currentVelocityAndAcceleration = try self.stageGroup.jogGetCurrent(forStage: self)
         return currentVelocityAndAcceleration
     }
 }

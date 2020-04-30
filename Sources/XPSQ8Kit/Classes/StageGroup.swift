@@ -113,17 +113,18 @@ public extension StageGroup {
      - returns:
         - velocity:  The current velocity in mm/s of the specified stage.
         - acceleration:   The current acceration in mm/s^2 of the specified stage.
+     
      - parameters:
-        - stage: The name of the stage that will be moved.
+        - forStage: The stage that will be moved.
      
      # Example #
      ````
      let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
-     let stageGroup = let stageGroup = StageGroup(controller: controller, stageGroupName: "M")
-    let stage = Stage(stageGroup: stageGroup, stageName: "X")
+     let stageGroup = StageGroup(controller: controller, stageGroupName: "M")
+     let stage = Stage(stageGroup: stageGroup, stageName: "X")
      
      do {
-         if let current = try group.jogGetCurrent(stage: stage) {
+         if let current = try group.jogGetCurrent(forStage: stage) {
              let velocity = current.velocity
              let acceleration = current.acceleration
              print("Velocity = \(velocity)")
@@ -134,7 +135,7 @@ public extension StageGroup {
      }
      ````
     */
-    func jogGetCurrent(stage: Stage) throws -> (velocity: Double, acceleration: Double)? {
+    func jogGetCurrent(forStage stage: Stage) throws -> (velocity: Double, acceleration: Double)? {
         // Generate the complete stage name for the stage.
         let completeStageName = stage.completeStageName()
         let currentVelocityAndAcceleration = try controller?.group.jog.getCurrent(stage: completeStageName)
