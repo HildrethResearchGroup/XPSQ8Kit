@@ -114,4 +114,81 @@ public extension XPSQ8Controller {
 		
 		return string
 	}
+    
+    /**
+     Put all groups in ‘Not initialized’ state
+     
+     
+     # Example #
+     ````
+     // Setup Controller
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     
+     do {
+        let data = try controller?.group.kill(stage: "M.X")
+     } catch {print(error)}
+     ````
+    */
+    func killAll() throws {
+        let command = "KillAll()"
+        try communicator.write(string: command)
+        try communicator.validateNoReturn()
+    }
+    
+    /**
+     Log In
+     
+     # Example #
+     ````
+     // Setup Controller
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     
+     do {
+        let data = try controller?.group.kill(stage: "M.X")
+     } catch {print(error)}
+     ````
+    */
+    func login(username: String, password: String) throws {
+        let command = "Login(\(username), \(password))"
+        try communicator.write(string: command)
+        try communicator.validateNoReturn()
+    }
+    
+    /**
+     Reboot the controller
+     
+     # Example #
+     ````
+     // Setup Controller
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     
+     do {
+        let data = try controller?.group.kill(stage: "M.X")
+     } catch {print(error)}
+     ````
+    */
+    func reboot() throws {
+        let command = "Reboot()"
+        try communicator.write(string: command)
+        try communicator.validateNoReturn()
+    }
+    
+    /**
+     Restart the application
+     
+     # Example #
+     ````
+     // Setup Controller
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     
+     do {
+        let data = try controller?.group.kill(stage: "M.X")
+     } catch {print(error)}
+     ````
+    */
+    func restart() throws {
+        let command = "RestartApplication()"
+        try communicator.write(string: command)
+        try communicator.validateNoReturn()
+    }
 }

@@ -13,6 +13,10 @@ public extension XPSQ8Controller {
         public struct JogController {
             var controller: XPSQ8Controller
         }
+            
+        public struct PositionController {
+            var controller: XPSQ8Controller
+        }
 	}
 }
 
@@ -29,6 +33,13 @@ public extension XPSQ8Controller.GroupController {
     ///The set of commands dealing with Jog
     var jog: JogController {
         return JogController(controller: controller)
+    }
+}
+
+public extension XPSQ8Controller.GroupController {
+    ///The set of commands dealing with Position
+    var position: PositionController {
+        return PositionController(controller: controller)
     }
 }
 
@@ -88,6 +99,244 @@ public extension XPSQ8Controller.GroupController {
         try controller.communicator.validateNoReturn()
     }
     
+    /**
+     Start home seach sequence on specified stage
+
+     - parameters:
+       - stageName: The name of the stage that will be moved.
+     
+     # Example #
+     ````
+     // Setup Controller
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     
+     do {
+        let data = try controller?.group.homeSearch(stage: "M.X")
+     } catch {print(error)}
+     ````
+    */
+    func homeSearch(stage stageName: String) throws {
+        let command = "GroupHomeSearch(\(stageName))"
+        try controller.communicator.write(string: command)
+        try controller.communicator.validateNoReturn()
+    }
+    
+    /**
+     Kill the group
+
+     - parameters:
+       - stageName: The name of the stage that will be moved.
+     
+     # Example #
+     ````
+     // Setup Controller
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     
+     do {
+        let data = try controller?.group.kill(stage: "M.X")
+     } catch {print(error)}
+     ````
+    */
+    func kill(stage stageName: String) throws {
+        let command = "GroupKill(\(stageName))"
+        try controller.communicator.write(string: command)
+        try controller.communicator.validateNoReturn()
+    }
+    
+    /**
+     Set motion disable on selected group
+
+     - parameters:
+       - stageName: The name of the stage that will be moved.
+     
+     # Example #
+     ````
+     // Setup Controller
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     
+     do {
+        let data = try controller?.group.disableMotion(stage: "M.X")
+     } catch {print(error)}
+     ````
+    */
+    func disableMotion(stage stageName: String) throws {
+        let command = "GroupMotionDisable(\(stageName))"
+        try controller.communicator.write(string: command)
+        try controller.communicator.validateNoReturn()
+    }
+    
+    /**
+     Set motion enable on selected group
+
+     - parameters:
+       - stageName: The name of the stage that will be moved.
+     
+     # Example #
+     ````
+     // Setup Controller
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     
+     do {
+        let data = try controller?.group.enableMotion(stage: "M.X")
+     } catch {print(error)}
+     ````
+    */
+    func enableMotion(stage stageName: String) throws {
+        let command = "GroupMotionEnable(\(stageName))"
+        try controller.communicator.write(string: command)
+        try controller.communicator.validateNoReturn()
+    }
+    
+    /**
+     Return or group positioner status
+    
+     - returns:
+        -  status: group of positioner status
+
+     - parameters:
+       - stageName: The name of the stage that will be moved.
+     
+     # Example #
+     ````
+     // Setup Controller
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     
+     do {
+        let data = try controller?.group.enableMotion(stage: "M.X")
+     } catch {print(error)}
+     ````
+    */
+    func getMotionStatus(stage stageName: String) throws -> Int {
+        let command = "GroupMotionStatusGet(\(stageName), int *)"
+        try controller.communicator.write(string: command)
+        let status = try controller.communicator.read(as: (Int.self))
+        return status
+    }
+    
+    /**
+     Abort a move
+
+     - parameters:
+       - stageName: The name of the stage that will be moved.
+     
+     # Example #
+     ````
+     // Setup Controller
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     
+     do {
+        let data = try controller?.group.enableMotion(stage: "M.X")
+     } catch {print(error)}
+     ````
+    */
+    func abortMove(stage stageName: String) throws {
+        let command = "GroupMoveAbort(\(stageName))"
+        try controller.communicator.write(string: command)
+        try controller.communicator.validateNoReturn()
+    }
+
+    /**
+       Return group status
+      
+       - returns:
+          -  status: group status code
+
+       - parameters:
+         - stageName: The name of the stage that will be moved.
+       
+       # Example #
+       ````
+       // Setup Controller
+       let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+       
+       do {
+          let data = try controller?.group.enableMotion(stage: "M.X")
+       } catch {print(error)}
+       ````
+      */
+      func getStatus(stage stageName: String) throws -> Int {
+          let command = "GroupStatusGet(\(stageName), int *)"
+          try controller.communicator.write(string: command)
+          let status = try controller.communicator.read(as: (Int.self))
+          return (status)
+      }
+    
+    /**
+       Return the group status string corresponding to the group status code
+      
+       - returns:
+          -  status: group status
+
+       - parameters:
+         - code: integer code given from group.getStatus
+       
+       # Example #
+       ````
+       // Setup Controller
+       let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+       
+       do {
+          let data = try controller?.group.enableMotion(stage: "M.X")
+       } catch {print(error)}
+       ````
+      */
+    func getStatusString(code: Int) throws -> String {
+          let command = "GroupStatusStringGet(\(code), char *)"
+          try controller.communicator.write(string: command)
+          let status = try controller.communicator.read(as: (String.self))
+          return (status)
+      }
+    
+    /**
+       Return the current velocity of the selected stage
+      
+       - returns:
+          -  velocity: velocity of selected stage
+
+       - parameters:
+         - stageName: The name of the stage that will be moved.
+
+       # Example #
+       ````
+       // Setup Controller
+       let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+       
+       do {
+          let data = try controller?.group.enableMotion(stage: "M.X")
+       } catch {print(error)}
+       ````
+      */
+    func getCurrentVelocity(stage stageName: String) throws -> Double {
+          let command = "GroupVelocityCurrentGet(\(stageName), double *)"
+          try controller.communicator.write(string: command)
+          let velocity = try controller.communicator.read(as: (Double.self))
+          return (velocity)
+      }
+    
+    /**
+       Return the hardware date and time
+      
+       - returns:
+          -  dateTime: date and time of hardware
+
+       
+       # Example #
+       ````
+       // Setup Controller
+       let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+       
+       do {
+          let data = try controller?.group.enableMotion(stage: "M.X")
+       } catch {print(error)}
+       ````
+      */
+    func getHardwareDateAndTime(code: Int) throws -> String {
+          let command = "HardwareDateAndTimeGet(char *)"
+          try controller.communicator.write(string: command)
+          let dateTime = try controller.communicator.read(as: (String.self))
+          return (dateTime)
+      }
+
 
 }
 
@@ -134,5 +383,195 @@ public extension XPSQ8Controller.GroupController.JogController {
         
         return (velocity: currentJog.0, acceleration: currentJog.1)
     }
+    
+    /**
+     Disable Jog mode on selected group.
+     
+      Implements  the ```` add here ```` XPS function
+     
+     - parameters:
+        - stage: The name of the stage to have jog mode disabled.
+     
+     # Example #
+     ````
+
+     ````
+    */
+    func disable(stage stageName: String) throws {
+        // implements void GroupJogModeDisable(char GroupName[250])
+        // GroupJogModeDisable(M.X)
+        let message = "GroupJogModeDisable(\(stageName))"
+        try controller.communicator.write(string: message)
+        try controller.communicator.validateNoReturn()
+    }
+    
+    /**
+     Enable Jog mode on selected group.
+     
+      Implements  the ```` add here ```` XPS function
+     
+     - parameters:
+        - stage: The name of the stage to have jog mode Enabled.
+     
+     # Example #
+     ````
+
+     ````
+    */
+    func enable(stage stageName: String) throws {
+        // implements void GroupJogModeEnable(char GroupName[250])
+        // GroupJogModeEnable(M.X)
+        let message = "GroupJogModeEnable(\(stageName))"
+        try controller.communicator.write(string: message)
+        try controller.communicator.validateNoReturn()
+    }
+    
+    /**
+     Returns a tuple containing the parameters for velocity and acceration set for the specified stage.
+     
+      Implements  the ````add here```` XPS function
+     
+     - returns:
+        - velocity:  The set velocity parameter in mm/s of the specified stage.
+        - acceleration:   The set acceration parameter in mm/s^2 of the specified stage.
+     - parameters:
+        - stage: The name of the stage to find the parameters of.
+     
+     # Example #
+     ````
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     
+     do {
+         if let parameters = try controller?.group.jog.getParameters(stage: "M.X") {
+             let velocity = parameters.velocity
+             let acceleration = parameters.acceleration
+             print("Velocity = \(velocity)")
+             print("Acceleartion = \(acceleration)")
+         } else { print("parameters = nil") }
+     } catch {
+         print(error)
+     }
+     ````
+    */
+    func getParameters(stage stageName: String) throws -> (velocity: Double, acceleration: Double) {
+        // implements void GroupJogParametersGet(char GroupName[250], double* Velocity, double* Acceleration)
+        // GroupJogParametersGet(M.X,double *,double *)
+        let message = "GroupJogParametersGet(\(stageName), double *, double *)"
+        
+        try controller.communicator.write(string: message)
+        
+        let parameters = try controller.communicator.read(as: (Double.self, Double.self))
+        
+        return (velocity: parameters.0, acceleration: parameters.1)
+    }
+    
+}
+
+// MARK: - Group.Position Functions
+public extension XPSQ8Controller.GroupController.PositionController {
+    /**
+     Returns the current position of the specified stage.
+     
+      Implements  the ````add here```` XPS function
+     
+     - returns:
+        - currentEncoderPosition: current encoder position of the specified stage
+     - parameters:
+        - stage: The name of the stage to find the positon of
+     
+     # Example #
+     ````
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     
+     do {
+         if let parameters = try controller?.group.jog.getParameters(stage: "M.X") {
+             let velocity = parameters.velocity
+             let acceleration = parameters.acceleration
+             print("Velocity = \(velocity)")
+             print("Acceleartion = \(acceleration)")
+         } else { print("parameters = nil") }
+     } catch {
+         print(error)
+     }
+     ````
+    */
+    func getCurrent(stage stageName: String) throws -> Double {
+        // implements void GroupJogParametersGet(char GroupName[250], double* Velocity, double* Acceleration)
+        // GroupJogParametersGet(M.X,double *,double *)
+        let message = "GroupPositionCurrentGet(\(stageName), double *)"
+        try controller.communicator.write(string: message)
+        let currentEncoderPosition = try controller.communicator.read(as: Double.self)
+        return currentEncoderPosition
+    }
+    
+    /**
+      Returns the position setpoint of the specified stage.
+      
+       Implements  the ````add here```` XPS function
+      
+      - returns:
+         - setPoint: position setpoint of the specified stage
+      - parameters:
+         - stage: The name of the stage to find the positon setpoint of
+      
+      # Example #
+      ````
+      let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+      
+      do {
+          if let parameters = try controller?.group.jog.getParameters(stage: "M.X") {
+              let velocity = parameters.velocity
+              let acceleration = parameters.acceleration
+              print("Velocity = \(velocity)")
+              print("Acceleartion = \(acceleration)")
+          } else { print("parameters = nil") }
+      } catch {
+          print(error)
+      }
+      ````
+     */
+     func getSetpoint(stage stageName: String) throws -> Double {
+         // implements void GroupJogParametersGet(char GroupName[250], double* Velocity, double* Acceleration)
+         // GroupJogParametersGet(M.X,double *,double *)
+         let message = "GroupPositionSetpointGet(\(stageName), double *)"
+         try controller.communicator.write(string: message)
+         let setPoint = try controller.communicator.read(as: Double.self)
+         return setPoint
+     }
+    
+    /**
+         Returns the position targer of the specified stage.
+         
+          Implements  the ````add here```` XPS function
+         
+         - returns:
+            - targett: position target of the specified stage
+         - parameters:
+            - stage: The name of the stage to find the positon target of
+         
+         # Example #
+         ````
+         let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+         
+         do {
+             if let parameters = try controller?.group.jog.getParameters(stage: "M.X") {
+                 let velocity = parameters.velocity
+                 let acceleration = parameters.acceleration
+                 print("Velocity = \(velocity)")
+                 print("Acceleartion = \(acceleration)")
+             } else { print("parameters = nil") }
+         } catch {
+             print(error)
+         }
+         ````
+        */
+        func getTarget(stage stageName: String) throws -> Double {
+            // implements void GroupJogParametersGet(char GroupName[250], double* Velocity, double* Acceleration)
+            // GroupJogParametersGet(M.X,double *,double *)
+            let message = "GroupPositionTargetGet(\(stageName), double *)"
+            try controller.communicator.write(string: message)
+            let target = try controller.communicator.read(as: Double.self)
+            return target
+        }
     
 }
