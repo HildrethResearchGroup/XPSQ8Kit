@@ -52,6 +52,8 @@ public extension XPSQ8Controller.GroupController {
      
      This name should be set in the XPS hardward controller softare.  An example stageName would be: "MacroStages.X", where "MacroStages" is the name of the group that the stage belongs to while "X" is the name of the specific stage you want to move.
      
+     - Author:
+     
      - Parameters:
        - stage: The name of the stage that will be moved.
        - byDisplacement: The distance in mm to move the specified stage.
@@ -79,6 +81,8 @@ public extension XPSQ8Controller.GroupController {
      
      This name should be set in the XPS hardward controller softare.  An example stageName would be: "MacroStages.X", where "MacroStages" is the name of the group that the stage belongs to while "X" is the name of the specific stage you want to move.
      
+     - Author:
+     
      - parameters:
        - stageName: The name of the stage that will be moved.
        - toLocation: The absolute position in mm to move the specified stage.
@@ -101,6 +105,10 @@ public extension XPSQ8Controller.GroupController {
     
     /**
      Start home seach sequence on specified stage
+     
+      Implements  the ```` add here ```` XPS function
+     
+     - Author: Steven DiGregorio
 
      - parameters:
        - stageName: The name of the stage that will be moved.
@@ -123,6 +131,10 @@ public extension XPSQ8Controller.GroupController {
     
     /**
      Kill the group
+     
+      Implements  the ```` add here ```` XPS function
+     
+     - Author: Steven DiGregorio
 
      - parameters:
        - stageName: The name of the stage that will be moved.
@@ -145,17 +157,21 @@ public extension XPSQ8Controller.GroupController {
     
     /**
      Set motion disable on selected group
+     
+      Implements  the ```` add here ```` XPS function
+
+     - Author: Steven DiGregorio
 
      - parameters:
        - stageName: The name of the stage that will be moved.
-     
+          
      # Example #
      ````
      // Setup Controller
      let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
      
      do {
-        let data = try controller?.group.disableMotion(stage: "M.X")
+        try controller?.group.disableMotion(stage: "M.X")
      } catch {print(error)}
      ````
     */
@@ -167,17 +183,21 @@ public extension XPSQ8Controller.GroupController {
     
     /**
      Set motion enable on selected group
+     
+      Implements  the ```` add here ```` XPS function
+     
+     - Author: Steven DiGregorio
 
      - parameters:
        - stageName: The name of the stage that will be moved.
-     
+          
      # Example #
      ````
      // Setup Controller
      let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
      
      do {
-        let data = try controller?.group.enableMotion(stage: "M.X")
+        try controller?.group.enableMotion(stage: "M.X")
      } catch {print(error)}
      ````
     */
@@ -189,6 +209,10 @@ public extension XPSQ8Controller.GroupController {
     
     /**
      Return or group positioner status
+     
+      Implements  the ```` add here ```` XPS function
+     
+     - Author: Steven DiGregorio
     
      - returns:
         -  status: group of positioner status
@@ -215,6 +239,10 @@ public extension XPSQ8Controller.GroupController {
     
     /**
      Abort a move
+     
+      Implements  the ```` add here ```` XPS function
+     
+     - Author: Steven DiGregorio
 
      - parameters:
        - stageName: The name of the stage that will be moved.
@@ -236,12 +264,16 @@ public extension XPSQ8Controller.GroupController {
     }
 
     /**
-       Return group status
+      Return group status
+     
+      Implements  the ```` add here ```` XPS function
+     
+     - Author: Steven DiGregorio
       
-       - returns:
+     - returns:
           -  status: group status code
 
-       - parameters:
+     - parameters:
          - stageName: The name of the stage that will be moved.
        
        # Example #
@@ -263,6 +295,10 @@ public extension XPSQ8Controller.GroupController {
     
     /**
        Return the group status string corresponding to the group status code
+     
+      Implements  the ```` add here ```` XPS function
+     
+     - Author: Steven DiGregorio
       
        - returns:
           -  status: group status
@@ -289,6 +325,10 @@ public extension XPSQ8Controller.GroupController {
     
     /**
        Return the current velocity of the selected stage
+     
+      Implements  the ```` add here ```` XPS function
+     
+     - Author: Steven DiGregorio
       
        - returns:
           -  velocity: velocity of selected stage
@@ -312,32 +352,6 @@ public extension XPSQ8Controller.GroupController {
           let velocity = try controller.communicator.read(as: (Double.self))
           return (velocity)
       }
-    
-    /**
-       Return the hardware date and time
-      
-       - returns:
-          -  dateTime: date and time of hardware
-
-       
-       # Example #
-       ````
-       // Setup Controller
-       let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
-       
-       do {
-          let data = try controller?.group.enableMotion(stage: "M.X")
-       } catch {print(error)}
-       ````
-      */
-    func getHardwareDateAndTime(code: Int) throws -> String {
-          let command = "HardwareDateAndTimeGet(char *)"
-          try controller.communicator.write(string: command)
-          let dateTime = try controller.communicator.read(as: (String.self))
-          return (dateTime)
-      }
-
-
 }
 
 
@@ -345,10 +359,12 @@ public extension XPSQ8Controller.GroupController {
 public extension XPSQ8Controller.GroupController.JogController {
     
     /**
-     Returns a tuple containing the current velocity and acceration of the specified stage.
+     Returns a tuple containing the current velocity and acceration of the specified stage.]
      
       Implements  the ````void GatheringCurrentNumberGet(int* CurrentNumber, int* MaximumSamplesNumber))```` XPS function
      
+     - Author: Owen Hildreth
+
      - returns:
         - velocity:  The current velocity in mm/s of the specified stage.
         - acceleration:   The current acceration in mm/s^2 of the specified stage.
@@ -371,7 +387,6 @@ public extension XPSQ8Controller.GroupController.JogController {
      }
      ````
     */
-    
     func getCurrent(stage stageName: String) throws -> (velocity: Double, acceleration: Double) {
         // implements void GroupJogCurrentGet(char GroupName[250], double* Velocity, double* Acceleration)
         // GroupJogCurrentGet(M.X,double *,double *)
@@ -388,6 +403,8 @@ public extension XPSQ8Controller.GroupController.JogController {
      Disable Jog mode on selected group.
      
       Implements  the ```` add here ```` XPS function
+     
+     - Author: Steven DiGregorio
      
      - parameters:
         - stage: The name of the stage to have jog mode disabled.
@@ -410,12 +427,25 @@ public extension XPSQ8Controller.GroupController.JogController {
      
       Implements  the ```` add here ```` XPS function
      
+     - Author: Steven DiGregorio
+     
      - parameters:
         - stage: The name of the stage to have jog mode Enabled.
      
      # Example #
      ````
-
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     
+     do {
+         if let current = try controller?.group.jog.getCurrent(stage: "M.X") {
+             let velocity = current.velocity
+             let acceleration = current.acceleration
+             print("Velocity = \(velocity)")
+             print("Acceleartion = \(acceleration)")
+         } else { print("current = nil") }
+     } catch {
+         print(error)
+     }
      ````
     */
     func enable(stage stageName: String) throws {
@@ -430,6 +460,8 @@ public extension XPSQ8Controller.GroupController.JogController {
      Returns a tuple containing the parameters for velocity and acceration set for the specified stage.
      
       Implements  the ````add here```` XPS function
+     
+     - Author: Steven DiGregorio
      
      - returns:
         - velocity:  The set velocity parameter in mm/s of the specified stage.
@@ -474,6 +506,8 @@ public extension XPSQ8Controller.GroupController.PositionController {
      
       Implements  the ````add here```` XPS function
      
+     - Author: Steven DiGregorio
+     
      - returns:
         - currentEncoderPosition: current encoder position of the specified stage
      - parameters:
@@ -508,6 +542,8 @@ public extension XPSQ8Controller.GroupController.PositionController {
       Returns the position setpoint of the specified stage.
       
        Implements  the ````add here```` XPS function
+     
+     - Author: Steven DiGregorio
       
       - returns:
          - setPoint: position setpoint of the specified stage
@@ -543,6 +579,8 @@ public extension XPSQ8Controller.GroupController.PositionController {
          Returns the position targer of the specified stage.
          
           Implements  the ````add here```` XPS function
+     
+        - Author: Steven DiGregorio
          
          - returns:
             - targett: position target of the specified stage

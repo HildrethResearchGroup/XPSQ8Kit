@@ -39,6 +39,10 @@ public extension XPSQ8Controller.GroupController {
     /**
      Astrom & Hägglund based auto-scaling
      
+      Implements  the ```` add here ```` XPS function
+     
+     - Author: Steven DiGregorio
+     
      - returns:
         -  scaling: Astrom & Hägglund based auto-scaling
     
@@ -65,6 +69,10 @@ public extension XPSQ8Controller.GroupController {
     
     /**
      Disable the backlash
+     
+      Implements  the ```` add here ```` XPS function
+     
+     - Author: Steven DiGregorio
     
      - Parameters:
       - positioner: The name of the positioner that will be moved.
@@ -88,6 +96,10 @@ public extension XPSQ8Controller.GroupController {
     
     /**
      Enable the backlash
+     
+      Implements  the ```` add here ```` XPS function
+     
+     - Author: Steven DiGregorio
     
      - Parameters:
         - positioner: The name of the positioner that will be moved.
@@ -111,6 +123,10 @@ public extension XPSQ8Controller.GroupController {
     
     /**
        Return positioner hardware status code
+     
+      Implements  the ```` add here ```` XPS function
+     
+     - Author: Steven DiGregorio
       
        - returns:
           -  status: positioner hardware status code
@@ -137,6 +153,10 @@ public extension XPSQ8Controller.GroupController {
     
     /**
     Return maximum velocity and acceleration of the positioner
+     
+      Implements  the ```` add here ```` XPS function
+     
+     - Author: Steven DiGregorio
      
       - Parameters:
          - positioner: The name of the positioner that will be moved.
@@ -165,6 +185,10 @@ public extension XPSQ8Controller.GroupController {
     
     /**
     Read motion done parameters
+     
+      Implements  the ```` add here ```` XPS function
+     
+     - Author: Steven DiGregorio
 
       - Parameters:
          - positioner: The name of the positioner that will be moved.
@@ -197,6 +221,9 @@ public extension XPSQ8Controller.GroupController {
     /**
     Return the stage parameter
 
+      Implements  the ```` add here ```` XPS function
+     
+     - Author: Steven DiGregorio
 
       - Parameters:
          - positioner: The name of the positioner that will be moved.
@@ -228,6 +255,10 @@ public extension XPSQ8Controller.GroupController {
     
     /**
     Read user minimum target and user maximum target
+     
+      Implements  the ```` add here ```` XPS function
+     
+     - Author: Steven DiGregorio
 
       - Parameters:
          - positioner: The name of the positioner that will be moved.
@@ -265,6 +296,10 @@ public extension XPSQ8Controller.PositionerController.SGammaController {
     
     /**
     Read dynamic parameters for one axe of a group for a future displacement
+     
+      Implements  the ```` add here ```` XPS function
+     
+     - Author: Steven DiGregorio
 
       - Parameters:
          - positioner: The name of the positioner that will be moved.
@@ -295,6 +330,10 @@ public extension XPSQ8Controller.PositionerController.SGammaController {
     
     /**
     Read setting time and settling time
+     
+      Implements  the ```` add here ```` XPS function
+     
+     - Author: Steven DiGregorio
 
       - Parameters:
          - positioner: The name of the positioner that will be moved.

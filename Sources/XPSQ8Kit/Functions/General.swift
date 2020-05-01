@@ -118,6 +118,10 @@ public extension XPSQ8Controller {
     /**
      Put all groups in ‘Not initialized’ state
      
+      Implements  the ```` add here ```` XPS function
+     
+     - Author: Steven DiGregorio
+     
      
      # Example #
      ````
@@ -138,6 +142,10 @@ public extension XPSQ8Controller {
     /**
      Log In
      
+      Implements  the ```` add here ```` XPS function
+     
+     - Author: Steven DiGregorio
+     
      # Example #
      ````
      // Setup Controller
@@ -156,6 +164,10 @@ public extension XPSQ8Controller {
     
     /**
      Reboot the controller
+     
+      Implements  the ```` add here ```` XPS function
+     
+     - Author: Steven DiGregorio
      
      # Example #
      ````
@@ -176,6 +188,10 @@ public extension XPSQ8Controller {
     /**
      Restart the application
      
+      Implements  the ```` add here ```` XPS function
+     
+     - Author: Steven DiGregorio
+     
      # Example #
      ````
      // Setup Controller
@@ -191,4 +207,32 @@ public extension XPSQ8Controller {
         try communicator.write(string: command)
         try communicator.validateNoReturn()
     }
+    
+    /**
+       Return the hardware date and time
+     
+      Implements  the ```` add here ```` XPS function
+     
+     - Author: Steven DiGregorio
+      
+       - returns:
+          -  dateTime: date and time of hardware
+
+       
+       # Example #
+       ````
+       // Setup Controller
+       let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+       
+       do {
+          let data = try controller?.group.enableMotion(stage: "M.X")
+       } catch {print(error)}
+       ````
+      */
+    func getHardwareDateAndTime(code: Int) throws -> String {
+          let command = "HardwareDateAndTimeGet(char *)"
+          try controller.communicator.write(string: command)
+          let dateTime = try controller.communicator.read(as: (String.self))
+          return (dateTime)
+      }
 }

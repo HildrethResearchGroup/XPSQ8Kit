@@ -27,6 +27,10 @@ public extension XPSQ8Controller.TCLController {
     
     /**
      Kill TCL task
+     
+      Implements  the ```` add here ```` XPS function
+     
+     - Author: Steven DiGregorio
     
      - Parameters:
         - positioner: The name of the positioner that will be moved.
@@ -50,6 +54,10 @@ public extension XPSQ8Controller.TCLController {
     
     /**
      Kill all TCL tasks
+     
+      Implements  the ```` add here ```` XPS function
+     
+     - Author: Steven DiGregorio
     
      - Parameters:
         - positioner: The name of the positioner that will be moved.
