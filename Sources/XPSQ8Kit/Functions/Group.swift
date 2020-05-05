@@ -480,8 +480,6 @@ public extension XPSQ8Controller.GroupController.JogController {
      ````
     */
     func disable(group groupName: String) throws {
-        // implements void GroupJogModeDisable(char GroupName[250])
-        // GroupJogModeDisable(M.X)
         let message = "GroupJogModeDisable(\(groupName))"
         try controller.communicator.write(string: message)
         try controller.communicator.validateNoReturn()
@@ -511,8 +509,6 @@ public extension XPSQ8Controller.GroupController.JogController {
      ````
     */
     func enable(group groupName: String) throws {
-        // implements void GroupJogModeEnable(char GroupName[250])
-        // GroupJogModeEnable(M.X)
         let message = "GroupJogModeEnable(\(groupName))"
         try controller.communicator.write(string: message)
         try controller.communicator.validateNoReturn()
@@ -594,8 +590,6 @@ public extension XPSQ8Controller.GroupController.PositionController {
      ````
     */
     func getCurrent(stage stageName: String) throws -> Double {
-        // implements void GroupJogParametersGet(char GroupName[250], double* Velocity, double* Acceleration)
-        // GroupJogParametersGet(M.X,double *,double *)
         let message = "GroupPositionCurrentGet(\(stageName), double *)"
         try controller.communicator.write(string: message)
         let currentEncoderPosition = try controller.communicator.read(as: Double.self)
@@ -603,14 +597,16 @@ public extension XPSQ8Controller.GroupController.PositionController {
     }
     
     /**
-      Returns the position setpoint of the specified stage.
+      Returns the setpoint position for one or all positioners of the selected group.
       
-       Implements  the ````add here```` XPS function
+       Returns the setpoint position for one or all positioners of the selected group.
+       The “setpoint” position is calculated by the motion profiler and represents the “theoretical” position to reach.
      
      - Author: Steven DiGregorio
       
       - returns:
          - setPoint: position setpoint of the specified stage
+     
       - parameters:
          - stage: The name of the stage to find the positon setpoint of
       
@@ -619,20 +615,16 @@ public extension XPSQ8Controller.GroupController.PositionController {
       let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
       
       do {
-          if let parameters = try controller?.group.jog.getParameters(stage: "M.X") {
-              let velocity = parameters.velocity
-              let acceleration = parameters.acceleration
-              print("Velocity = \(velocity)")
-              print("Acceleartion = \(acceleration)")
-          } else { print("parameters = nil") }
+          if let setPoint = try controller?.group.position.getSetpoint(stage: "M.X"){
+              print("set point = \(setPoint)")
+          }
+          print("Get set point completed")
       } catch {
           print(error)
       }
       ````
      */
      func getSetpoint(stage stageName: String) throws -> Double {
-         // implements void GroupJogParametersGet(char GroupName[250], double* Velocity, double* Acceleration)
-         // GroupJogParametersGet(M.X,double *,double *)
          let message = "GroupPositionSetpointGet(\(stageName), double *)"
          try controller.communicator.write(string: message)
          let setPoint = try controller.communicator.read(as: Double.self)
@@ -640,14 +632,17 @@ public extension XPSQ8Controller.GroupController.PositionController {
      }
     
     /**
-         Returns the position targer of the specified stage.
+         Returns the target position for one or all positioners of the selected group.
          
-          Implements  the ````add here```` XPS function
+          Returns the target position for one or all positioners of the selected group. The target position represents the “end” position after the move.
+          For instance, during a move from 0 to 10 units, the position values are: GroupPositionTargetGet => 10.0000
+          GroupPositionCurrentGet => 5.0005 GroupPositionSetpointGet => 5.0055
      
         - Author: Steven DiGregorio
          
          - returns:
-            - targett: position target of the specified stage
+            - target: position target of the specified stage
+     
          - parameters:
             - stage: The name of the stage to find the positon target of
          
@@ -656,24 +651,19 @@ public extension XPSQ8Controller.GroupController.PositionController {
          let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
          
          do {
-             if let parameters = try controller?.group.jog.getParameters(stage: "M.X") {
-                 let velocity = parameters.velocity
-                 let acceleration = parameters.acceleration
-                 print("Velocity = \(velocity)")
-                 print("Acceleartion = \(acceleration)")
-             } else { print("parameters = nil") }
+             if let target = try controller?.group.position.getTarget(stage: "M.X"){
+                 print("target = \(target)")
+             }
+             print("Get target completed")
          } catch {
              print(error)
          }
          ````
         */
         func getTarget(stage stageName: String) throws -> Double {
-            // implements void GroupJogParametersGet(char GroupName[250], double* Velocity, double* Acceleration)
-            // GroupJogParametersGet(M.X,double *,double *)
             let message = "GroupPositionTargetGet(\(stageName), double *)"
             try controller.communicator.write(string: message)
             let target = try controller.communicator.read(as: Double.self)
             return target
         }
-    
 }
