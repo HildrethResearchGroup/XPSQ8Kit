@@ -84,10 +84,12 @@ public extension XPSQ8Controller.PositionerController {
      // Setup Controller
      let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
     
-     // use moveRelative function
-       do {
-        let data = try controller?.group.moveRelative(stage: "M.X", byDisplacement: 10)
-       } catch {print(error)}
+     do {
+         try controller?.positioner.disableBacklash(positioner: "M.X")
+         print("Backlash compensation disabled")
+     } catch {
+         print(error)
+     }
       ````
     */
     func disableBacklash(positioner positionerName: String) throws {
@@ -97,24 +99,29 @@ public extension XPSQ8Controller.PositionerController {
     }
     
     /**
-     Enable the backlash
+     Enables the backlash compensation
      
-      Implements  the ```` add here ```` XPS function
+     This function enables the backlash compensation defined in the “stages.ini” file or defined by the “PositionerBacklashSet” function. If the backlash compensation value is null then this function will have not effect, and backlash compensation will remain disabled. For a more thorough description of the backlash compensation, please refer to the XPS Motion Tutorial section Compensation/Backlash compensation.
+      The group state must be NOTINIT to enable the backlash compensation. If it is not the case then ERR_NOT_ALLOWED_ACTION (-22) is returned.
+      In the “stages.ini” file the parameter “Backlash” allows the user to enable or disable the backlash compensation.
+      Backlash = 0 —> Disable backlash Backlash > 0 —> Enable backlash
      
      - Author: Steven DiGregorio
     
      - Parameters:
-        - positioner: The name of the positioner that will be moved.
+        - positioner: The name of the positioner
     
     # Example #
      ````
      // Setup Controller
      let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
     
-     // use moveRelative function
-       do {
-        let data = try controller?.group.moveRelative(stage: "M.X", byDisplacement: 10)
-       } catch {print(error)}
+     do {
+         try controller?.positioner.enableBacklash(positioner: "M.X")
+         print("Backlash compensation enabled")
+     } catch {
+         print(error)
+     }
       ````
     */
     func enableBacklash(positioner positionerName: String) throws {
@@ -124,9 +131,10 @@ public extension XPSQ8Controller.PositionerController {
     }
     
     /**
-       Return positioner hardware status code
+       Gets the positioner hardware status code
      
-      Implements  the ```` add here ```` XPS function
+       This function returns the hardware status of the selected positioner. The positioner hardware status is composed of the “corrector” hardware status and the “servitudes” hardware status:
+       The “Corrector” returns the motor interface and the position encoder hardware status. The “Servitudes” returns the general inhibit and the end of runs hardware status.
      
      - Author: Steven DiGregorio
       
@@ -134,7 +142,7 @@ public extension XPSQ8Controller.PositionerController {
           -  status: positioner hardware status code
 
        - parameters:
-         - positionerName: The name of the stage that will be moved.
+         - positionerName: The name of the positioner
        
        # Example #
        ````
@@ -142,8 +150,13 @@ public extension XPSQ8Controller.PositionerController {
        let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
        
        do {
-          let data = try controller?.group.enableMotion(stage: "M.X")
-       } catch {print(error)}
+           if let code = try controller?.positioner.getHardwareStatus(positioner: "M.X"){
+               print("status code = \(code)")
+           }
+           print("Get positioner status code completed")
+       } catch {
+           print(error)
+       }
        ````
       */
       func getHardwareStatus(positioner positionerName: String) throws -> Int {
@@ -154,14 +167,16 @@ public extension XPSQ8Controller.PositionerController {
       }
     
     /**
-    Return maximum velocity and acceleration of the positioner
+     Gets the maximum velocity and acceleration from the profiler generators.
      
-      Implements  the ```` add here ```` XPS function
+      This function returns the maximum velocity and acceleration of the profile generators. These parameters represent the limits for the profiler and are defined in the stages.ini file:
+      MaximumVelocity = ; unit/second
+     MaximumAcceleration = ; unit/second2
      
      - Author: Steven DiGregorio
      
       - Parameters:
-         - positioner: The name of the positioner that will be moved.
+         - positioner: The name of the positioner
      
       - returns:
          -  velocity: Maximum velocity
@@ -179,7 +194,7 @@ public extension XPSQ8Controller.PositionerController {
        ````
      */
      func getMaximumVelocityAndAcceleration(positioner positionerName: String) throws -> (velocity: Double, acceleration: Double) {
-        let command = "PositionerMaximumVelocityAndAccelerationGet(\(positionerName), Double *, Double *)"
+        let command = "PositionerMaximumVelocityAndAccelerationGet(\(positionerName), double *, double *)"
         try controller.communicator.write(string: command)
         let maximums = try controller.communicator.read(as: (Double.self, Double.self))
         return (velocity: maximums.0, acceleration: maximums.1)
