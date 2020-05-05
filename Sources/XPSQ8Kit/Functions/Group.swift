@@ -132,25 +132,26 @@ public extension XPSQ8Controller.GroupController {
     /**
      Kills the selected group to go to “NOTINIT” status.
      
-      Implements  the ```` add here ```` XPS function
+      Kills the selected group to stop its action. The group returns to the “NOTINIT” state. If the group is already in this state then it stays in the “NOT INIT” state.
+      The GroupKill is a high priority command that is executed in any condition.
      
      - Author: Steven DiGregorio
 
      - parameters:
-       - stageName: The name of the stage that will be moved.
+       - groupName: The name of the stage group
      
      # Example #
      ````
-     // Setup Controller
-     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
-     
      do {
-        let data = try controller?.group.kill(stage: "M.X")
-     } catch {print(error)}
+         try controller?.group.kill(group: "M")
+         print("Group killed")
+     } catch {
+         print(error)
+     }
      ````
     */
-    func kill(stage stageName: String) throws {
-        let command = "GroupKill(\(stageName))"
+    func kill(group groupName: String) throws {
+        let command = "GroupKill(\(groupName))"
         try controller.communicator.write(string: command)
         try controller.communicator.validateNoReturn()
     }
