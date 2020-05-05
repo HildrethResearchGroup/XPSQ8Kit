@@ -118,10 +118,21 @@ public extension XPSQ8Controller {
     /**
      Put all groups in ‘Not initialized’ state
      
-      Implements  the ```` add here ```` XPS function
+      This function kills and resets all groups.
+      This function resets all analog and digital I/O also.
+      The following sequence of steps is performed by the KillAll command.
+      1) An“emergencystop” is done if the group state is defined as:
+      HOMING REFERENCING MOVING
+      JOGGING ANALOG_TRACKING
+      2) The motor is turned off, the motion done is stopped and the control loop is stopped.
+      3) “ERR_EMERGENCY_SIGNAL”is returned by each function that is in progress, and where the group state is:
+      MOTOR_INIT ENCODER_CALIBRATING HOMING
+      REFERENCING
+      MOVING
+      TRAJECTORY ERR_EMERGENCY_SIGNAL
+      4) At end, the group state is not initialized “NOTINIT” for all groups.
      
      - Author: Steven DiGregorio
-     
      
      # Example #
      ````
@@ -129,8 +140,11 @@ public extension XPSQ8Controller {
      let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
      
      do {
-        let data = try controller?.group.kill(stage: "M.X")
-     } catch {print(error)}
+         try controller?.killAll()
+         print("All groups killed")
+     } catch {
+         print(error)
+     }
      ````
     */
     func killAll() throws {
@@ -165,7 +179,8 @@ public extension XPSQ8Controller {
     /**
      Reboot the controller
      
-      Implements  the ```` add here ```` XPS function
+      This function reboots the controller.
+      Notes that this function is not a hardware reboot (power off/on), it is a firmware reboot.
      
      - Author: Steven DiGregorio
      
@@ -175,8 +190,11 @@ public extension XPSQ8Controller {
      let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
      
      do {
-        let data = try controller?.group.kill(stage: "M.X")
-     } catch {print(error)}
+         try controller?.reboot()
+         print("Controller rebooted")
+     } catch {
+         print(error)
+     }
      ````
     */
     func reboot() throws {
