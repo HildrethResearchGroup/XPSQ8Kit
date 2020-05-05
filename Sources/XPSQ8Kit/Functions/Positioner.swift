@@ -290,11 +290,8 @@ public extension XPSQ8Controller.PositionerController {
          - positioner: The name of the positioner
      
       - returns:
-         -  positionWindow:
-         - velocityWindow:
-         - checkingTime:
-         - meanPeriod:
-         - timeout:
+         -  userMinimumTarget
+         - userMaximumTarget
      
      # Example #
       ````
@@ -308,7 +305,7 @@ public extension XPSQ8Controller.PositionerController {
        ````
      */
      func getUserTravelLimits(positioner positionerName: String) throws -> (userMinimumTarget: Double, userMaximumTarget: Double) {
-        let command = "PositionerUserTravelLimitsGet(\(positionerName), Double *, Double *)"
+        let command = "PositionerUserTravelLimitsGet(\(positionerName), double *, double *)"
         try controller.communicator.write(string: command)
         let targets = try controller.communicator.read(as: (Double.self, Double.self))
         return (userMinimumTarget: targets.0, userMaximumTarget: targets.1)
@@ -380,10 +377,15 @@ public extension XPSQ8Controller.PositionerController.SGammaController {
       // Setup Controller
       let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
      
-      // use moveRelative function
-        do {
-         let data = try controller?.group.moveRelative(stage: "M.X", byDisplacement: 10)
-        } catch {print(error)}
+      do {
+          if let times = try controller?.positioner.SGamma.getPreviousMotionTimes(positioner: "M.X"){
+              print("setting time = \(times.0)")
+              print("settling time = \(times.1)")
+          }
+          print("Get previous motion times completed")
+      } catch {
+          print(error)
+      }
        ````
      */
      func getPreviousMotionTimes(positioner positionerName: String) throws -> (setting: Double, settling: Double) {
