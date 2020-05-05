@@ -106,12 +106,21 @@ public extension XPSQ8Controller.GroupController {
     /**
      Start home seach sequence on specified stage
      
-      Implements  the ```` add here ```` XPS function
+      This function initiates a home search for each positioner of the selected group.
+      The group must be initialized and the group must be in “NOT REFERENCED” state else this function returns the ERR_NOT_ALLOWED_ACTION (-22) error. If no error then the group status becomes “HOMING”.
+      The home search can fail due to:
+      a following error: ERR_FOLLOWING_ERROR (-25)
+      a ZM detection error: ERR_GROUP_HOME_SEARCH_ZM_ERROR (-49)
+      a motion done time out when a dynamic error of the positioner is detected during one of the moves during the home search process: ERR_GROUP_MOTION_DONE_TIMEOUT (-33)
+      a home search timeout when the complete (and complex) home search procedure was not executed in the allowed time: ERR_HOME_SEARCH_TIMEOUT (-28)
+      For all these errors, the group returns to the “NOTINIT” state.
+      After the home search sequence, each positioner error is checked. If an error is detected, the hardware status register is reset (motor on) and the positioner error is cleared before checking it again. If a positioner error is always present, ERR_TRAVEL_LIMITS (-35) is returned and the group becomes “NOTINIT”.
+      Once the home search is successful, the group is in “READY” state.
      
      - Author: Steven DiGregorio
 
      - parameters:
-       - stageName: The name of the stage that will be moved.
+       - groupName: The name of the stage group
      
      # Example #
      ````
@@ -123,8 +132,8 @@ public extension XPSQ8Controller.GroupController {
      } catch {print(error)}
      ````
     */
-    func homeSearch(stage stageName: String) throws {
-        let command = "GroupHomeSearch(\(stageName))"
+    func homeSearch(group groupName: String) throws {
+        let command = "GroupHomeSearch(\(groupName))"
         try controller.communicator.write(string: command)
         try controller.communicator.validateNoReturn()
     }
@@ -175,8 +184,11 @@ public extension XPSQ8Controller.GroupController {
      let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
      
      do {
-        try controller?.group.disableMotion(stage: "M.X")
-     } catch {print(error)}
+         try controller?.group.disableMotion(group: "M")
+         print("Motion disabled")
+     } catch {
+         print(error)
+     }
      ````
     */
     func disableMotion(group groupName: String) throws {
@@ -186,9 +198,10 @@ public extension XPSQ8Controller.GroupController {
     }
     
     /**
-     Set motion enable on selected group
-     
-      Implements  the ```` add here ```` XPS function
+     Enables a group in a DISABLE state to turn the motors on and to restart corrector loops.
+
+     Turns ON the motors and restarts the corrector servo loops. The group state becomes “READY”.
+     If the group is not in the “DISABLE” state then the “ERR_NOT_ALLOWED_ACTION (-22)” is returned.
      
      - Author: Steven DiGregorio
 
@@ -201,8 +214,11 @@ public extension XPSQ8Controller.GroupController {
      let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
      
      do {
-        try controller?.group.enableMotion(stage: "M.X")
-     } catch {print(error)}
+         try controller?.group.enableMotion(group: "M")
+         print("Motion enabled")
+     } catch {
+         print(error)
+     }
      ````
     */
     func enableMotion(group groupName: String) throws {
