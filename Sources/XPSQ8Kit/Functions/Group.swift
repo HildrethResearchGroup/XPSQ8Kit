@@ -306,9 +306,10 @@ public extension XPSQ8Controller.GroupController {
     }
 
     /**
-      Return group status
+     Returns the group status code
      
-      Implements  the ```` add here ```` XPS function
+      Returns the group status code. The group status codes are listed in the “Group status list” § 0.
+      The description of the group status code can be retrieved from the “GroupStatusStringGet” function.
      
      - Author: Steven DiGregorio
       
@@ -316,7 +317,7 @@ public extension XPSQ8Controller.GroupController {
           -  status: group status code
 
      - parameters:
-         - stageName: The name of the stage that will be moved.
+         - groupName: The name of the stage group
        
        # Example #
        ````
@@ -328,8 +329,8 @@ public extension XPSQ8Controller.GroupController {
        } catch {print(error)}
        ````
       */
-      func getStatus(stage stageName: String) throws -> Int {
-          let command = "GroupStatusGet(\(stageName), int *)"
+      func getStatus(group groupName: String) throws -> Int {
+          let command = "GroupStatusGet(\(groupName), int *)"
           try controller.communicator.write(string: command)
           let status = try controller.communicator.read(as: (Int.self))
           return (status)
