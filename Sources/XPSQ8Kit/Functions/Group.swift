@@ -459,35 +459,13 @@ public extension XPSQ8Controller.GroupController.JogController {
     /**
      Disable Jog mode on selected group.
      
-      Implements  the ```` add here ```` XPS function
+      Disables the Jog mode. To use this function, the group must be in the “JOGGING” state and all positioners must be idle (meaning velocity must be 0).
+      This function exits the “JOGGING” state and to returns to the “READY” state. If the group state is not in the “JOGGING” state or if the profiler velocity is not null then the error ERR_NOT_ALLOWED_ACTION (-22) is returned.
      
      - Author: Steven DiGregorio
      
      - parameters:
-        - stage: The name of the stage to have jog mode disabled.
-     
-     # Example #
-     ````
-
-     ````
-    */
-    func disable(stage stageName: String) throws {
-        // implements void GroupJogModeDisable(char GroupName[250])
-        // GroupJogModeDisable(M.X)
-        let message = "GroupJogModeDisable(\(stageName))"
-        try controller.communicator.write(string: message)
-        try controller.communicator.validateNoReturn()
-    }
-    
-    /**
-     Enable Jog mode on selected group.
-     
-      Implements  the ```` add here ```` XPS function
-     
-     - Author: Steven DiGregorio
-     
-     - parameters:
-        - stage: The name of the stage to have jog mode Enabled.
+        - group: The name of the stage to have jog mode disabled.
      
      # Example #
      ````
@@ -505,10 +483,45 @@ public extension XPSQ8Controller.GroupController.JogController {
      }
      ````
     */
-    func enable(stage stageName: String) throws {
+    func disable(group groupName: String) throws {
+        // implements void GroupJogModeDisable(char GroupName[250])
+        // GroupJogModeDisable(M.X)
+        let message = "GroupJogModeDisable(\(groupName))"
+        try controller.communicator.write(string: message)
+        try controller.communicator.validateNoReturn()
+    }
+    
+    /**
+     Enable Jog mode on selected group.
+     
+      Enables the Jog mode. To use this function, the group must be in the “READY” state and all positioners must be idle (meaning velocity must be 0).
+      This function goes to the “JOGGING” state. If the group state is not “READY”, ERR_NOT_ALLOWED_ACTION (-22) is returned.
+     
+     - Author: Steven DiGregorio
+     
+     - parameters:
+        - group: The name of the stage to have jog mode Enabled.
+     
+     # Example #
+     ````
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     
+     do {
+         if let current = try controller?.group.jog.getCurrent(stage: "M.X") {
+             let velocity = current.velocity
+             let acceleration = current.acceleration
+             print("Velocity = \(velocity)")
+             print("Acceleartion = \(acceleration)")
+         } else { print("current = nil") }
+     } catch {
+         print(error)
+     }
+     ````
+    */
+    func enable(group groupName: String) throws {
         // implements void GroupJogModeEnable(char GroupName[250])
         // GroupJogModeEnable(M.X)
-        let message = "GroupJogModeEnable(\(stageName))"
+        let message = "GroupJogModeEnable(\(groupName))"
         try controller.communicator.write(string: message)
         try controller.communicator.validateNoReturn()
     }
