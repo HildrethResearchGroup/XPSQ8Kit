@@ -142,6 +142,8 @@ public extension XPSQ8Controller.GroupController {
      
      # Example #
      ````
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+
      do {
          try controller?.group.kill(group: "M")
          print("Group killed")
@@ -159,12 +161,13 @@ public extension XPSQ8Controller.GroupController {
     /**
      Set motion disable on selected group
      
-      Implements  the ```` add here ```` XPS function
-
+      Turns OFF the motors, stops the corrector servo loop and disables the position compare mode if active. The group status becomes “DISABLE”.
+      If the group is not in the “READY” state then an ERR_NOT_ALLOWED_ACTION (- 22) is returned.
+     
      - Author: Steven DiGregorio
 
      - parameters:
-       - stageName: The name of the stage that will be moved.
+       - groupName: The name of the stage to disable
           
      # Example #
      ````
@@ -176,8 +179,8 @@ public extension XPSQ8Controller.GroupController {
      } catch {print(error)}
      ````
     */
-    func disableMotion(stage stageName: String) throws {
-        let command = "GroupMotionDisable(\(stageName))"
+    func disableMotion(group groupName: String) throws {
+        let command = "GroupMotionDisable(\(groupName))"
         try controller.communicator.write(string: command)
         try controller.communicator.validateNoReturn()
     }
@@ -190,7 +193,7 @@ public extension XPSQ8Controller.GroupController {
      - Author: Steven DiGregorio
 
      - parameters:
-       - stageName: The name of the stage that will be moved.
+       - groupName: The name of the stage that will be moved.
           
      # Example #
      ````
@@ -202,8 +205,8 @@ public extension XPSQ8Controller.GroupController {
      } catch {print(error)}
      ````
     */
-    func enableMotion(stage stageName: String) throws {
-        let command = "GroupMotionEnable(\(stageName))"
+    func enableMotion(group groupName: String) throws {
+        let command = "GroupMotionEnable(\(groupName))"
         try controller.communicator.write(string: command)
         try controller.communicator.validateNoReturn()
     }
