@@ -47,7 +47,7 @@ public extension XPSQ8Controller.PositionerController {
         -  scaling: Astrom & Hägglund based auto-scaling
     
      - Parameters:
-      - positioner: The name of the positioner that will be moved.
+      - positioner: The name of the positioner
     
     # Example #
      ````
@@ -215,7 +215,7 @@ public extension XPSQ8Controller.PositionerController {
      - Author: Steven DiGregorio
 
       - Parameters:
-         - positioner: The name of the positioner that will be moved.
+         - positioner: The name of the positioner
      
       - returns:
          -  positionWindow:
@@ -252,7 +252,7 @@ public extension XPSQ8Controller.PositionerController {
      - Author: Steven DiGregorio
 
       - Parameters:
-         - positioner: The name of the positioner that will be moved.
+         - positioner: The name of the positioner
      
       - returns:
          -  positionWindow:
@@ -298,10 +298,15 @@ public extension XPSQ8Controller.PositionerController {
       // Setup Controller
       let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
      
-      // use moveRelative function
-        do {
-         let data = try controller?.group.moveRelative(stage: "M.X", byDisplacement: 10)
-        } catch {print(error)}
+      do {
+          if let limits = try controller?.positioner.getUserTravelLimits(positioner: "M.X"){
+              print("Minimum target = \(limits.0)")
+              print("Maximum target = \(limits.1)")
+          }
+          print("Get user travel limits completed")
+      } catch {
+          print(error)
+      }
        ````
      */
      func getUserTravelLimits(positioner positionerName: String) throws -> (userMinimumTarget: Double, userMaximumTarget: Double) {
@@ -310,7 +315,6 @@ public extension XPSQ8Controller.PositionerController {
         let targets = try controller.communicator.read(as: (Double.self, Double.self))
         return (userMinimumTarget: targets.0, userMaximumTarget: targets.1)
      }
-
 }
 
 
@@ -325,7 +329,7 @@ public extension XPSQ8Controller.PositionerController.SGammaController {
      - Author: Steven DiGregorio
 
       - Parameters:
-         - positioner: The name of the positioner that will be moved.
+         - positioner: The name of the positioner
      
       - returns:
          -  velocity:
@@ -356,6 +360,44 @@ public extension XPSQ8Controller.PositionerController.SGammaController {
         try controller.communicator.write(string: command)
         let parameters = try controller.communicator.read(as: (Double.self, Double.self, Double.self, Double.self))
         return (velocity: parameters.0, acceleration: parameters.1, minimumTjerkTime: parameters.2, maximumTjerkTime: parameters.3)
+     }
+    
+    /**
+      Sets new motion values for the SGamma profiler
+     
+      This function defines the new SGamma profiler values that will be used in future displacements.
+     
+     - Author: Steven DiGregorio
+
+      - Parameters:
+        - positioner: The name of the positioner
+        - velocity: motion velocity (units/seconds)
+        - acceleration: motion acceleration (units/seconds^2)
+        - minimumJerkTime: Minimum jerk time (seconds)
+        - maximumJerkTime: Maximum jerk time (seconds)
+     
+     # Example #
+      ````
+      // Setup Controller
+      let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     
+      do {
+          if let params = try controller?.positioner.SGamma.getParameters(positioner: "M.X"){
+              print("velocity = \(params.0)")
+              print("acceleration = \(params.1)")
+              print("minimum T jerk time = \(params.2)")
+              print("maximum T jerk time = \(params.3)")
+          }
+          print("Get parameters completed")
+      } catch {
+          print(error)
+      }
+       ````
+     */
+     func setParameters(positioner positionerName: String, velocity: Double, acceleration: Double, minimumTjerkTime: Double, maximumTjerkTime: Double) throws {
+        let command = "PositionerSGammaParametersSet(\(positionerName, \(velocity), \(acceleration), \(minimumTjerkTime), \(maximumTjerkTime))"
+        try controller.communicator.write(string: command)
+        try controller.communicator.validateNoReturn()
      }
     
     /**
