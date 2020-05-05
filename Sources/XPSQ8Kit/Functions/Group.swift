@@ -130,7 +130,7 @@ public extension XPSQ8Controller.GroupController {
     }
     
     /**
-     Kill the group
+     Kills the selected group to go to “NOTINIT” status.
      
       Implements  the ```` add here ```` XPS function
      

@@ -231,8 +231,8 @@ public extension XPSQ8Controller {
       */
     func getHardwareDateAndTime(code: Int) throws -> String {
           let command = "HardwareDateAndTimeGet(char *)"
-          try controller.communicator.write(string: command)
-          let dateTime = try controller.communicator.read(as: (String.self))
+          try communicator.write(string: command)
+          let dateTime = try communicator.read(as: (String.self))
           return (dateTime)
       }
 }
