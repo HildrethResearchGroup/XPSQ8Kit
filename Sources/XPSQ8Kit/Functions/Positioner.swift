@@ -387,7 +387,7 @@ public extension XPSQ8Controller.PositionerController.SGammaController {
        ````
      */
      func getPreviousMotionTimes(positioner positionerName: String) throws -> (setting: Double, settling: Double) {
-        let command = "PositionerSGammaParametersGet(\(positionerName), double *, double *)"
+        let command = "PositionerSGammaPreviousMotionTimesGet(\(positionerName), double *, double *)"
         try controller.communicator.write(string: command)
         let times = try controller.communicator.read(as: (Double.self, Double.self))
         return (setting: times.0, settling: times.1)
