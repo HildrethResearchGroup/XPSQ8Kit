@@ -187,10 +187,15 @@ public extension XPSQ8Controller.PositionerController {
       // Setup Controller
       let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
      
-      // use moveRelative function
-        do {
-         let data = try controller?.group.moveRelative(stage: "M.X", byDisplacement: 10)
-        } catch {print(error)}
+      do {
+          if let params = try controller?.positioner.getMaximumVelocityAndAcceleration(positioner: "M.X"){
+              print("max velocity = \(params.0)")
+              print("max acceleration = \(params.1)")
+          }
+          print("Get maximums completed")
+      } catch {
+          print(error)
+      }
        ````
      */
      func getMaximumVelocityAndAcceleration(positioner positionerName: String) throws -> (velocity: Double, acceleration: Double) {
@@ -201,9 +206,11 @@ public extension XPSQ8Controller.PositionerController {
      }
     
     /**
-    Read motion done parameters
+      Gets the motion done parameters
      
-      Implements  the ```` add here ```` XPS function
+      This function returns the motion done parameters only for the “VelocityAndPositionWindow” MotionDone mode. If the MotionDone mode is defined as “Theoretical” then ERR_WRONG_OBJECT_TYPE (-8) is returned.
+     
+      The “MotionDoneMode” parameter from the stages.ini file defines the motion done mode. The motion done can be defined as “Theoretical” (the motion done mode is not used) or “VelocityAndPositionWindow”. For a more thorough description of the motion done mode, please refer to the XPS Motion Tutorial section Motion/Motion Done.
      
      - Author: Steven DiGregorio
 
@@ -229,16 +236,18 @@ public extension XPSQ8Controller.PositionerController {
        ````
      */
      func getMotionDone(positioner positionerName: String) throws -> (positionWindow: Double, velocityWindow: Double, checkingTime: Double, meanPeriod: Double, timeout: Double) {
-        let command = "PositionerMotionDoneGet(\(positionerName), Double *, Double *, Double *, Double *, Double *)"
+        let command = "PositionerMotionDoneGet(\(positionerName), double *, double *, double *, double *, double *)"
         try controller.communicator.write(string: command)
         let motionDone = try controller.communicator.read(as: (Double.self, Double.self, Double.self, Double.self, Double.self))
         return (positionWindow: motionDone.0, velocityWindow: motionDone.1, checkingTime: motionDone.2, meanPeriod: motionDone.3, timeout: motionDone.4)
      }
     
     /**
-    Return the stage parameter
+     Gets a stage parameter value from the stages.ini file
 
-      Implements  the ```` add here ```` XPS function
+      This function returns stage parameter values from the stages.ini file of a selected positioner.
+     
+      The positioner name is the stage name. And the parameter name is read in the section under this stage name.
      
      - Author: Steven DiGregorio
 
@@ -262,7 +271,7 @@ public extension XPSQ8Controller.PositionerController {
          let data = try controller?.group.moveRelative(stage: "M.X", byDisplacement: 10)
         } catch {print(error)}
        ````
-     */
+//     */
 //     func getStageParameter(positioner positionerName: String) throws -> String {
 //        let command = "PositionerStageParameterGet(\(positionerName), Double *, Double *, Double *, Double *, Double *)"
 //        try controller.communicator.write(string: command)
@@ -271,14 +280,14 @@ public extension XPSQ8Controller.PositionerController {
 //     }
     
     /**
-    Read user minimum target and user maximum target
+    Gets the user travel limits
      
-      Implements  the ```` add here ```` XPS function
+     This function returns the user-defined travel limits for the selected positioner.
      
      - Author: Steven DiGregorio
 
       - Parameters:
-         - positioner: The name of the positioner that will be moved.
+         - positioner: The name of the positioner
      
       - returns:
          -  positionWindow:
