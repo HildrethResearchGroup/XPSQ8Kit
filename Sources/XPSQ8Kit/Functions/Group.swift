@@ -306,7 +306,7 @@ public extension XPSQ8Controller.GroupController {
     }
 
     /**
-     Returns the group status code
+      Returns the group status code
      
       Returns the group status code. The group status codes are listed in the “Group status list” § 0.
       The description of the group status code can be retrieved from the “GroupStatusStringGet” function.
@@ -325,8 +325,13 @@ public extension XPSQ8Controller.GroupController {
        let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
        
        do {
-          let data = try controller?.group.enableMotion(stage: "M.X")
-       } catch {print(error)}
+           if let status = try controller?.group.getStatus(group: "M"){
+               print("Status code: \(status)")
+           }
+           print("get status completed")
+       } catch {
+           print(error)
+       }
        ````
       */
       func getStatus(group groupName: String) throws -> Int {
@@ -337,9 +342,10 @@ public extension XPSQ8Controller.GroupController {
       }
     
     /**
-       Return the group status string corresponding to the group status code
+       Get the group state description from a group state code.
      
-      Implements  the ```` add here ```` XPS function
+       This function returns the group state description corresponding to a group state code (see § 0 Group state list).
+       If the group state code is not referenced then the “Error: undefined status” message will be returned.
      
      - Author: Steven DiGregorio
       
@@ -355,8 +361,13 @@ public extension XPSQ8Controller.GroupController {
        let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
        
        do {
-          let data = try controller?.group.enableMotion(stage: "M.X")
-       } catch {print(error)}
+           if let status = try controller?.group.getStatusString(code: 12){
+               print("Status: \(status)")
+           }
+           print("get status code completed")
+       } catch {
+           print(error)
+       }
        ````
       */
     func getStatusString(code: Int) throws -> String {
