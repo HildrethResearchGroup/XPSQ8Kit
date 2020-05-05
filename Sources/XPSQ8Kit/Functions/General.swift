@@ -204,9 +204,9 @@ public extension XPSQ8Controller {
     }
     
     /**
-     Restart the application
+     Restart the controller's application
      
-      Implements  the ```` add here ```` XPS function
+     This function allows restarting controller applications without hardware reboot.
      
      - Author: Steven DiGregorio
      
@@ -216,8 +216,11 @@ public extension XPSQ8Controller {
      let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
      
      do {
-        let data = try controller?.group.kill(stage: "M.X")
-     } catch {print(error)}
+         try controller?.restart()
+         print("Application restarted")
+     } catch {
+         print(error)
+     }
      ````
     */
     func restart() throws {
@@ -229,10 +232,10 @@ public extension XPSQ8Controller {
     /**
        Return the hardware date and time
      
-      Implements  the ```` add here ```` XPS function
+        This function returns the current date and time of the XPS controller with the format “WeekDay Month Day Hour:Minute:Second Year “, for example “Tue Jan 15 10:28:06 2008”.
      
      - Author: Steven DiGregorio
-      
+     
        - returns:
           -  dateTime: date and time of hardware
 
@@ -247,7 +250,7 @@ public extension XPSQ8Controller {
        } catch {print(error)}
        ````
       */
-    func getHardwareDateAndTime(code: Int) throws -> String {
+    func getHardwareDateAndTime() throws -> String {
           let command = "HardwareDateAndTimeGet(char *)"
           try communicator.write(string: command)
           let dateTime = try communicator.read(as: (String.self))
