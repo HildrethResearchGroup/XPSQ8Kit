@@ -34,7 +34,7 @@ public extension XPSQ8Controller.PositionerController {
 }
 
 // MARK: - Positioner Functions
-public extension XPSQ8Controller.GroupController {
+public extension XPSQ8Controller.PositionerController {
     
     /**
      Astrom & Hägglund based auto-scaling
@@ -68,15 +68,17 @@ public extension XPSQ8Controller.GroupController {
     }
     
     /**
-     Disable the backlash
+     Disables the backlash compensation
      
-      Implements  the ```` add here ```` XPS function
+      This function disables the backlash compensation. For a more thorough description of the backlash compensation, please refer to the XPS Motion Tutorial section Compensation/Backlash compensation.
+      In the “stages.ini” file the parameter “Backlash” will enable or disable this feature as follows:
+      Backlash = 0 —> Disable backlash Backlash > 0 —> Enable backlash
      
      - Author: Steven DiGregorio
     
      - Parameters:
-      - positioner: The name of the positioner that will be moved.
-    
+      - positioner: The name of the positioner
+
     # Example #
      ````
      // Setup Controller
