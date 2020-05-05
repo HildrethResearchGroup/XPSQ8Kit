@@ -321,9 +321,9 @@ public extension XPSQ8Controller.PositionerController {
 public extension XPSQ8Controller.PositionerController.SGammaController {
     
     /**
-    Read dynamic parameters for one axe of a group for a future displacement
+      Gets the current motion values from the SGamma profiler
      
-      Implements  the ```` add here ```` XPS function
+       This function gets the current SGamma profiler values that are used in displacements.
      
      - Author: Steven DiGregorio
 
@@ -348,7 +348,7 @@ public extension XPSQ8Controller.PositionerController.SGammaController {
        ````
      */
      func getParameters(positioner positionerName: String) throws -> (velocity: Double, acceleration: Double, minimumTjerkTime: Double, maximumTjerkTime: Double) {
-        let command = "PositionerSGammaParametersGet(\(positionerName), Double *, Double *, Double *, Double *)"
+        let command = "PositionerSGammaParametersGet(\(positionerName), double *, double *, double *, double *)"
         try controller.communicator.write(string: command)
         let parameters = try controller.communicator.read(as: (Double.self, Double.self, Double.self, Double.self))
         return (velocity: parameters.0, acceleration: parameters.1, minimumTjerkTime: parameters.2, maximumTjerkTime: parameters.3)
