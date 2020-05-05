@@ -472,12 +472,8 @@ public extension XPSQ8Controller.GroupController.JogController {
      let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
      
      do {
-         if let current = try controller?.group.jog.getCurrent(stage: "M.X") {
-             let velocity = current.velocity
-             let acceleration = current.acceleration
-             print("Velocity = \(velocity)")
-             print("Acceleartion = \(acceleration)")
-         } else { print("current = nil") }
+         try controller?.group.jog.disable(group: "M")
+         print("Jog disabled")
      } catch {
          print(error)
      }
@@ -507,12 +503,8 @@ public extension XPSQ8Controller.GroupController.JogController {
      let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
      
      do {
-         if let current = try controller?.group.jog.getCurrent(stage: "M.X") {
-             let velocity = current.velocity
-             let acceleration = current.acceleration
-             print("Velocity = \(velocity)")
-             print("Acceleartion = \(acceleration)")
-         } else { print("current = nil") }
+         try controller?.group.jog.enable(group: "M")
+         print("Jog enabled")
      } catch {
          print(error)
      }
@@ -527,15 +519,18 @@ public extension XPSQ8Controller.GroupController.JogController {
     }
     
     /**
-     Returns a tuple containing the parameters for velocity and acceration set for the specified stage.
+     Returns the velocity and acceleration set by “GroupJogParametersSet” for a specific stage
      
-      Implements  the ````add here```` XPS function
+      This function returns the velocity and the acceleration set by the user to use the jog mode for one positioner or for all positioners of the selected group.
+      So, this function must be called when the group is in “JOGGING” mode else the velocity and the acceleration will be null.
+      To change the velocity and the acceleration on the fly, in the jog mode, call the “GroupJogParametersSet” function.
      
      - Author: Steven DiGregorio
      
      - returns:
         - velocity:  The set velocity parameter in mm/s of the specified stage.
         - acceleration:   The set acceration parameter in mm/s^2 of the specified stage.
+     
      - parameters:
         - stage: The name of the stage to find the parameters of.
      
@@ -544,12 +539,11 @@ public extension XPSQ8Controller.GroupController.JogController {
      let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
      
      do {
-         if let parameters = try controller?.group.jog.getParameters(stage: "M.X") {
-             let velocity = parameters.velocity
-             let acceleration = parameters.acceleration
-             print("Velocity = \(velocity)")
-             print("Acceleartion = \(acceleration)")
-         } else { print("parameters = nil") }
+         if let params = try controller?.group.jog.getParameters(stage: "M.X"){
+             print("set velocity = \(params.0)")
+             print("set acceleration = \(params.1)")
+         }
+         print("Get job parameters completed")
      } catch {
          print(error)
      }
