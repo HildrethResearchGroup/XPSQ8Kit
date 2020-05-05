@@ -395,7 +395,7 @@ public extension XPSQ8Controller.PositionerController.SGammaController {
        ````
      */
      func setParameters(positioner positionerName: String, velocity: Double, acceleration: Double, minimumTjerkTime: Double, maximumTjerkTime: Double) throws {
-        let command = "PositionerSGammaParametersSet(\(positionerName, \(velocity), \(acceleration), \(minimumTjerkTime), \(maximumTjerkTime))"
+        let command = "PositionerSGammaParametersSet(\(positionerName), \(velocity), \(acceleration), \(minimumTjerkTime), \(maximumTjerkTime))"
         try controller.communicator.write(string: command)
         try controller.communicator.validateNoReturn()
      }
