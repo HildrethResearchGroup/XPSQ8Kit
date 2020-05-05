@@ -378,17 +378,15 @@ public extension XPSQ8Controller.GroupController {
       }
     
     /**
-       Return the current velocity of the selected stage
-     
-      Implements  the ```` add here ```` XPS function
-     
+      Returns the current velocity for one or all positioners of the selected group.
+          
      - Author: Steven DiGregorio
       
        - returns:
           -  velocity: velocity of selected stage
 
        - parameters:
-         - stageName: The name of the stage that will be moved.
+         - stageName: The name of the stage
 
        # Example #
        ````
@@ -396,8 +394,13 @@ public extension XPSQ8Controller.GroupController {
        let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
        
        do {
-          let data = try controller?.group.enableMotion(stage: "M.X")
-       } catch {print(error)}
+           if let velocity = try controller?.group.getCurrentVelocity(stage: "M.X"){
+               print("velocity = \(velocity)")
+           }
+           print("Get velocity completed")
+       } catch {
+           print(error)
+       }
        ````
       */
     func getCurrentVelocity(stage stageName: String) throws -> Double {
