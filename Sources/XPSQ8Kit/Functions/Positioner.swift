@@ -37,9 +37,11 @@ public extension XPSQ8Controller.PositionerController {
 public extension XPSQ8Controller.PositionerController {
     
     /**
-     Astrom & Hägglund based auto-scaling
+     Auto-scaling process for determining the stage scaling acceleration
      
-      Implements  the ```` add here ```` XPS function
+      The function executes an auto-scaling process and returns the calculated scaling acceleration. The selected group must be in “NOTINIT” state, else ERR_NOT_ALLOWED_ACTION (-22) is returned. More information in the programmer manual
+     
+     Takes a long time to return a value
      
      - Author: Steven DiGregorio
      
@@ -61,7 +63,7 @@ public extension XPSQ8Controller.PositionerController {
       ````
     */
     func accelerationAutoScaling(positioner positionerName: String) throws -> Double {
-        let command = "PositionerAccelerationAutoScaling(\(positionerName), Double *)"
+        let command = "PositionerAccelerationAutoScaling(\(positionerName), double *)"
         try controller.communicator.write(string: command)
         let scaling = try controller.communicator.read(as: (Double.self))
         return scaling
@@ -382,13 +384,8 @@ public extension XPSQ8Controller.PositionerController.SGammaController {
       let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
      
       do {
-          if let params = try controller?.positioner.SGamma.getParameters(positioner: "M.X"){
-              print("velocity = \(params.0)")
-              print("acceleration = \(params.1)")
-              print("minimum T jerk time = \(params.2)")
-              print("maximum T jerk time = \(params.3)")
-          }
-          print("Get parameters completed")
+          try controller?.positioner.SGamma.setParameters(positioner: "M.X", velocity: 1, acceleration: 1, minimumTjerkTime: 1, maximumTjerkTime: 1)
+          print("Set SGamma parameters completed")
       } catch {
           print(error)
       }
