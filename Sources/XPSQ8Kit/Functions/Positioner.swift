@@ -45,11 +45,11 @@ public extension XPSQ8Controller.PositionerController {
      
      - Author: Steven DiGregorio
      
-     - returns:
+     - Returns:
         -  scaling: Astrom & Hägglund based auto-scaling
     
      - Parameters:
-      - positioner: The name of the positioner
+       - positioner: The name of the positioner
     
     # Example #
      ````
@@ -83,7 +83,7 @@ public extension XPSQ8Controller.PositionerController {
      - Author: Steven DiGregorio
     
      - Parameters:
-      - positioner: The name of the positioner
+       - positioner: The name of the positioner
 
     # Example #
      ````
@@ -232,13 +232,6 @@ public extension XPSQ8Controller.PositionerController {
      
      # Example #
       ````
-      // Setup Controller
-      let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
-     
-      // use moveRelative function
-        do {
-         let data = try controller?.group.moveRelative(stage: "M.X", byDisplacement: 10)
-        } catch {print(error)}
        ````
      */
      func getMotionDone(positioner positionerName: String) throws -> (positionWindow: Double, velocityWindow: Double, checkingTime: Double, meanPeriod: Double, timeout: Double) {
@@ -338,10 +331,10 @@ public extension XPSQ8Controller.PositionerController.SGammaController {
          - positioner: The name of the positioner
      
       - returns:
-         -  velocity:
-         - acceleration:
-         - minumumTjerkTime:
-         - maximumTjerkTime:
+         -  velocity
+         - acceleration
+         - minumumTjerkTime
+         - maximumTjerkTime
      
      # Example #
       ````

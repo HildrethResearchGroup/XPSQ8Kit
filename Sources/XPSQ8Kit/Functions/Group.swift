@@ -109,10 +109,11 @@ public extension XPSQ8Controller.GroupController {
       This function initiates a home search for each positioner of the selected group.
       The group must be initialized and the group must be in “NOT REFERENCED” state else this function returns the ERR_NOT_ALLOWED_ACTION (-22) error. If no error then the group status becomes “HOMING”.
       The home search can fail due to:
-      a following error: ERR_FOLLOWING_ERROR (-25)
-      a ZM detection error: ERR_GROUP_HOME_SEARCH_ZM_ERROR (-49)
-      a motion done time out when a dynamic error of the positioner is detected during one of the moves during the home search process: ERR_GROUP_MOTION_DONE_TIMEOUT (-33)
-      a home search timeout when the complete (and complex) home search procedure was not executed in the allowed time: ERR_HOME_SEARCH_TIMEOUT (-28)
+      1) a following error: ERR_FOLLOWING_ERROR (-25)
+      2) a ZM detection error: ERR_GROUP_HOME_SEARCH_ZM_ERROR (-49)
+      3) a motion done time out when a dynamic error of the positioner is detected during one of the moves during the home search process: ERR_GROUP_MOTION_DONE_TIMEOUT (-33)
+      4) a home search timeout when the complete (and complex) home search procedure was not executed in the allowed time: ERR_HOME_SEARCH_TIMEOUT (-28)
+     
       For all these errors, the group returns to the “NOTINIT” state.
       After the home search sequence, each positioner error is checked. If an error is detected, the hardware status register is reset (motor on) and the positioner error is cleared before checking it again. If a positioner error is always present, ERR_TRAVEL_LIMITS (-35) is returned and the group becomes “NOTINIT”.
       Once the home search is successful, the group is in “READY” state.
@@ -272,13 +273,16 @@ public extension XPSQ8Controller.GroupController {
      Aborts the motion or the jog in progress for a group or a positioner.
      
       This function aborts a motion or a jog in progress. The group state must be “MOVING” or “JOGGING” else the “ERR_NOT_ALLOWED_ACTION (-22)” is returned.
+     
       For a group:
-      If the group status is “MOVING”, this function stops all motion in progress.
-      If the group status is “JOGGING”, this function stops all “jog” motions in progress and disables the jog mode. After this “group move abort” action, the group status becomes “READY”.
+      1) If the group status is “MOVING”, this function stops all motion in progress.
+      2) If the group status is “JOGGING”, this function stops all “jog” motions in progress and disables the jog mode. After this “group move abort” action, the group status becomes “READY”.
+     
       For a positioner:
-      If the group status is “MOVING”, this function stops the motion of the selected positioner.
-      If the group status is “JOGGING”, this function stops the “jog” motion of the selected positioner.
-      If the positioner is idle, an ERR_NOT_ALLOWED_ACTION (-22) is returned.
+      1) If the group status is “MOVING”, this function stops the motion of the selected positioner.
+      2) If the group status is “JOGGING”, this function stops the “jog” motion of the selected positioner.
+      3) If the positioner is idle, an ERR_NOT_ALLOWED_ACTION (-22) is returned.
+     
       After this “positioner move abort” action, if all positioners are idle then the group status becomes “READY”, else the group stays in the same state.
      
      - Author: Steven DiGregorio
@@ -364,7 +368,7 @@ public extension XPSQ8Controller.GroupController {
            if let status = try controller?.group.getStatusString(code: 12){
                print("Status: \(status)")
            }
-           print("get status code completed")
+           print("get status completed")
        } catch {
            print(error)
        }
@@ -465,7 +469,7 @@ public extension XPSQ8Controller.GroupController.JogController {
      - Author: Steven DiGregorio
      
      - parameters:
-        - group: The name of the stage to have jog mode disabled.
+        - group: The name of the stage
      
      # Example #
      ````
@@ -494,7 +498,7 @@ public extension XPSQ8Controller.GroupController.JogController {
      - Author: Steven DiGregorio
      
      - parameters:
-        - group: The name of the stage to have jog mode Enabled.
+        - group: The name of the stage
      
      # Example #
      ````

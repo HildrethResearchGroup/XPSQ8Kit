@@ -230,14 +230,14 @@ public extension XPSQ8Controller {
     }
     
     /**
-       Return the hardware date and time
+       Returns the hardware date and time
      
         This function returns the current date and time of the XPS controller with the format “WeekDay Month Day Hour:Minute:Second Year “, for example “Tue Jan 15 10:28:06 2008”.
      
      - Author: Steven DiGregorio
      
        - returns:
-          -  dateTime: date and time of hardware
+          -  date and time of hardware
 
        
        # Example #
