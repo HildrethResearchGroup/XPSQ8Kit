@@ -128,8 +128,11 @@ public extension XPSQ8Controller.GroupController {
      let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
      
      do {
-        let data = try controller?.group.homeSearch(stage: "M.X")
-     } catch {print(error)}
+         try controller?.group.homeSearch(group: "M")
+         print("Home Search completed")
+     } catch {
+         print(error)
+     }
      ````
     */
     func homeSearch(group groupName: String) throws {
@@ -228,17 +231,20 @@ public extension XPSQ8Controller.GroupController {
     }
     
     /**
-     Return or group positioner status
+     Returns the motion status for one or all positioners of the selected group.
      
-      Implements  the ```` add here ```` XPS function
+      Returns the motion status for one or all positioners of the selected group.
+      The motion status possible values are :
+      0 : Not moving state (group status in NOT_INIT, NOT_REF or READY).
+      1 : Busy state (positioner in moving, homing, referencing, spinning, analog tracking, trajectory, encoder calibrating, slave mode).
      
      - Author: Steven DiGregorio
     
      - returns:
-        -  status: group of positioner status
+        -  status: group or positioner status
 
      - parameters:
-       - stageName: The name of the stage that will be moved.
+       - stageName: The name of the stage or group
      
      # Example #
      ````
@@ -246,8 +252,13 @@ public extension XPSQ8Controller.GroupController {
      let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
      
      do {
-        let data = try controller?.group.enableMotion(stage: "M.X")
-     } catch {print(error)}
+         if let status = try controller?.group.getMotionStatus(stage: "M.X"){
+             print("Status: \(status)")
+         }
+         print("get motion status completed")
+     } catch {
+         print(error)
+     }
      ````
     */
     func getMotionStatus(stage stageName: String) throws -> Int {
