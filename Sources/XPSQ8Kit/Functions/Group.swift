@@ -120,7 +120,7 @@ public extension XPSQ8Controller.GroupController {
      - Author: Steven DiGregorio
 
      - parameters:
-       - groupName: The name of the stage group
+       - group: The name of the stage group
      
      # Example #
      ````
@@ -150,7 +150,7 @@ public extension XPSQ8Controller.GroupController {
      - Author: Steven DiGregorio
 
      - parameters:
-       - groupName: The name of the stage group
+       - group: The name of the stage group
      
      # Example #
      ````
@@ -179,7 +179,7 @@ public extension XPSQ8Controller.GroupController {
      - Author: Steven DiGregorio
 
      - parameters:
-       - groupName: The name of the stage to disable
+       - group: The name of the stage to disable
           
      # Example #
      ````
@@ -209,7 +209,7 @@ public extension XPSQ8Controller.GroupController {
      - Author: Steven DiGregorio
 
      - parameters:
-       - groupName: The name of the stage that will be moved.
+       - group: The name of the stage that will be moved.
           
      # Example #
      ````
@@ -244,7 +244,7 @@ public extension XPSQ8Controller.GroupController {
         -  status: group or positioner status
 
      - parameters:
-       - stageName: The name of the stage or group
+       - stage: The name of the stage or group
      
      # Example #
      ````
@@ -284,7 +284,7 @@ public extension XPSQ8Controller.GroupController {
      - Author: Steven DiGregorio
 
      - parameters:
-       - stageName: The name of the stage or group.
+       - stage: The name of the stage or group.
      
      # Example #
      ````
@@ -317,7 +317,7 @@ public extension XPSQ8Controller.GroupController {
           -  status: group status code
 
      - parameters:
-         - groupName: The name of the stage group
+         - group: The name of the stage group
        
        # Example #
        ````
@@ -386,7 +386,7 @@ public extension XPSQ8Controller.GroupController {
           -  velocity: velocity of selected stage
 
        - parameters:
-         - stageName: The name of the stage
+         - stage: The name of the stage
 
        # Example #
        ````

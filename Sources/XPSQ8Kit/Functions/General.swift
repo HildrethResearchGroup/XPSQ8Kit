@@ -246,8 +246,13 @@ public extension XPSQ8Controller {
        let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
        
        do {
-          let data = try controller?.group.enableMotion(stage: "M.X")
-       } catch {print(error)}
+           if let dateAndTime = try controller?.getHardwareDateAndTime(){
+               print("date and time = \(dateAndTime)")
+           }
+           print("Get date and time completed")
+       } catch {
+           print(error)
+       }
        ````
       */
     func getHardwareDateAndTime() throws -> String {
