@@ -269,14 +269,22 @@ public extension XPSQ8Controller.GroupController {
     }
     
     /**
-     Abort a move
+     Aborts the motion or the jog in progress for a group or a positioner.
      
-      Implements  the ```` add here ```` XPS function
+      This function aborts a motion or a jog in progress. The group state must be “MOVING” or “JOGGING” else the “ERR_NOT_ALLOWED_ACTION (-22)” is returned.
+      For a group:
+      If the group status is “MOVING”, this function stops all motion in progress.
+      If the group status is “JOGGING”, this function stops all “jog” motions in progress and disables the jog mode. After this “group move abort” action, the group status becomes “READY”.
+      For a positioner:
+      If the group status is “MOVING”, this function stops the motion of the selected positioner.
+      If the group status is “JOGGING”, this function stops the “jog” motion of the selected positioner.
+      If the positioner is idle, an ERR_NOT_ALLOWED_ACTION (-22) is returned.
+      After this “positioner move abort” action, if all positioners are idle then the group status becomes “READY”, else the group stays in the same state.
      
      - Author: Steven DiGregorio
 
      - parameters:
-       - stageName: The name of the stage that will be moved.
+       - stageName: The name of the stage or group.
      
      # Example #
      ````
@@ -284,8 +292,11 @@ public extension XPSQ8Controller.GroupController {
      let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
      
      do {
-        let data = try controller?.group.enableMotion(stage: "M.X")
-     } catch {print(error)}
+         try controller?.group.abortMove(stage: "M.X")
+         print("Move aborted")
+     } catch {
+         print(error)
+     }
      ````
     */
     func abortMove(stage stageName: String) throws {
