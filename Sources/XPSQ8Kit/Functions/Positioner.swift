@@ -56,10 +56,14 @@ public extension XPSQ8Controller.PositionerController {
      // Setup Controller
      let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
     
-     // use moveRelative function
-       do {
-        let data = try controller?.group.moveRelative(stage: "M.X", byDisplacement: 10)
-       } catch {print(error)}
+     do {
+         if let scaling = try controller?.positioner.accelerationAutoScaling(positioner: "M.X"){
+             print("scaling = \(scaling)")
+         }
+         print("Auto-scaling complete")
+     } catch {
+         print(error)
+     }
       ````
     */
     func accelerationAutoScaling(positioner positionerName: String) throws -> Double {

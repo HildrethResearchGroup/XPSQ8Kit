@@ -28,22 +28,16 @@ public extension XPSQ8Controller.TCLController {
     /**
      Kill TCL task
      
-      Implements  the ```` add here ```` XPS function
+      This function kills a running TCL script selected using its task name. The task name is a user designation for the TCL script in execution.
      
      - Author: Steven DiGregorio
     
      - Parameters:
-        - positioner: The name of the positioner that will be moved.
+        - taskName: Name of the task
     
     # Example #
      ````
-     // Setup Controller
-     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
-    
-     // use moveRelative function
-       do {
-        let data = try controller?.group.moveRelative(stage: "M.X", byDisplacement: 10)
-       } catch {print(error)}
+
       ````
     */
     func killScript(task taskName: String) throws {
@@ -53,24 +47,24 @@ public extension XPSQ8Controller.TCLController {
     }
     
     /**
-     Kill all TCL tasks
+     Kills all running TCL scripts
      
-      Implements  the ```` add here ```` XPS function
+      This function kills all running TCL scripts
      
      - Author: Steven DiGregorio
     
-     - Parameters:
-        - positioner: The name of the positioner that will be moved.
     
     # Example #
      ````
      // Setup Controller
      let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
     
-     // use moveRelative function
-       do {
-        let data = try controller?.group.moveRelative(stage: "M.X", byDisplacement: 10)
-       } catch {print(error)}
+     do {
+         try controller?.TCL.killAllScripts()
+         print("All TCL tasks killed")
+     } catch {
+         print(error)
+     }
       ````
     */
     func killAllScripts() throws {
