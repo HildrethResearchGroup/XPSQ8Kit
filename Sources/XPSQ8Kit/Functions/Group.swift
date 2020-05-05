@@ -566,14 +566,16 @@ public extension XPSQ8Controller.GroupController.JogController {
 // MARK: - Group.Position Functions
 public extension XPSQ8Controller.GroupController.PositionController {
     /**
-     Returns the current position of the specified stage.
+     Returns the current position for one or all positioners of the selected group.
      
-      Implements  the ````add here```` XPS function
+      Returns the current position for one or all positioners of the selected group. The current position is defined as:
+      CurrentPosition = SetpointPosition - FollowingError
      
      - Author: Steven DiGregorio
      
      - returns:
         - currentEncoderPosition: current encoder position of the specified stage
+     
      - parameters:
         - stage: The name of the stage to find the positon of
      
@@ -582,12 +584,10 @@ public extension XPSQ8Controller.GroupController.PositionController {
      let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
      
      do {
-         if let parameters = try controller?.group.jog.getParameters(stage: "M.X") {
-             let velocity = parameters.velocity
-             let acceleration = parameters.acceleration
-             print("Velocity = \(velocity)")
-             print("Acceleartion = \(acceleration)")
-         } else { print("parameters = nil") }
+         if let position = try controller?.group.position.getCurrent(stage: "M.X"){
+             print("position = \(position)")
+         }
+         print("Get position completed")
      } catch {
          print(error)
      }
