@@ -341,10 +341,17 @@ public extension XPSQ8Controller.PositionerController.SGammaController {
       // Setup Controller
       let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
      
-      // use moveRelative function
-        do {
-         let data = try controller?.group.moveRelative(stage: "M.X", byDisplacement: 10)
-        } catch {print(error)}
+      do {
+          if let params = try controller?.positioner.SGamma.getParameters(positioner: "M.X"){
+              print("velocity = \(params.0)")
+              print("acceleration = \(params.1)")
+              print("minimum T jerk time = \(params.2)")
+              print("maximum T jerk time = \(params.3)")
+          }
+          print("Get parameters completed")
+      } catch {
+          print(error)
+      }
        ````
      */
      func getParameters(positioner positionerName: String) throws -> (velocity: Double, acceleration: Double, minimumTjerkTime: Double, maximumTjerkTime: Double) {
@@ -355,9 +362,9 @@ public extension XPSQ8Controller.PositionerController.SGammaController {
      }
     
     /**
-    Read setting time and settling time
+    Gets the motion and the settling time
      
-      Implements  the ```` add here ```` XPS function
+      This function returns the motion (setting) and settling times from the previous motion. The motion time represents the defined time to complete the previous displacement. The settling time represents the effective settling time for a motion done.
      
      - Author: Steven DiGregorio
 
@@ -365,10 +372,8 @@ public extension XPSQ8Controller.PositionerController.SGammaController {
          - positioner: The name of the positioner that will be moved.
      
       - returns:
-         -  velocity:
-         - acceleration:
-         - minumumTjerkTime:
-         - maximumTjerkTime:
+         - settingTime
+         - settlingTime
      
      # Example #
       ````
@@ -382,7 +387,7 @@ public extension XPSQ8Controller.PositionerController.SGammaController {
        ````
      */
      func getPreviousMotionTimes(positioner positionerName: String) throws -> (setting: Double, settling: Double) {
-        let command = "PositionerSGammaParametersGet(\(positionerName), Double *, Double *)"
+        let command = "PositionerSGammaParametersGet(\(positionerName), double *, double *)"
         try controller.communicator.write(string: command)
         let times = try controller.communicator.read(as: (Double.self, Double.self))
         return (setting: times.0, settling: times.1)
