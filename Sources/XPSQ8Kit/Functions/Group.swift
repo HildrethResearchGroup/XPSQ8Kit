@@ -469,6 +469,8 @@ public extension XPSQ8Controller.GroupController.JogController {
         return (velocity: currentJog.0, acceleration: currentJog.1)
     }
     
+    
+    
     /**
      Disable Jog mode on selected group.
      
@@ -478,7 +480,7 @@ public extension XPSQ8Controller.GroupController.JogController {
      - Author: Steven DiGregorio
      
      - parameters:
-        - group: The name of the stage
+        - group: The name of the stage  group
      
      # Example #
      ````
@@ -497,6 +499,7 @@ public extension XPSQ8Controller.GroupController.JogController {
         try controller.communicator.write(string: message)
         try controller.communicator.validateNoReturn()
     }
+    
     
     /**
      Enable Jog mode on selected group.

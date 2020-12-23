@@ -426,11 +426,12 @@ public extension StageGroup {
 // MARK: - Jog Functions
 public extension StageGroup {
     
-    
     /**
      Returns a tuple containing the current velocity and acceration of the specified stage.
      
       Implements  the ````void GatheringCurrentNumberGet(int* CurrentNumber, int* MaximumSamplesNumber))```` XPS function at the Stage Group through the Controller getCurrent function.
+     
+      - Authors: Owen Hildreth
      
      - returns:
         - velocity:  The current velocity in mm/s of the specified stage.
@@ -463,5 +464,34 @@ public extension StageGroup {
         let currentVelocityAndAcceleration = try controller?.group.jog.getCurrent(stage: completeStageName)
         return currentVelocityAndAcceleration
     }
+    
+    
+    /**
+     Disable Jog mode on selected group.
+     
+      Disables the Jog mode. To use this function, the group must be in the “JOGGING” state and all positioners must be idle (meaning velocity must be 0).
+      This function exits the “JOGGING” state and to returns to the “READY” state. If the group state is not in the “JOGGING” state or if the profiler velocity is not null then the error ERR_NOT_ALLOWED_ACTION (-22) is returned.
+     
+     - Author: Owen Hildreth
+
+     
+     # Example #
+     ````
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     let stageGroup = StageGroup(controller: controller, stageGroupName: "M")
+     let stage = Stage(stageGroup: stageGroup, stageName: "X")
+     
+     do {
+         try stageGroup.disableJog()
+     } catch {
+         print(error)
+     }
+     ````
+    */
+    func disableJog() throws {
+        try controller?.group.jog.disable(group: self.stageGroupName)
+    }
+    
+    
 }
 
