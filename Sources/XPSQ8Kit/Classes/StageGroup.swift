@@ -170,6 +170,32 @@ public extension StageGroup {
     }
     
     
+    /**
+     Set motion disable on selected group
+     
+      Turns OFF the motors, stops the corrector servo loop and disables the position compare mode if active. The group status becomes “DISABLE”.
+      If the group is not in the “READY” state then an ERR_NOT_ALLOWED_ACTION (- 22) is returned.
+     
+     - Author: Owen Hildreth
+     
+     # Example #
+     ````
+     // Setup Controller
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     let stageGroup = StageGroup(controller: controller, stageGroupName: "M")
+     let stage = Stage(stageGroup: stageGroup, stageName: "X")
+     
+     do {
+         try stageGroup.disableMotion()
+         print("Motion Disabled.")
+     } catch {
+         print(error)
+     }
+     ````
+    */
+    func disableMotion() throws {
+        try self.controller?.group.disableMotion(group: stageGroupName)
+    }
     
     
     
