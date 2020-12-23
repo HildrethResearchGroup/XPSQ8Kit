@@ -262,8 +262,8 @@ public extension XPSQ8Controller.GroupController {
      }
      ````
     */
-    func getMotionStatus(stage stageName: String) throws -> Int {
-        let command = "GroupMotionStatusGet(\(stageName), int *)"
+    func getMotionStatus(stageOrGroupName name: String) throws -> Int {
+        let command = "GroupMotionStatusGet(\(name), int *)"
         try controller.communicator.write(string: command)
         let status = try controller.communicator.read(as: (Int.self))
         return status

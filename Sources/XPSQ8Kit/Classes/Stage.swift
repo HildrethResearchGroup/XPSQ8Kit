@@ -135,6 +135,41 @@ public extension Stage {
     func moveAbsolute(toLocation: Double) throws {
         try self.stageGroup.moveAbsolute(stage: self, toLocation: toLocation)
     }
+    
+    /**
+     Returns the motion status for the  stage
+     
+      Returns the motion status for one or all positioners of the selected group.
+      The motion status possible values are :
+      0 : Not moving state (group status in NOT_INIT, NOT_REF or READY).
+      1 : Busy state (positioner in moving, homing, referencing, spinning, analog tracking, trajectory, encoder calibrating, slave mode).
+     
+     - Author: Owen Hildreth
+    
+     - returns:
+        -  status: Positioner or Group status
+
+     
+     # Example #
+     ````
+     // Setup Controller, StageGroup, and Stage
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     let stageGroup = StageGroup(controller: controller, stageGroupName: "M")
+     let stage = Stage(stageGroup: stageGroup, stageName: "X")
+    
+     // Tell stage to move
+     do {
+        let stageStatus = try stage.getMotionStatus()
+     } catch {print(error)}
+     ````
+    */
+    func getMotionStatus() throws -> Int? {
+        
+        let status = self.stageGroup.getMotionStatus(self)
+        
+        return status
+    }
+    
 }
 
 // MARK: - Jog Functions

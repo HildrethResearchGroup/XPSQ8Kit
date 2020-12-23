@@ -199,6 +199,81 @@ public extension StageGroup {
     
     
     
+    /**
+     Set motion disable on selected group
+     
+      Enables a group in a DISABLE state to turn the motors on and to restart corrector loops.
+     
+     Turns ON the motors and restarts the corrector servo loops. The group state becomes “READY”.
+     If the group is not in the “DISABLE” state then the “ERR_NOT_ALLOWED_ACTION (-22)” is returned.
+     
+     - Author: Owen Hildreth
+     
+     # Example #
+     ````
+     // Setup Controller
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     let stageGroup = StageGroup(controller: controller, stageGroupName: "M")
+     let stage = Stage(stageGroup: stageGroup, stageName: "X")
+     
+     do {
+         try stageGroup.enableMotion()
+         print("Motion Enabled.")
+     } catch {
+         print(error)
+     }
+     ````
+    */
+    func enableMotion() throws {
+        try self.controller?.group.enableMotion(group: stageGroupName)
+    }
+    
+    
+    
+    
+    /**
+     Returns the motion status for the selected stage
+     
+      Returns the motion status for one or all positioners of the selected group.
+      The motion status possible values are :
+      0 : Not moving state (group status in NOT_INIT, NOT_REF or READY).
+      1 : Busy state (positioner in moving, homing, referencing, spinning, analog tracking, trajectory, encoder calibrating, slave mode).
+     
+     - Author: Owen Hildreth
+    
+     - returns:
+        -  status: Positioner or Group status
+
+     - parameters:
+       - stage: Optional Stage to get status from.  If stage isn't passed in, then the return status is for the group
+     
+     # Example #
+     ````
+     // Setup Controller, StageGroup, and Stage
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     let stageGroup = StageGroup(controller: controller, stageGroupName: "M")
+     let stage = Stage(stageGroup: stageGroup, stageName: "X")
+    
+     // Tell stage to move
+     do {
+        let stageStatus = try group.getMotionStatus(stage)
+        let groupStatus = try group.getMotionStatus()
+     } catch {print(error)}
+     ````
+    */
+    func getMotionStatus(_ stage: Stage? = nil) throws -> Int? {
+        
+        var name = stageGroupName
+        
+        if let unwrappedStage = stage {
+            name = unwrappedStage.completeStageName()
+        }
+        
+        let status = try controller?.group.getMotionStatus(stageOrGroupName: name)
+        
+        return status
+    }
+    
 }
 
 // MARK: - Jog Functions
