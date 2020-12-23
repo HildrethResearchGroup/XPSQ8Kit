@@ -121,7 +121,6 @@ public extension StageGroup {
       Once the home search is successful, the group is in “READY” state.
      
      - Author: Owen Hildreth
-
      
      # Example #
      ````
@@ -141,6 +140,36 @@ public extension StageGroup {
     func homeSearch() throws {
         try self.controller?.group.homeSearch(group: stageGroupName)
     }
+    
+    
+    /**
+     Kills the selected group to go to “NOTINIT” status.
+     
+      Kills the selected group to stop its action. The group returns to the “NOTINIT” state. If the group is already in this state then it stays in the “NOT INIT” state.
+      The GroupKill is a high priority command that is executed in any condition.
+     
+     - Author: Owen Hildreth
+     
+     # Example #
+     ````
+     // Setup Controller
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     let stageGroup = StageGroup(controller: controller, stageGroupName: "M")
+     let stage = Stage(stageGroup: stageGroup, stageName: "X")
+     
+     do {
+         try stageGroup.kill()
+         print("Home Search completed")
+     } catch {
+         print(error)
+     }
+     ````
+    */
+    func kill() throws {
+        try self.controller?.group.kill(group: stageGroupName)
+    }
+    
+    
     
     
     
