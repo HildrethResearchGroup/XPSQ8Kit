@@ -51,6 +51,13 @@ public extension StageGroup {
     
     /**
      Move the specified stage by the target displacement in mm.
+     
+      - Author: Owen Hildreth
+     
+     - Parameters:
+         - stage: The Stage that will be moved.
+         - targetDisplacement: The distance in mm to move the specified stage.
+     
     
      # Example #
      ````
@@ -64,10 +71,6 @@ public extension StageGroup {
         try group.moveRelative(stage, targetDisplacement: -5)
      } catch {print(error)}
       ````
-    
-    - parameters:
-        - stage: The Stage that will be moved.
-        - targetDisplacement: The distance in mm to move the specified stage.
     */
     func moveRelative(stage: Stage, targetDisplacement: Double) throws {
         // Generate the stageName
@@ -99,6 +102,48 @@ public extension StageGroup {
          
          try self.controller?.group.moveAbsolute(stage: completeStageName, toLocation: targetLocation)
      }
+    
+    
+    
+    /**
+     Start home seach sequence on specified stage
+     
+      This function initiates a home search for each positioner of the selected group.
+      The group must be initialized and the group must be in “NOT REFERENCED” state else this function returns the ERR_NOT_ALLOWED_ACTION (-22) error. If no error then the group status becomes “HOMING”.
+      The home search can fail due to:
+      1) a following error: ERR_FOLLOWING_ERROR (-25)
+      2) a ZM detection error: ERR_GROUP_HOME_SEARCH_ZM_ERROR (-49)
+      3) a motion done time out when a dynamic error of the positioner is detected during one of the moves during the home search process: ERR_GROUP_MOTION_DONE_TIMEOUT (-33)
+      4) a home search timeout when the complete (and complex) home search procedure was not executed in the allowed time: ERR_HOME_SEARCH_TIMEOUT (-28)
+     
+      For all these errors, the group returns to the “NOTINIT” state.
+      After the home search sequence, each positioner error is checked. If an error is detected, the hardware status register is reset (motor on) and the positioner error is cleared before checking it again. If a positioner error is always present, ERR_TRAVEL_LIMITS (-35) is returned and the group becomes “NOTINIT”.
+      Once the home search is successful, the group is in “READY” state.
+     
+     - Author: Owen Hildreth
+
+     
+     # Example #
+     ````
+     // Setup Controller
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     let stageGroup = StageGroup(controller: controller, stageGroupName: "M")
+     let stage = Stage(stageGroup: stageGroup, stageName: "X")
+     
+     do {
+         try stageGroup.homeSearch()
+         print("Home Search completed")
+     } catch {
+         print(error)
+     }
+     ````
+    */
+    func homeSearch() throws {
+        try self.controller?.group.homeSearch(group: stageGroupName)
+    }
+    
+    
+    
 }
 
 // MARK: - Jog Functions
