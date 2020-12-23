@@ -492,6 +492,32 @@ public extension StageGroup {
         try controller?.group.jog.disable(group: self.stageGroupName)
     }
     
+    /**
+     Enable Jog mode on selected group.
+     
+      Enables the Jog mode. To use this function, the group must be in the “READY” state and all positioners must be idle (meaning velocity must be 0).
+      This function goes to the “JOGGING” state. If the group state is not “READY”, ERR_NOT_ALLOWED_ACTION (-22) is returned.
+     
+     - Author: Owen Hildreth
+
+     
+     # Example #
+     ````
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     let stageGroup = StageGroup(controller: controller, stageGroupName: "M")
+     let stage = Stage(stageGroup: stageGroup, stageName: "X")
+     
+     do {
+         try stageGroup.enableJog()
+     } catch {
+         print(error)
+     }
+     ````
+    */
+    func enableJog() throws {
+        try controller?.group.jog.enable(group: self.stageGroupName)
+    }
+    
     
 }
 

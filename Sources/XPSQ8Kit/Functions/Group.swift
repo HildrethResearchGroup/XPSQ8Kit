@@ -530,6 +530,7 @@ public extension XPSQ8Controller.GroupController.JogController {
         try controller.communicator.validateNoReturn()
     }
     
+    
     /**
      Returns the velocity and acceleration set by “GroupJogParametersSet” for a specific stage
      
