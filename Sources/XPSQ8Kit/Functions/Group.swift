@@ -303,12 +303,13 @@ public extension XPSQ8Controller.GroupController {
      }
      ````
     */
-    func abortMove(stage stageName: String) throws {
+    func abortMove(_ stageName: String) throws {
         let command = "GroupMoveAbort(\(stageName))"
         try controller.communicator.write(string: command)
         try controller.communicator.validateNoReturn()
     }
 
+    
     /**
       Returns the group status code
      

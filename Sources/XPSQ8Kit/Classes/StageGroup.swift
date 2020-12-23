@@ -274,6 +274,55 @@ public extension StageGroup {
         return status
     }
     
+    
+    
+    /**
+     Aborts the motion or the jog in progress for a group or a positioner.
+     
+      This function aborts a motion or a jog in progress. The group state must be “MOVING” or “JOGGING” else the “ERR_NOT_ALLOWED_ACTION (-22)” is returned.
+     
+      For a group:
+      1) If the group status is “MOVING”, this function stops all motion in progress.
+      2) If the group status is “JOGGING”, this function stops all “jog” motions in progress and disables the jog mode. After this “group move abort” action, the group status becomes “READY”.
+     
+      For a positioner:
+      1) If the group status is “MOVING”, this function stops the motion of the selected positioner.
+      2) If the group status is “JOGGING”, this function stops the “jog” motion of the selected positioner.
+      3) If the positioner is idle, an ERR_NOT_ALLOWED_ACTION (-22) is returned.
+     
+      After this “positioner move abort” action, if all positioners are idle then the group status becomes “READY”, else the group stays in the same state.
+     
+     - Author: Owen Hildreth
+
+     - parameters:
+       - stage: Optional value of the Stage to abort moves on.  If left empty, this is set to nil and the abort move is applied to the entire group.
+     
+     # Example #
+     ````
+     // Setup Controller, StageGroup, and Stage
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     let stageGroup = StageGroup(controller: controller, stageGroupName: "M")
+     let stage = Stage(stageGroup: stageGroup, stageName: "X")
+    
+     // Tell stage to move
+     do {
+        // Abort move for a specific stage
+        try group.abortMove(stage)
+        // Above move for the entire group
+        try group.abortMove()
+     } catch {print(error)}
+     ````
+    */
+    func abortMove(_ stage: Stage? = nil) throws {
+        var name = stageGroupName
+        
+        if let unwrappedStage = stage {
+            name = unwrappedStage.completeStageName()
+        }
+        
+        try controller?.group.abortMove(name)
+    }
+    
 }
 
 // MARK: - Jog Functions
