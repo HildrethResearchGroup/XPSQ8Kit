@@ -13,10 +13,10 @@ import Foundation
 */
 public class Stage {
     /// Many stages are part of a larger Stage Group (Example: "MacroStages.X", where "MacroStages" is the stage group and "X" is this specific stageName.
-    let stageGroup: StageGroup
+    public let stageGroup: StageGroup
     
     /// The name of this stage.  Example: "X" might be a stage that moves in the "X" direction.
-	let stageName: String
+	public let stageName: String
 	
     
     /**
