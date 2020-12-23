@@ -373,7 +373,7 @@ public extension StageGroup {
      
         // Tell stage to move
         do {
-            let groupStatus = try group.getStatus()
+            let groupStatus = try group.getStatusString(code: code)
         } catch {print(error)}
         ````
     */
@@ -381,6 +381,40 @@ public extension StageGroup {
         let statusString = try controller?.group.getStatusString(code: code)
         
         return statusString
+    }
+    
+    
+    /**
+      Returns the current velocity for one or all positioners of the selected group.
+          
+     - Author: Steven DiGregorio
+      
+       - returns:
+          -  velocity: velocity of selected stage
+
+       - parameters:
+         - stage: The Stage to get information from
+
+       # Example #
+       ````
+       // Setup Controller, StageGroup, and Stage
+       let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+       let stageGroup = StageGroup(controller: controller, stageGroupName: "M")
+       let stage = Stage(stageGroup: stageGroup, stageName: "X")
+    
+       // Tell stage to move
+       do {
+           let groupStatus = try group.getStatusString(code: code)
+       } catch {print(error)}
+       ````
+    */
+    func getCurrentVelocity(forStage stage: Stage) throws -> Double? {
+        // Generate the complete stage name for the stage.
+        let completeStageName = stage.completeStageName()
+        
+        let currentVelocity = try controller?.group.getCurrentVelocity(forStage: completeStageName)
+        
+        return currentVelocity
     }
     
     

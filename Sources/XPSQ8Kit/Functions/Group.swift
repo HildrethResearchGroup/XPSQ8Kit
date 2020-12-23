@@ -389,6 +389,7 @@ public extension XPSQ8Controller.GroupController {
           return (status)
       }
     
+    
     /**
       Returns the current velocity for one or all positioners of the selected group.
           
@@ -415,7 +416,7 @@ public extension XPSQ8Controller.GroupController {
        }
        ````
       */
-    func getCurrentVelocity(stage stageName: String) throws -> Double {
+    func getCurrentVelocity(forStage stageName: String) throws -> Double {
           let command = "GroupVelocityCurrentGet(\(stageName), double *)"
           try controller.communicator.write(string: command)
           let velocity = try controller.communicator.read(as: (Double.self))

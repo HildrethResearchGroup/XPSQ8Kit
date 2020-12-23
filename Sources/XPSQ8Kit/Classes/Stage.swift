@@ -208,6 +208,32 @@ public extension Stage {
     }
     
     
+    
+    /**
+     Returns the current velocity for one or all positioners of the selected group.
+     
+     - Author: Owen Hildreth
+     
+     # Example #
+     ````
+     // Setup Controller, StageGroup, and Stage
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     let stageGroup = StageGroup(controller: controller, stageGroupName: "M")
+     let stage = Stage(stageGroup: stageGroup, stageName: "X")
+    
+     // Tell stage to move
+     do {
+        // Abort move for a specific stage
+        let velocity =  try stage.getCurrentVelocity()
+     } catch {print(error)}
+     ````
+    */
+    func getCurrentVelocity() throws -> Double? {
+        let velocity = try self.stageGroup.getCurrentVelocity(forStage: self)
+        
+        return velocity
+    }
+    
 }
 
 // MARK: - Jog Functions
