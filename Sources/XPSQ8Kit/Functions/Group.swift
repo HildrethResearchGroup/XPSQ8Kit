@@ -103,6 +103,7 @@ public extension XPSQ8Controller.GroupController {
         try controller.communicator.validateNoReturn()
     }
     
+    
     /**
      Start home seach sequence on specified stage
      
@@ -142,6 +143,7 @@ public extension XPSQ8Controller.GroupController {
         try controller.communicator.validateNoReturn()
     }
     
+    
     /**
      Kills the selected group to go to “NOTINIT” status.
      
@@ -170,6 +172,7 @@ public extension XPSQ8Controller.GroupController {
         try controller.communicator.write(string: command)
         try controller.communicator.validateNoReturn()
     }
+    
     
     /**
      Set motion disable on selected group
@@ -201,6 +204,7 @@ public extension XPSQ8Controller.GroupController {
         try controller.communicator.validateNoReturn()
     }
     
+    
     /**
      Enables a group in a DISABLE state to turn the motors on and to restart corrector loops.
 
@@ -230,6 +234,7 @@ public extension XPSQ8Controller.GroupController {
         try controller.communicator.write(string: command)
         try controller.communicator.validateNoReturn()
     }
+    
     
     /**
      Returns the motion status for one or all positioners of the selected group.
@@ -268,6 +273,7 @@ public extension XPSQ8Controller.GroupController {
         let status = try controller.communicator.read(as: (Int.self))
         return status
     }
+    
     
     /**
      Aborts the motion or the jog in progress for a group or a positioner.
@@ -345,6 +351,7 @@ public extension XPSQ8Controller.GroupController {
           let status = try controller.communicator.read(as: (Int.self))
           return (status)
       }
+    
     
     /**
        Get the group state description from a group state code.

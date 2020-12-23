@@ -198,7 +198,6 @@ public extension StageGroup {
     }
     
     
-    
     /**
      Set motion disable on selected group
      
@@ -227,8 +226,6 @@ public extension StageGroup {
     func enableMotion() throws {
         try self.controller?.group.enableMotion(group: stageGroupName)
     }
-    
-    
     
     
     /**
@@ -323,7 +320,74 @@ public extension StageGroup {
         try controller?.group.abortMove(name)
     }
     
-}
+    
+    /**
+      Returns the group status code
+     
+      Returns the group status code. The group status codes are listed in the “Group status list” § 0.
+      The description of the group status code can be retrieved from the “GroupStatusStringGet” function.
+     
+     - Author: Owen Hildreth
+      
+     - returns:
+          -  status: group status code
+
+       
+       # Example #
+        ````
+        // Setup Controller, StageGroup, and Stage
+        let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+        let stageGroup = StageGroup(controller: controller, stageGroupName: "M")
+        let stage = Stage(stageGroup: stageGroup, stageName: "X")
+     
+        // Tell stage to move
+        do {
+            let groupStatus = try group.getStatus()
+        } catch {print(error)}
+        ````
+      */
+    func getStatus() throws -> Int? {
+        let status = try controller?.group.getStatus(group: self.stageGroupName)
+        return status
+    }
+    
+
+    /**
+     Get the group state description from a group state code.
+   
+     This function returns the group state description corresponding to a group state code (see § 0 Group state list).
+     If the group state code is not referenced then the “Error: undefined status” message will be returned.
+     
+     - Author: Owen Hildreth
+      
+     - returns:
+          -  status: group status code
+
+       
+       # Example #
+        ````
+        // Setup Controller, StageGroup, and Stage
+        let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+        let stageGroup = StageGroup(controller: controller, stageGroupName: "M")
+        let stage = Stage(stageGroup: stageGroup, stageName: "X")
+     
+        // Tell stage to move
+        do {
+            let groupStatus = try group.getStatus()
+        } catch {print(error)}
+        ````
+    */
+    func getStatusString(code: Int) throws -> String? {
+        let statusString = try controller?.group.getStatusString(code: code)
+        
+        return statusString
+    }
+    
+    
+} // END: Move Functions Extensions
+
+
+
 
 // MARK: - Jog Functions
 public extension StageGroup {
