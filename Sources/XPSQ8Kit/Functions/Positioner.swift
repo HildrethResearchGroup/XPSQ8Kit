@@ -77,6 +77,7 @@ public extension XPSQ8Controller.PositionerController {
         return scaling
     }
     
+    
     /**
      Disables the backlash compensation
      
@@ -84,7 +85,8 @@ public extension XPSQ8Controller.PositionerController {
       In the “stages.ini” file the parameter “Backlash” will enable or disable this feature as follows:
       Backlash = 0 —> Disable backlash Backlash > 0 —> Enable backlash
      
-     - Author: Steven DiGregorio
+     - Authors:
+        - Steven DiGregorio
     
      - Parameters:
        - positioner: The name of the positioner
@@ -139,6 +141,7 @@ public extension XPSQ8Controller.PositionerController {
         try controller.communicator.write(string: command)
         try controller.communicator.validateNoReturn()
     }
+    
     
     /**
        Gets the positioner hardware status code

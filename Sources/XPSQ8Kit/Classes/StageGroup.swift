@@ -746,5 +746,41 @@ public extension StageGroup.Positioner {
     }
     
     
+    /**
+     Disables the backlash compensation
+     
+     Implements the  ````void PositionerBacklashDisable(char PositionerName[250])````  XPS Controller function.
+     
+      This function disables the backlash compensation. For a more thorough description of the backlash compensation, please refer to the XPS Motion Tutorial section Compensation/Backlash compensation.
+     
+      In the “stages.ini” file the parameter “Backlash” will enable or disable this feature as follows:
+      Backlash = 0 —> Disable backlash Backlash > 0 —> Enable backlash
+     
+     - Authors:
+        - Owen Hildreth
+    
+     - Parameters:
+        - stage: The stage to get value(s) from
+
+    # Example #
+     ````
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     let stageGroup = StageGroup(controller: controller, stageGroupName: "M")
+     let stage = Stage(stageGroup: stageGroup, stageName: "X")
+     
+     do {
+         try group.positioner.disableBacklash(forStage: stage) {
+     } catch {
+         print(error)
+     }
+      ````
+    */
+    func disableBacklash(forStage stage: Stage) throws {
+        let completeStageName = stage.completeStageName()
+        try self.controller?.positioner.disableBacklash(positioner: completeStageName)
+    }
+    
+    
+    
     
 }

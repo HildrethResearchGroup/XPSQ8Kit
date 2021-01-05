@@ -421,3 +421,82 @@ public extension Stage {
         return currentTarget
     }
 }
+
+// MARK: - Positioner Functions
+public extension Stage {
+    
+    /**
+     Auto-scaling process for determining the stage scaling acceleration.
+     
+     Implements the  ````void PositionerAccelerationAutoScaling( char PositionerName[250],  double* Scaling)````  XPS Controller function.
+     
+     The function executes an auto-scaling process and returns the calculated scaling acceleration. The selected group must be in “NOTINIT” state, else ERR_NOT_ALLOWED_ACTION (-22) is returned. More information in the programmer manual
+     
+     Takes a long time to return a value
+     
+     - Authors:
+        - Owen Hildreth
+     
+     - Returns:
+        -  scaling: Astrom & Hägglund based auto-scaling
+     
+     - Parameters:
+        - stage: The stage to get value(s) from
+     
+     # Example #
+     ````
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     let stageGroup = StageGroup(controller: controller, stageGroupName: "M")
+     let stage = Stage(stageGroup: stageGroup, stageName: "X")
+     
+     do {
+         let currenAccelerationAutoScaling = try stage.accelerationAutoScaling() {
+     } catch {
+         print(error)
+     }
+     
+     print("Current Acceleration Auto Scalling = \(currenAccelerationAutoScaling)")
+     ````
+     */
+    func accelerationAutoScaling() throws -> Double? {
+        let currentAccelerationAutoScaling = try self.stageGroup.positioner.accelerationAutoScaling(forStage: self)
+        
+        return currentAccelerationAutoScaling
+    }
+    
+    /**
+     Disables the backlash compensation
+     
+     Implements the  ````void PositionerBacklashDisable(char PositionerName[250])````  XPS Controller function.
+     
+      This function disables the backlash compensation. For a more thorough description of the backlash compensation, please refer to the XPS Motion Tutorial section Compensation/Backlash compensation.
+     
+      In the “stages.ini” file the parameter “Backlash” will enable or disable this feature as follows:
+      Backlash = 0 —> Disable backlash Backlash > 0 —> Enable backlash
+     
+     - Authors:
+        - Owen Hildreth
+    
+     - Parameters:
+        - stage: The stage to get value(s) from
+
+    # Example #
+     ````
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     let stageGroup = StageGroup(controller: controller, stageGroupName: "M")
+     let stage = Stage(stageGroup: stageGroup, stageName: "X")
+     
+     do {
+         try stage.disableBacklash() {
+     } catch {
+         print(error)
+     }
+      ````
+    */
+    func disableBacklash() throws {
+        try self.stageGroup.positioner.disableBacklash(forStage: self)
+    }
+    
+    
+    
+}
