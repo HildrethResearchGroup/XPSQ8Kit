@@ -21,9 +21,6 @@ public class StageGroup {
     /// The name of the Stage Group.  This name must match the Stage Group Name defined on the XPS Hardware Controller.
     public let stageGroupName: String
     
-    public struct Positioner {
-        var controller: XPSQ8Controller?
-    }
     
     
     /**
@@ -694,8 +691,18 @@ public extension StageGroup {
 }
 
 
+// MARK: - Positioner
+public extension StageGroup {
+    struct Positioner {
+        var controller: XPSQ8Controller?
+        
+        public struct SGamma {
+            var controller: XPSQ8Controller?
+        }
+    }
+}
 
-// MARK: - Access Positioner Namespace
+// MARK: Access Positioner Namespace
 public extension StageGroup {
     var positioner: Positioner {
         return Positioner(controller: self.controller)
@@ -703,7 +710,7 @@ public extension StageGroup {
 }
 
 
-// MARK: - Positioner Functions
+// MARK: Positioner Functions
 public extension StageGroup.Positioner {
     /**
      Auto-scaling process for determining the stage scaling acceleration.
@@ -959,17 +966,16 @@ public extension StageGroup.Positioner {
      }
        ````
      */
-    func getMotionDone(forStage stage: Stage) throws -> (positionWindow: Double, velocityWindow: Double, checkingTime: Double, meanPeriod: Double, timeout: Double) {
+    func getMotionDone(forStage stage: Stage) throws -> (positionWindow: Double, velocityWindow: Double, checkingTime: Double, meanPeriod: Double, timeout: Double)? {
         
         let completeStageName = stage.completeStageName()
         
-        let parameters = try controller?.positioner.getMaximumVelocityAndAcceleration(positioner: completeStageName)
+        let parameters = try controller?.positioner.getMotionDone(positioner: completeStageName)
         
         return parameters
     }
     
-    
-    
+        
     /**
     Gets the user travel limits
      
@@ -1009,7 +1015,7 @@ public extension StageGroup.Positioner {
      }
        ````
      */
-    func getUserTravelLimits(forStage stage: Stage) throws -> (userMinimumTarget: Double, userMaximumTarget: Double) {
+    func getUserTravelLimits(forStage stage: Stage) throws -> (userMinimumTarget: Double, userMaximumTarget: Double)? {
         
         let completeStageName = stage.completeStageName()
         
@@ -1017,4 +1023,105 @@ public extension StageGroup.Positioner {
         
         return limits
     }
+}
+
+// MARK: - Access SGamma NameSpace
+public extension StageGroup.Positioner {
+    var sGamma: SGamma {
+        return SGamma(controller: self.controller)
+    }
+}
+
+// MARK: SGamma Functions
+public extension StageGroup.Positioner.SGamma {
+    
+    /**
+     Gets the current motion values from the SGamma profiler
+     
+     Implements the  ````void PositionerSGammaParametersGet(char PositionerName[250], double* Velocity, double* Acceleration, double* MinimumTjerkTime, double* MaximumTjerkTime)````  XPS Controller function.
+     
+     This function gets the current SGamma profiler values that are used in displacements.
+     
+     - Authors:
+        - Owen HIldreth
+
+      - Parameters:
+         - positioner: The name of the positioner
+     
+      - returns:
+         - velocity (units/sec)
+         - acceleration (units/sec^2)
+         - minumumTjerkTime (sec)
+         - maximumTjerkTime (sec)
+     
+     # Example #
+      ````
+      // Setup Controller
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     let stageGroup = StageGroup(controller: controller, stageGroupName: "M")
+     let stage = Stage(stageGroup: stageGroup, stageName: "X")
+     
+     do {
+         if let parameters = try group.positioner.sGamma.getSGammaParameters(forStage: stage) {
+            let velocity = parameters.velocity
+            let acceleration = parameters.acceleration
+            let minumumTjerkTime = parameters.minumumTjerkTime
+            let maximumTjerkTime = parameters.maximumTjerkTime
+     
+            print("velocity   = \(velocity)")
+            print("acceleration   = \(acceleration)")
+        printminumumTjerkTime
+            print("maximumTjerkTime   = \(maximumTjerkTime)")
+         } else { print("current = nil") }
+     } catch {
+         print(error)
+     }
+       ````
+     */
+    func getSGammaParameters(forStage stage: Stage) throws -> (velocity: Double, acceleration: Double, minimumTjerkTime: Double, maximumTjerkTime: Double)? {
+        
+        let completeStageName = stage.completeStageName()
+        
+        let parameters = try controller?.positioner.SGamma.getParameters(positioner: completeStageName)
+        
+        return parameters
+    }
+    
+    
+    /**
+     Sets new motion values for the SGamma profiler
+     
+     Implements the  ````int PositionerSGammaParametersSet (int SocketID, char FullPositionerName[250] , double Velocity, double Acceleration, double MinimumJerkTime, double MaximumJerkTime)````  XPS Controller function.
+     
+     This function defines the new SGamma profiler values that will be used in future displacements.
+     
+     - Authors:
+        - Owen Hildreth
+
+     - Parameters:
+        - positioner: The name of the positioner
+        - velocity: motion velocity (units/seconds)
+        - acceleration: motion acceleration (units/seconds^2)
+        - minimumJerkTime: Minimum jerk time (seconds)
+        - maximumJerkTime: Maximum jerk time (seconds)
+     
+     # Example #
+      ````
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     let stageGroup = StageGroup(controller: controller, stageGroupName: "M")
+     let stage = Stage(stageGroup: stageGroup, stageName: "X")
+     
+     do {
+         try group.positioner.sGamma.setSGammaParameters(forStage: stage, velocity: velocity, acceleration: acceleration, minimumTjerkTime: minimumTjerkTime, maximumTjerkTime: maximumTjerkTime) {
+     } catch {
+         print(error)
+     }
+       ````
+     */
+    func setSGammaParameters(forStage stage: Stage, velocity: Double, acceleration: Double, minimumTjerkTime: Double, maximumTjerkTime: Double) throws {
+        let completeStageName = stage.completeStageName()
+        
+        try controller?.positioner.SGamma.setParameters(positioner: completeStageName, velocity: velocity, acceleration: acceleration, minimumTjerkTime: minimumTjerkTime, maximumTjerkTime: maximumTjerkTime)
+    }
+    
 }

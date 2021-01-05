@@ -622,7 +622,6 @@ public extension Stage {
     }
     
     
-    
     /**
      Gets the motion done parameters
      
@@ -670,10 +669,143 @@ public extension Stage {
      }
        ````
      */
-    func getMotionDone() throws -> (positionWindow: Double, velocityWindow: Double, checkingTime: Double, meanPeriod: Double, timeout: Double) {
+    func getMotionDone() throws -> (positionWindow: Double, velocityWindow: Double, checkingTime: Double, meanPeriod: Double, timeout: Double)? {
         
         let parameters = try self.stageGroup.positioner.getMotionDone(forStage: self)
         
         return parameters
     }
+    
+    
+    /**
+    Gets the user travel limits
+     
+     Implements the  ````void PositionerUserTravelLimitsGet(char PositionerName[250], double* UserMinimumTarget, double* UserMaximumTarget)````  XPS Controller function.
+     
+     This function returns the user-defined travel limits for the selected positioner.
+     
+     - Authors:
+        - Owen Hildreth
+
+      - Parameters:
+         - positioner: The name of the positioner
+     
+      - Returns:
+         - userMinimumTarget in units (likely mm )
+         - userMaximumTarget in units (likely mm )
+     
+     # Example #
+      ````
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     let stageGroup = StageGroup(controller: controller, stageGroupName: "M")
+     let stage = Stage(stageGroup: stageGroup, stageName: "X")
+     
+     do {
+         if let parameters = try stage.getMaximumVelocityAndAcceleration() {
+            let userMinimumTarget = parameters. userMinimumTarget
+            let userMaximumTarget = parameters.userMaximumTarget
+            let checkingTime = parameters.checkingTime
+            let meanPeriod = parameters.meanPeriod
+            let timeout = parameters.timeout
+     
+            print("userMinimumTarget   = \(userMinimumTarget)")
+            print("userMaximumTarget   = \(userMaximumTarget)")
+         } else { print("current = nil") }
+     } catch {
+         print(error)
+     }
+       ````
+     */
+    func getUserTravelLimits() throws -> (userMinimumTarget: Double, userMaximumTarget: Double)? {
+        let parameters = try self.stageGroup.positioner.getUserTravelLimits(forStage: self)
+        
+        return parameters
+    }
+    
+    
+    /**
+     Gets the current motion values from the SGamma profiler
+     
+     Implements the  ````void PositionerSGammaParametersGet(char PositionerName[250], double* Velocity, double* Acceleration, double* MinimumTjerkTime, double* MaximumTjerkTime)````  XPS Controller function.
+     
+     This function gets the current SGamma profiler values that are used in displacements.
+     
+     - Authors:
+        - Owen HIldreth
+
+      - Parameters:
+         - positioner: The name of the positioner
+     
+      - returns:
+         - velocity (units/sec)
+         - acceleration (units/sec^2)
+         - minumumTjerkTime (sec)
+         - maximumTjerkTime (sec)
+     
+     # Example #
+      ````
+      // Setup Controller
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     let stageGroup = StageGroup(controller: controller, stageGroupName: "M")
+     let stage = Stage(stageGroup: stageGroup, stageName: "X")
+     
+     do {
+         if let parameters = try stage.getSGammaParameters(forStage: stage) {
+            let velocity = parameters.velocity
+            let acceleration = parameters.acceleration
+            let minumumTjerkTime = parameters.minumumTjerkTime
+            let maximumTjerkTime = parameters.maximumTjerkTime
+     
+            print("velocity   = \(velocity)")
+            print("acceleration   = \(acceleration)")
+        printminumumTjerkTime
+            print("maximumTjerkTime   = \(maximumTjerkTime)")
+         } else { print("current = nil") }
+     } catch {
+         print(error)
+     }
+       ````
+     */
+    func getSGammaParameters() throws -> (velocity: Double, acceleration: Double, minimumTjerkTime: Double, maximumTjerkTime: Double)? {
+        let parameters = try self.stageGroup.positioner.sGamma.getSGammaParameters(forStage: self)
+        
+        return parameters
+    }
+    
+    
+    /**
+     Sets new motion values for the SGamma profiler
+     
+     Implements the  ````int PositionerSGammaParametersSet (int SocketID, char FullPositionerName[250] , double Velocity, double Acceleration, double MinimumJerkTime, double MaximumJerkTime)````  XPS Controller function.
+     
+     This function defines the new SGamma profiler values that will be used in future displacements.
+     
+     - Authors:
+        - Owen Hildreth
+
+     - Parameters:
+        - positioner: The name of the positioner
+        - velocity: motion velocity (units/seconds)
+        - acceleration: motion acceleration (units/seconds^2)
+        - minimumJerkTime: Minimum jerk time (seconds)
+        - maximumJerkTime: Maximum jerk time (seconds)
+     
+     # Example #
+      ````
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     let stageGroup = StageGroup(controller: controller, stageGroupName: "M")
+     let stage = Stage(stageGroup: stageGroup, stageName: "X")
+     
+     do {
+         try stage.setSGammaParameters(forStage: stage, velocity: velocity, acceleration: acceleration, minimumTjerkTime: minimumTjerkTime, maximumTjerkTime: maximumTjerkTime) {
+     } catch {
+         print(error)
+     }
+       ````
+     */
+    
+    func setSGammaParameters(velocity: Double, acceleration: Double, minimumTjerkTime: Double, maximumTjerkTime: Double) throws {
+        try self.stageGroup.positioner.sGamma.setSGammaParameters(forStage: self, velocity: velocity, acceleration: acceleration, minimumTjerkTime: minimumTjerkTime, maximumTjerkTime: maximumTjerkTime)
+    }
+    
 }

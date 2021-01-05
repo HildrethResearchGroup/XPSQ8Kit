@@ -372,20 +372,23 @@ public extension XPSQ8Controller.PositionerController {
 public extension XPSQ8Controller.PositionerController.SGammaController {
     
     /**
-      Gets the current motion values from the SGamma profiler
+     Gets the current motion values from the SGamma profiler
      
-       This function gets the current SGamma profiler values that are used in displacements.
+     Implements the  ````void PositionerSGammaParametersGet(char PositionerName[250], double* Velocity, double* Acceleration, double* MinimumTjerkTime, double* MaximumTjerkTime)````  XPS Controller function.
      
-     - Author: Steven DiGregorio
+     This function gets the current SGamma profiler values that are used in displacements.
+     
+     - Authors:
+        - Steven DiGregorio
 
       - Parameters:
          - positioner: The name of the positioner
      
       - returns:
-         -  velocity
-         - acceleration
-         - minumumTjerkTime
-         - maximumTjerkTime
+         - velocity (units/sec)
+         - acceleration (units/sec^2)
+         - minumumTjerkTime (sec)
+         - maximumTjerkTime (sec)
      
      # Example #
       ````
@@ -414,13 +417,16 @@ public extension XPSQ8Controller.PositionerController.SGammaController {
     
     
     /**
-      Sets new motion values for the SGamma profiler
+     Sets new motion values for the SGamma profiler
      
-      This function defines the new SGamma profiler values that will be used in future displacements.
+     Implements the  ````int PositionerSGammaParametersSet (int SocketID, char FullPositionerName[250] , double Velocity, double Acceleration, double MinimumJerkTime, double MaximumJerkTime)````  XPS Controller function.
      
-     - Author: Steven DiGregorio
+     This function defines the new SGamma profiler values that will be used in future displacements.
+     
+     - Authors:
+        - Steven DiGregorio
 
-      - Parameters:
+     - Parameters:
         - positioner: The name of the positioner
         - velocity: motion velocity (units/seconds)
         - acceleration: motion acceleration (units/seconds^2)
