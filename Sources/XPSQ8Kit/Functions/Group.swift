@@ -534,7 +534,7 @@ public extension XPSQ8Controller.GroupController.JogController {
         try controller.communicator.validateNoReturn()
     }
     
-    // TODO: Determine what is going on with SocketID
+
     /**
      Returns the velocity and acceleration set by “GroupJogParametersSet” for a specific stage
      
@@ -580,8 +580,7 @@ public extension XPSQ8Controller.GroupController.JogController {
         
         return (velocity: parameters.0, acceleration: parameters.1)
     }
-    
-}
+} // END:  Group.Jog Functions
 
 
 // MARK: - Group.Position Functions
@@ -589,7 +588,7 @@ public extension XPSQ8Controller.GroupController.PositionController {
     /**
      Returns the current position for one or all positioners of the selected group.
      
-     Implements  the ````int GroupPositionCurrentGet (int SocketID, char *GroupName, int NbPositioners, double * CurrentPosition)````  XPS function.
+     Implements  the ````void GroupPositionCurrentGet(char groupName[250], double *CurrentEncoderPosition)````  XPS function.
      
       Returns the current position for one or all positioners of the selected group. The current position is defined as:
       CurrentPosition = SetpointPosition - FollowingError
@@ -623,12 +622,12 @@ public extension XPSQ8Controller.GroupController.PositionController {
         return currentEncoderPosition
     }
     
+    
     /**
-      Returns the setpoint position for one or all positioners of the selected group.
+      Returns the setpoint position for one or all positioners of the selected stage.
       
-       Returns the setpoint position for one or all positioners of the selected group.
-       The “setpoint” position is calculated by the motion profiler and represents the “theoretical” position to reach.
-     
+     Implements the ````void GroupPositionSetpointGet(char groupName[250], double *CurrentEncoderPosition)```` XPS function at the Stage Group.  The “setpoint” position is calculated by the motion profiler and represents the “theoretical” position to reach.
+          
      - Author: Steven DiGregorio
       
       - returns:
@@ -658,35 +657,39 @@ public extension XPSQ8Controller.GroupController.PositionController {
          return setPoint
      }
     
+    
     /**
-         Returns the target position for one or all positioners of the selected group.
-         
-          Returns the target position for one or all positioners of the selected group. The target position represents the “end” position after the move.
-          For instance, during a move from 0 to 10 units, the position values are: GroupPositionTargetGet => 10.0000
-          GroupPositionCurrentGet => 5.0005 GroupPositionSetpointGet => 5.0055
+     Returns the target position for one or all positioners of the selected group.
      
-        - Author: Steven DiGregorio
-         
-         - returns:
-            - target: position target of the specified stage
+     Implements the ````void GroupPositionTargetGet(char groupName[250], double *CurrentEncoderPosition)```` XPS function at the Stage Group.
      
-         - parameters:
-            - stage: The name of the stage to find the positon target of
-         
-         # Example #
-         ````
-         let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
-         
-         do {
-             if let target = try controller?.group.position.getTarget(stage: "M.X"){
-                 print("target = \(target)")
-             }
-             print("Get target completed")
-         } catch {
-             print(error)
-         }
-         ````
-        */
+     Returns the target position for one or all positioners of the selected group. The target position represents the “end” position after the move.
+     
+     For instance, during a move from 0 to 10 units, the position values are: GroupPositionTargetGet => 10.0000
+     GroupPositionCurrentGet => 5.0005 GroupPositionSetpointGet => 5.0055
+     
+     - Authors: Steven DiGregorio
+     
+     - Returns:
+        - target: position target of the specified stage
+     
+     - Parameters:
+        - stage: The name of the stage to find the positon target of
+     
+     # Example #
+     ````
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     
+     do {
+     if let target = try controller?.group.position.getTarget(stage: "M.X"){
+     print("target = \(target)")
+     }
+     print("Get target completed")
+     } catch {
+     print(error)
+     }
+     ````
+     */
         func getTarget(stage stageName: String) throws -> Double {
             let message = "GroupPositionTargetGet(\(stageName), double *)"
             try controller.communicator.write(string: message)

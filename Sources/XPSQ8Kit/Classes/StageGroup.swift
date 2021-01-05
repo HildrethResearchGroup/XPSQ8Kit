@@ -425,7 +425,6 @@ public extension StageGroup {
 
 // MARK: - Jog Functions
 public extension StageGroup {
-    
     /**
      Returns a tuple containing the current velocity and acceration of the specified stage.
      
@@ -572,5 +571,117 @@ public extension StageGroup {
 
 // MARK: - Group.Position Functions
 public extension StageGroup {
+    /**
+      Returns the setpoint position for one or all positioners of the selected group.
+      
+       Returns the setpoint position for one or all positioners of the selected group.
+       The “setpoint” position is calculated by the motion profiler and represents the “theoretical” position to reach.
+     
+     - Authors: Owen Hildreth
+      
+      - returns:
+         - setPoint: position setpoint of the specified stage
+     
+      - parameters:
+         - stage: The name of the stage to find the positon setpoint of
+      
+      # Example #
+      ````
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     let stageGroup = StageGroup(controller: controller, stageGroupName: "M")
+     let stage = Stage(stageGroup: stageGroup, stageName: "X")
+     
+     do {
+         let currentPostition = try group.getCurrentPosition(forStage: stage) {
+     } catch {
+         print(error)
+     }
+     
+     print("Current Position = \(currentPostition)")
+      ````
+     */
+    func getCurrentPosition(forStage stage: Stage) throws -> Double? {
+        let completeStageName = stage.completeStageName()
+        let currentPosition = try controller?.group.position.getCurrent(stage: completeStageName)
+        
+        return currentPosition
+    }
+
     
+    /**
+      Returns the setpoint position of the selected stage.
+      
+     Implements the ````void GroupPositionSetpointGet(char groupName[250], double *CurrentEncoderPosition)```` XPS function at the Stage Group through the Controller getCurrent function.  The “setpoint” position is calculated by the motion profiler and represents the “theoretical” position to reach.
+          
+     - Authors: Owen Hildreth
+      
+      - Returns:
+         - setPoint: position setpoint of the specified stage
+     
+      - Parameters:
+         - stage: The name of the stage to find the positon setpoint of
+      
+      # Example #
+      ````
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     let stageGroup = StageGroup(controller: controller, stageGroupName: "M")
+     let stage = Stage(stageGroup: stageGroup, stageName: "X")
+     
+     do {
+         let currentSetPoint = try group.getSetpoint(forStage: stage) {
+     } catch {
+         print(error)
+     }
+     
+     print("Current Setpoint = \(currentSetPoint)")
+      ````
+     */
+    func getSetpoint(forStage stage: Stage) throws -> Double? {
+        let completeStageName = stage.completeStageName()
+        let currentSetPoint = try controller?.group.position.getSetpoint(stage: completeStageName)
+        
+        return currentSetPoint
+    }
+
+    
+    /**
+     Returns the target position for one or all positioners of the selected group.
+     
+     Implements the ````void GroupPositionTargetGet(char groupName[250], double *CurrentEncoderPosition)```` XPS function at the Stage Group.
+     
+     Returns the target position for one or all positioners of the selected group. The target position represents the “end” position after the move.
+     
+     For instance, during a move from 0 to 10 units, the position values are: GroupPositionTargetGet => 10.0000
+     GroupPositionCurrentGet => 5.0005 GroupPositionSetpointGet => 5.0055
+     
+     - Authors: Steven DiGregorio
+     
+     - Returns:
+        - target: position target of the specified stage
+     
+     - Parameters:
+        - stage: The name of the stage to find the positon target of
+     
+     # Example #
+     ````
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     let stageGroup = StageGroup(controller: controller, stageGroupName: "M")
+     let stage = Stage(stageGroup: stageGroup, stageName: "X")
+     
+     do {
+         let currenTarget = try group.getTarget(forStage: stage) {
+     } catch {
+         print(error)
+     }
+     
+     print("Current Target = \(currenTarget)")
+     ````
+     */
+    func getTarget(forStage stage: Stage) throws -> Double? {
+        let completeStageName = stage.completeStageName()
+        let currentTarget = try controller?.group.position.getTarget(stage: completeStageName)
+        
+        return currentTarget
+    
+    }
 }
