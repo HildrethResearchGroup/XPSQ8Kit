@@ -912,4 +912,62 @@ public extension StageGroup.Positioner {
     }
     
     
+    /**
+     Gets the motion done parameters
+     
+     Implements the  ````void PositionerMotionDoneGet(char PositionerName[250], double* positionWindow, double* velocityWindow, double* checkingTime, double* meanPeriod, double* timeOut)````  XPS Controller function.
+     
+     This function returns the motion done parameters only for the “VelocityAndPositionWindow” MotionDone mode. If the MotionDone mode is defined as “Theoretical” then ERR_WRONG_OBJECT_TYPE (-8) is returned.
+     
+     The “MotionDoneMode” parameter from the stages.ini file defines the motion done mode. The motion done can be defined as “Theoretical” (the motion done mode is not used) or “VelocityAndPositionWindow”. For a more thorough description of the motion done mode, please refer to the XPS Motion Tutorial section Motion/Motion Done.
+     
+     - Authors:
+        - Steven DiGregorio
+
+      - Parameters:
+         - positioner: The name of the positioner
+     
+      - returns:
+         -  positionWindow:
+         - velocityWindow:
+         - checkingTime:
+         - meanPeriod:
+         - timeout:
+     
+     # Example #
+      ````
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     let stageGroup = StageGroup(controller: controller, stageGroupName: "M")
+     let stage = Stage(stageGroup: stageGroup, stageName: "X")
+     
+     do {
+         if let parameters = try group.positioner.getMaximumVelocityAndAcceleration(forStage: stage) {
+            let positionWindow = parameters. positionWindow
+            let velocityWindow = parameters.velocityWindow
+            let checkingTime = parameters.checkingTime
+            let meanPeriod = parameters.meanPeriod
+            let timeout = parameters.timeout
+     
+            print("positionWindow   = \(positionWindow)")
+            print("velocityWindow   = \(velocityWindow)")
+            print("checkingTime     = \(checkingTime)")
+            print("meanPeriod       = \(meanPeriod)")
+            print("timeout          = \(timeout)")
+         } else { print("current = nil") }
+     } catch {
+         print(error)
+     }
+       ````
+     */
+    func getMotionDone(forStage stage: Stage) throws -> (positionWindow: Double, velocityWindow: Double, checkingTime: Double, meanPeriod: Double, timeout: Double) {
+        
+        let completeStageName = stage.completeStageName()
+        
+        let parameters = try controller?.positioner.getMaximumVelocityAndAcceleration(positioner: completeStageName)
+        
+        return parameters
+    }
+    
+    
+    
 }
