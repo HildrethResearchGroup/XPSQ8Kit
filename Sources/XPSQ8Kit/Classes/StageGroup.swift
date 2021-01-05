@@ -469,6 +469,8 @@ public extension StageGroup {
     /**
      Disable Jog mode on selected group.
      
+     Implements  the ````int GroupJogModeDisable (int SocketID, char *GroupName)````  XPS function.
+     
       Disables the Jog mode. To use this function, the group must be in the “JOGGING” state and all positioners must be idle (meaning velocity must be 0).
       This function exits the “JOGGING” state and to returns to the “READY” state. If the group state is not in the “JOGGING” state or if the profiler velocity is not null then the error ERR_NOT_ALLOWED_ACTION (-22) is returned.
      
@@ -492,8 +494,11 @@ public extension StageGroup {
         try controller?.group.jog.disable(group: self.stageGroupName)
     }
     
+    
     /**
      Enable Jog mode on selected group.
+     
+     Implements  the ````int GroupJogModeEnable (int SocketID, char *GroupName)````  XPS function.
      
       Enables the Jog mode. To use this function, the group must be in the “READY” state and all positioners must be idle (meaning velocity must be 0).
       This function goes to the “JOGGING” state. If the group state is not “READY”, ERR_NOT_ALLOWED_ACTION (-22) is returned.
@@ -519,5 +524,53 @@ public extension StageGroup {
     }
     
     
+    /**
+     Returns a tuple containing the  current jog velocity and acceration settings of the specified stage.
+     
+     Implements  the ````int GroupJogParametersGet (int SocketID, char *GroupName, int NbPositioners, double * Velocity, double * Acceleration)````  XPS function.
+     
+      This function returns the velocity and the acceleration set by the user to use the jog mode for one positioner or for all positioners of the selected group.
+      So, this function must be called when the group is in “JOGGING” mode else the velocity and the acceleration will be null.
+      To change the velocity and the acceleration on the fly, in the jog mode, call the “GroupJogParametersSet” function.
+     
+    - Authors: Owen Hildreth
+     
+     - returns:
+        - velocity:  The current velocity in mm/s of the specified stage.
+        - acceleration:   The current acceration in mm/s^2 of the specified stage.
+     
+     - parameters:
+        - forStage: The stage that will be moved.
+     
+     # Example #
+     ````
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     let stageGroup = StageGroup(controller: controller, stageGroupName: "M")
+     let stage = Stage(stageGroup: stageGroup, stageName: "X")
+     
+     do {
+         if let currentParameters = try group.getJogParameters(forStage: stage) {
+             let velocity = currentParameters.velocity
+             let acceleration = currentParameters.acceleration
+             print("Velocity Setting = \(velocity)")
+             print("Acceleartion Setting = \(acceleration)")
+         } else { print("current = nil") }
+     } catch {
+         print(error)
+     }
+     ````
+    */
+    func getJogParameters(forStage stage: Stage) throws -> (velocity: Double, acceleration: Double)? {
+        // Generate the complete stage name for the stage.
+        let completeStageName = stage.completeStageName()
+        let currentVelocityAndAcceleration = try controller?.group.jog.getParameters(stage: completeStageName)
+        return currentVelocityAndAcceleration
+    }
 }
 
+
+
+// MARK: - Group.Position Functions
+public extension StageGroup {
+    
+}

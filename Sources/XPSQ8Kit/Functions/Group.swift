@@ -474,6 +474,8 @@ public extension XPSQ8Controller.GroupController.JogController {
     /**
      Disable Jog mode on selected group.
      
+     Implements  the ````int GroupJogModeDisable (int SocketID, char *GroupName)````  XPS function.
+     
       Disables the Jog mode. To use this function, the group must be in the “JOGGING” state and all positioners must be idle (meaning velocity must be 0).
       This function exits the “JOGGING” state and to returns to the “READY” state. If the group state is not in the “JOGGING” state or if the profiler velocity is not null then the error ERR_NOT_ALLOWED_ACTION (-22) is returned.
      
@@ -504,6 +506,8 @@ public extension XPSQ8Controller.GroupController.JogController {
     /**
      Enable Jog mode on selected group.
      
+     Implements  the ````int GroupJogModeEnable (int SocketID, char *GroupName)````  XPS function.
+     
       Enables the Jog mode. To use this function, the group must be in the “READY” state and all positioners must be idle (meaning velocity must be 0).
       This function goes to the “JOGGING” state. If the group state is not “READY”, ERR_NOT_ALLOWED_ACTION (-22) is returned.
      
@@ -530,15 +534,18 @@ public extension XPSQ8Controller.GroupController.JogController {
         try controller.communicator.validateNoReturn()
     }
     
-    
+    // TODO: Determine what is going on with SocketID
     /**
      Returns the velocity and acceleration set by “GroupJogParametersSet” for a specific stage
+     
+     Implements  the ````int GroupJogParametersGet (int SocketID, char *GroupName, int NbPositioners, double * Velocity, double * Acceleration)````  XPS function.
+     
      
       This function returns the velocity and the acceleration set by the user to use the jog mode for one positioner or for all positioners of the selected group.
       So, this function must be called when the group is in “JOGGING” mode else the velocity and the acceleration will be null.
       To change the velocity and the acceleration on the fly, in the jog mode, call the “GroupJogParametersSet” function.
      
-     - Author: Steven DiGregorio
+     - Authors: Steven DiGregorio
      
      - returns:
         - velocity:  The set velocity parameter in mm/s of the specified stage.
@@ -576,15 +583,18 @@ public extension XPSQ8Controller.GroupController.JogController {
     
 }
 
+
 // MARK: - Group.Position Functions
 public extension XPSQ8Controller.GroupController.PositionController {
     /**
      Returns the current position for one or all positioners of the selected group.
      
+     Implements  the ````int GroupPositionCurrentGet (int SocketID, char *GroupName, int NbPositioners, double * CurrentPosition)````  XPS function.
+     
       Returns the current position for one or all positioners of the selected group. The current position is defined as:
       CurrentPosition = SetpointPosition - FollowingError
      
-     - Author: Steven DiGregorio
+     - Authors: Steven DiGregorio
      
      - returns:
         - currentEncoderPosition: current encoder position of the specified stage

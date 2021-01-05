@@ -242,7 +242,7 @@ public extension Stage {
     /**
      Returns a tuple containing the current velocity and acceration of the specified stage.
      
-      Implements  the ````void GatheringCurrentNumberGet(int* CurrentNumber, int* MaximumSamplesNumber))```` XPS function at the Stage Group through the Controller getCurrent function.
+      Implements  the ````int GroupJogCurrentGet (int SocketID, char *GroupName, int NbPositioners, double * Velocity, double * Acceleration)```` XPS function at the Stage Group through the Controller getCurrent function.
      
      - returns:
         - velocity:  The current velocity in mm/s of the specified stage.
@@ -269,6 +269,46 @@ public extension Stage {
     func jogGetCurrent() throws -> (velocity: Double, acceleration: Double)? {
         
         let currentVelocityAndAcceleration = try self.stageGroup.jogGetCurrent(forStage: self)
+        return currentVelocityAndAcceleration
+    }
+    
+    
+    /**
+     Returns a tuple containing the  current jog velocity and acceration settings of this stage.
+     
+     Implements  the ````int GroupJogParametersGet (int SocketID, char *GroupName, int NbPositioners, double * Velocity, double * Acceleration)````  XPS function.
+     
+      This function returns the velocity and the acceleration set by the user to use the jog mode for one positioner or for all positioners of the selected group.
+      So, this function must be called when the group is in “JOGGING” mode else the velocity and the acceleration will be null.
+      To change the velocity and the acceleration on the fly, in the jog mode, call the “GroupJogParametersSet” function.
+     
+      - Authors: Owen Hildreth
+     
+     - returns:
+        - velocity:  The current velocity in mm/s of the specified stage.
+        - acceleration:   The current acceration in mm/s^2 of the specified stage.
+     
+     
+     # Example #
+     ````
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     let stageGroup = StageGroup(controller: controller, stageGroupName: "M")
+     let stage = Stage(stageGroup: stageGroup, stageName: "X")
+     
+     do {
+         if let currentParameters = try stage.getJogParameters() {
+             let velocity = currentParameters.velocity
+             let acceleration = currentParameters.acceleration
+             print("Velocity Setting = \(velocity)")
+             print("Acceleartion Setting = \(acceleration)")
+         } else { print("current = nil") }
+     } catch {
+         print(error)
+     }
+     ````
+    */
+    func getJogParameters() throws -> (velocity: Double, acceleration: Double)? {
+        let currentVelocityAndAcceleration = try self.stageGroup.getJogParameters(forStage: self)
         return currentVelocityAndAcceleration
     }
 }

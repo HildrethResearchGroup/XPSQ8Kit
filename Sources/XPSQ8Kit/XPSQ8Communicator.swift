@@ -35,6 +35,7 @@ final class XPSQ8Communicator {
 		
 		// XPSQ8 sends data in packets of 1024 bytes.
 		socket.readBufferSize = 1024
+        
 		
 		do {
 			try socket.connect(to: address, port: Int32(port))
