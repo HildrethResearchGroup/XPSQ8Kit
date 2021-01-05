@@ -295,7 +295,8 @@ public extension XPSQ8Controller.PositionerController {
      
       The positioner name is the stage name. And the parameter name is read in the section under this stage name.
      
-     - Author: Steven DiGregorio
+     - Authors:
+        - Steven DiGregorio
 
       - Parameters:
          - positioner: The name of the positioner
@@ -328,16 +329,19 @@ public extension XPSQ8Controller.PositionerController {
     /**
     Gets the user travel limits
      
+     Implements the  ````void PositionerUserTravelLimitsGet(char PositionerName[250], double* UserMinimumTarget, double* UserMaximumTarget)````  XPS Controller function.
+     
      This function returns the user-defined travel limits for the selected positioner.
      
-     - Author: Steven DiGregorio
+     - Authors:
+        - Steven DiGregorio
 
       - Parameters:
          - positioner: The name of the positioner
      
-      - returns:
-         -  userMinimumTarget
-         - userMaximumTarget
+      - Returns:
+         - userMinimumTarget in units (likely mm )
+         - userMaximumTarget in units (likely mm )
      
      # Example #
       ````

@@ -928,11 +928,11 @@ public extension StageGroup.Positioner {
          - positioner: The name of the positioner
      
       - returns:
-         -  positionWindow:
-         - velocityWindow:
-         - checkingTime:
-         - meanPeriod:
-         - timeout:
+        - positionWindow:  Position Window in units (most likely mm)
+        - velocityWindow:  Velocity window in units/seconds ( most likely mm/sec)
+        - checkingTime:  Checking time in seconds
+        - meanPeriod:  Mean period in seconds
+        - timeout:   Motion done time out in seconds
      
      # Example #
       ````
@@ -970,4 +970,51 @@ public extension StageGroup.Positioner {
     
     
     
+    /**
+    Gets the user travel limits
+     
+     Implements the  ````void PositionerUserTravelLimitsGet(char PositionerName[250], double* UserMinimumTarget, double* UserMaximumTarget)````  XPS Controller function.
+     
+     This function returns the user-defined travel limits for the selected positioner.
+     
+     - Authors:
+        - Owen Hildreth
+
+      - Parameters:
+         - positioner: The name of the positioner
+     
+      - Returns:
+         - userMinimumTarget in units (likely mm )
+         - userMaximumTarget in units (likely mm )
+     
+     # Example #
+      ````
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     let stageGroup = StageGroup(controller: controller, stageGroupName: "M")
+     let stage = Stage(stageGroup: stageGroup, stageName: "X")
+     
+     do {
+         if let parameters = try group.positioner.getMaximumVelocityAndAcceleration(forStage: stage) {
+            let userMinimumTarget = parameters. userMinimumTarget
+            let userMaximumTarget = parameters.userMaximumTarget
+            let checkingTime = parameters.checkingTime
+            let meanPeriod = parameters.meanPeriod
+            let timeout = parameters.timeout
+     
+            print("userMinimumTarget   = \(userMinimumTarget)")
+            print("userMaximumTarget   = \(userMaximumTarget)")
+         } else { print("current = nil") }
+     } catch {
+         print(error)
+     }
+       ````
+     */
+    func getUserTravelLimits(forStage stage: Stage) throws -> (userMinimumTarget: Double, userMaximumTarget: Double) {
+        
+        let completeStageName = stage.completeStageName()
+        
+        let limits = try controller?.positioner.getUserTravelLimits(positioner: completeStageName)
+        
+        return limits
+    }
 }
