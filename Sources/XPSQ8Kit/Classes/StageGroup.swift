@@ -21,6 +21,11 @@ public class StageGroup {
     /// The name of the Stage Group.  This name must match the Stage Group Name defined on the XPS Hardware Controller.
     public let stageGroupName: String
     
+    public struct Positioner {
+        var controller: XPSQ8Controller?
+    }
+    
+    
     /**
      Creates an instance of Stage Group with the specified  Stage Group Name.
      
@@ -44,6 +49,7 @@ public class StageGroup {
         self.stageGroupName = stageGroupName
     }
 }
+
 
 
 // MARK: - Move Functions
@@ -647,7 +653,7 @@ public extension StageGroup {
     /**
      Returns the target position for one or all positioners of the selected group.
      
-     Implements the ````void GroupPositionTargetGet(char groupName[250], double *CurrentEncoderPosition)```` XPS function at the Stage Group.
+     Implements the ````void GroupPositionTargetGet(char groupName[250], double *CurrentEncoderPosition)````  XPS function at the Stage Group.
      
      Returns the target position for one or all positioners of the selected group. The target position represents the “end” position after the move.
      
@@ -684,4 +690,61 @@ public extension StageGroup {
         return currentTarget
     
     }
+}
+
+
+
+// MARK: - Access Positioner Namespace
+public extension StageGroup {
+    var positioner: Positioner {
+        return Positioner(controller: self.controller)
+    }
+}
+
+
+// MARK: - Positioner Functions
+public extension StageGroup.Positioner {
+    /**
+     Auto-scaling process for determining the stage scaling acceleration.
+     
+     Implements the  ````void PositionerAccelerationAutoScaling( char PositionerName[250],  double* Scaling)````  XPS Controller function.
+     
+     The function executes an auto-scaling process and returns the calculated scaling acceleration. The selected group must be in “NOTINIT” state, else ERR_NOT_ALLOWED_ACTION (-22) is returned. More information in the programmer manual
+     
+     Takes a long time to return a value
+     
+     - Authors:
+        - Owen Hildreth
+     
+     - Returns:
+        -  scaling: Astrom & Hägglund based auto-scaling
+     
+     - Parameters:
+        - stage: The stage to get value(s) from
+     
+     # Example #
+     ````
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     let stageGroup = StageGroup(controller: controller, stageGroupName: "M")
+     let stage = Stage(stageGroup: stageGroup, stageName: "X")
+     
+     do {
+         let currenAccelerationAutoScaling = try group.positioner.accelerationAutoScaling(forStage: stage) {
+     } catch {
+         print(error)
+     }
+     
+     print("Current Acceleration Auto Scalling = \(currenAccelerationAutoScaling)")
+     ````
+     */
+    func accelerationAutoScaling(forStage stage: Stage) throws -> Double? {
+        let completeStageName = stage.completeStageName()
+        
+        let currentAccelerationAutoScaling = try self.controller?.positioner.accelerationAutoScaling(positioner: completeStageName)
+        
+        return currentAccelerationAutoScaling
+    }
+    
+    
+    
 }

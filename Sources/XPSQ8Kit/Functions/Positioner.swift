@@ -33,17 +33,21 @@ public extension XPSQ8Controller.PositionerController {
     }
 }
 
+
 // MARK: - Positioner Functions
 public extension XPSQ8Controller.PositionerController {
     
     /**
      Auto-scaling process for determining the stage scaling acceleration
      
+     Implements the  ````void PositionerAccelerationAutoScaling( char PositionerName[250],  double* Scaling)````  XPS Controller function.
+     
       The function executes an auto-scaling process and returns the calculated scaling acceleration. The selected group must be in “NOTINIT” state, else ERR_NOT_ALLOWED_ACTION (-22) is returned. More information in the programmer manual
      
      Takes a long time to return a value
      
-     - Author: Steven DiGregorio
+     - Authors:
+        - Steven DiGregorio
      
      - Returns:
         -  scaling: Astrom & Hägglund based auto-scaling
@@ -165,12 +169,12 @@ public extension XPSQ8Controller.PositionerController {
        }
        ````
       */
-      func getHardwareStatus(positioner positionerName: String) throws -> Int {
-          let command = "PositionerHardwareStatusGet(\(positionerName), int *)"
-          try controller.communicator.write(string: command)
-          let status = try controller.communicator.read(as: (Int.self))
-          return (status)
-      }
+    func getHardwareStatus(positioner positionerName: String) throws -> Int {
+        let command = "PositionerHardwareStatusGet(\(positionerName), int *)"
+        try controller.communicator.write(string: command)
+        let status = try controller.communicator.read(as: (Int.self))
+        return (status)
+    }
     
     /**
      Gets the maximum velocity and acceleration from the profiler generators.
@@ -204,12 +208,12 @@ public extension XPSQ8Controller.PositionerController {
       }
        ````
      */
-     func getMaximumVelocityAndAcceleration(positioner positionerName: String) throws -> (velocity: Double, acceleration: Double) {
+    func getMaximumVelocityAndAcceleration(positioner positionerName: String) throws -> (velocity: Double, acceleration: Double) {
         let command = "PositionerMaximumVelocityAndAccelerationGet(\(positionerName), double *, double *)"
         try controller.communicator.write(string: command)
         let maximums = try controller.communicator.read(as: (Double.self, Double.self))
         return (velocity: maximums.0, acceleration: maximums.1)
-     }
+    }
     
     /**
       Gets the motion done parameters
@@ -234,12 +238,12 @@ public extension XPSQ8Controller.PositionerController {
       ````
        ````
      */
-     func getMotionDone(positioner positionerName: String) throws -> (positionWindow: Double, velocityWindow: Double, checkingTime: Double, meanPeriod: Double, timeout: Double) {
+    func getMotionDone(positioner positionerName: String) throws -> (positionWindow: Double, velocityWindow: Double, checkingTime: Double, meanPeriod: Double, timeout: Double) {
         let command = "PositionerMotionDoneGet(\(positionerName), double *, double *, double *, double *, double *)"
         try controller.communicator.write(string: command)
         let motionDone = try controller.communicator.read(as: (Double.self, Double.self, Double.self, Double.self, Double.self))
         return (positionWindow: motionDone.0, velocityWindow: motionDone.1, checkingTime: motionDone.2, meanPeriod: motionDone.3, timeout: motionDone.4)
-     }
+    }
     
     /**
      Gets a stage parameter value from the stages.ini file
@@ -361,6 +365,7 @@ public extension XPSQ8Controller.PositionerController.SGammaController {
         return (velocity: parameters.0, acceleration: parameters.1, minimumTjerkTime: parameters.2, maximumTjerkTime: parameters.3)
      }
     
+    
     /**
       Sets new motion values for the SGamma profiler
      
@@ -393,6 +398,7 @@ public extension XPSQ8Controller.PositionerController.SGammaController {
         try controller.communicator.write(string: command)
         try controller.communicator.validateNoReturn()
      }
+    
     
     /**
     Gets the motion and the settling time
