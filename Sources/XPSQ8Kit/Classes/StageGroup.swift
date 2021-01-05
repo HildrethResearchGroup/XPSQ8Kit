@@ -436,7 +436,8 @@ public extension StageGroup {
      
       Implements  the ````void GatheringCurrentNumberGet(int* CurrentNumber, int* MaximumSamplesNumber))```` XPS function at the Stage Group through the Controller getCurrent function.
      
-      - Authors: Owen Hildreth
+      - Authors:
+        - Owen Hildreth
      
      - returns:
         - velocity:  The current velocity in mm/s of the specified stage.
@@ -860,4 +861,55 @@ public extension StageGroup.Positioner {
         
         return hardwareStatus
     }
+    
+    
+    /**
+     Gets the maximum velocity and acceleration from the profiler generators.
+     
+     Implements the  ````void PositionerHardwareStatusGet(char PositionerName[250], int* HardwareStatus)````  XPS Controller function.
+     
+     This function returns the maximum velocity and acceleration of the profile generators. These parameters represent the limits for the profiler and are defined in the stages.ini file:
+     
+     MaximumVelocity = ; unit/second
+     
+     MaximumAcceleration = ; unit/second2
+     
+     - Authors:
+        - Owen Hildreth
+     
+      - Parameters:
+         - positioner: The name of the positioner
+     
+      - returns:
+         - velocity: Maximum velocity in units/sec (units most likely  mm/sec)
+         - acceleration: Maximum acceleration in units/sec^2 (units most likely  mm/sec^2)
+     
+     # Example #
+      ````
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     let stageGroup = StageGroup(controller: controller, stageGroupName: "M")
+     let stage = Stage(stageGroup: stageGroup, stageName: "X")
+     
+     do {
+         if let current = try group.positioner.getMaximumVelocityAndAcceleration(forStage: stage) {
+             let velocity = current.velocity
+             let acceleration = current.acceleration
+             print("Velocity = \(velocity)")
+             print("Acceleartion = \(acceleration)")
+         } else { print("current = nil") }
+     } catch {
+         print(error)
+     }
+       ````
+     */
+    func getMaximumVelocityAndAcceleration(forStage stage: Stage) throws -> (velocity: Double, acceleration: Double)? {
+        
+        let completeStageName = stage.completeStageName()
+        let maximumVelocityAndAcceleration = try controller?.positioner.getMaximumVelocityAndAcceleration(positioner: completeStageName)
+        
+        return maximumVelocityAndAcceleration
+        
+    }
+    
+    
 }

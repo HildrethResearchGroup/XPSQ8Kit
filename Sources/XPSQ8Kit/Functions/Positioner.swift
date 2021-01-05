@@ -197,18 +197,23 @@ public extension XPSQ8Controller.PositionerController {
     /**
      Gets the maximum velocity and acceleration from the profiler generators.
      
-      This function returns the maximum velocity and acceleration of the profile generators. These parameters represent the limits for the profiler and are defined in the stages.ini file:
-      MaximumVelocity = ; unit/second
+     Implements the  ````void PositionerHardwareStatusGet(char PositionerName[250], int* HardwareStatus)````  XPS Controller function.
+     
+     This function returns the maximum velocity and acceleration of the profile generators. These parameters represent the limits for the profiler and are defined in the stages.ini file:
+     
+     MaximumVelocity = ; unit/second
+     
      MaximumAcceleration = ; unit/second2
      
-     - Author: Steven DiGregorio
+     - Authors:
+        - Steven DiGregorio
      
       - Parameters:
          - positioner: The name of the positioner
      
       - returns:
-         -  velocity: Maximum velocity
-         - acceleration: Maximum acceleration
+         - velocity: Maximum velocity in units/sec (units most likely  mm/sec)
+         - acceleration: Maximum acceleration in units/sec^2 (units most likely  mm/sec^2)
      
      # Example #
       ````
@@ -232,6 +237,7 @@ public extension XPSQ8Controller.PositionerController {
         let maximums = try controller.communicator.read(as: (Double.self, Double.self))
         return (velocity: maximums.0, acceleration: maximums.1)
     }
+    
     
     /**
       Gets the motion done parameters
