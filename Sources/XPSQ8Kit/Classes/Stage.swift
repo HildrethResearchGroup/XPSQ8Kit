@@ -534,5 +534,44 @@ public extension Stage {
         try self.stageGroup.positioner.backlashEnable(forStage: self)
     }
     
-    
+    /**
+     Gets the positioner hardware status code.
+     
+     Implements the  ````void PositionerHardwareStatusGet(char PositionerName[250], int* HardwareStatus)````  XPS Controller function.
+     
+     
+     This function returns the hardware status of the selected positioner. The positioner hardware status is composed of the “corrector” hardware status and the “servitudes” hardware status:
+     
+     The “Corrector” returns the motor interface and the position encoder hardware status.
+     
+     The “Servitudes” returns the general inhibit and the end of runs hardware status.
+     
+     - Authors:
+        - Owen Hildreth
+      
+       - returns:
+          -  status: positioner hardware status code
+
+       - parameters:
+         - positionerName: The name of the positioner
+       
+       # Example #
+       ````
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     let stageGroup = StageGroup(controller: controller, stageGroupName: "M")
+     let stage = Stage(stageGroup: stageGroup, stageName: "X")
+     
+     do {
+         let hardwareStatus = try stage.getHardwareStatus()
+     print("hardwareStatus = \(hardwareStatus)"){
+     } catch {
+         print(error)
+     }
+       ````
+      */
+    func getHardwareStatus() throws -> Int? {
+        let hardwareStatus = try self.stageGroup.positioner.getHardwareStatus(forStage: self)
+        
+        return hardwareStatus
+    }
 }

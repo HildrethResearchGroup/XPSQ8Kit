@@ -152,15 +152,18 @@ public extension XPSQ8Controller.PositionerController {
     }
     
     
-    
-    
     /**
-       Gets the positioner hardware status code
+     Gets the positioner hardware status code
      
-       This function returns the hardware status of the selected positioner. The positioner hardware status is composed of the “corrector” hardware status and the “servitudes” hardware status:
-       The “Corrector” returns the motor interface and the position encoder hardware status. The “Servitudes” returns the general inhibit and the end of runs hardware status.
+     Implements the  ````void PositionerHardwareStatusGet(char PositionerName[250], int* HardwareStatus)````  XPS Controller function.
      
-     - Author: Steven DiGregorio
+     This function returns the hardware status of the selected positioner. The positioner hardware status is composed of the “corrector” hardware status and the “servitudes” hardware status:
+     
+     The “Corrector” returns the motor interface and the position encoder hardware status.
+     The “Servitudes” returns the general inhibit and the end of runs hardware status.
+     
+     - Authors:
+        - Steven DiGregorio
       
        - returns:
           -  status: positioner hardware status code
@@ -189,6 +192,7 @@ public extension XPSQ8Controller.PositionerController {
         let status = try controller.communicator.read(as: (Int.self))
         return (status)
     }
+    
     
     /**
      Gets the maximum velocity and acceleration from the profiler generators.
