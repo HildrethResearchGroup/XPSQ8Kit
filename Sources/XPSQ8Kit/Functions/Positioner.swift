@@ -81,7 +81,10 @@ public extension XPSQ8Controller.PositionerController {
     /**
      Disables the backlash compensation
      
+     Implements the  ````void PositionerBacklashDisable(char PositionerName[250])````  XPS Controller function.
+     
       This function disables the backlash compensation. For a more thorough description of the backlash compensation, please refer to the XPS Motion Tutorial section Compensation/Backlash compensation.
+     
       In the “stages.ini” file the parameter “Backlash” will enable or disable this feature as follows:
       Backlash = 0 —> Disable backlash Backlash > 0 —> Enable backlash
      
@@ -97,14 +100,14 @@ public extension XPSQ8Controller.PositionerController {
      let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
     
      do {
-         try controller?.positioner.disableBacklash(positioner: "M.X")
+         try controller?.positioner.backlashDisable(positioner: "M.X")
          print("Backlash compensation disabled")
      } catch {
          print(error)
      }
       ````
     */
-    func disableBacklash(positioner positionerName: String) throws {
+    func backlashDisable(positioner positionerName: String) throws {
         let command = "PositionerBacklashDisable(\(positionerName))"
         try controller.communicator.write(string: command)
         try controller.communicator.validateNoReturn()
@@ -113,12 +116,18 @@ public extension XPSQ8Controller.PositionerController {
     /**
      Enables the backlash compensation
      
+     Implements the  ````void PositionerBacklashEnable(char PositionerName[250])````  XPS Controller function.
+     
      This function enables the backlash compensation defined in the “stages.ini” file or defined by the “PositionerBacklashSet” function. If the backlash compensation value is null then this function will have not effect, and backlash compensation will remain disabled. For a more thorough description of the backlash compensation, please refer to the XPS Motion Tutorial section Compensation/Backlash compensation.
+     
       The group state must be NOTINIT to enable the backlash compensation. If it is not the case then ERR_NOT_ALLOWED_ACTION (-22) is returned.
+     
       In the “stages.ini” file the parameter “Backlash” allows the user to enable or disable the backlash compensation.
+     
       Backlash = 0 —> Disable backlash Backlash > 0 —> Enable backlash
      
-     - Author: Steven DiGregorio
+     - Authors:
+        - Steven DiGregorio
     
      - Parameters:
         - positioner: The name of the positioner
@@ -129,18 +138,20 @@ public extension XPSQ8Controller.PositionerController {
      let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
     
      do {
-         try controller?.positioner.enableBacklash(positioner: "M.X")
+         try controller?.positioner.backlashEnable(positioner: "M.X")
          print("Backlash compensation enabled")
      } catch {
          print(error)
      }
       ````
     */
-    func enableBacklash(positioner positionerName: String) throws {
+    func backlashEnable(positioner positionerName: String) throws {
         let command = "PositionerBacklashEnable(\(positionerName))"
         try controller.communicator.write(string: command)
         try controller.communicator.validateNoReturn()
     }
+    
+    
     
     
     /**

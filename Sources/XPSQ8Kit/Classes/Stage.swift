@@ -487,16 +487,52 @@ public extension Stage {
      let stage = Stage(stageGroup: stageGroup, stageName: "X")
      
      do {
-         try stage.disableBacklash() {
+         try stage.backlashDisable() {
      } catch {
          print(error)
      }
       ````
     */
-    func disableBacklash() throws {
-        try self.stageGroup.positioner.disableBacklash(forStage: self)
+    func backlashDisable() throws {
+        try self.stageGroup.positioner.backlashDisable(forStage: self)
     }
     
+    
+    /**
+     Enables the backlash compensation
+     
+     Implements the  ````void PositionerBacklashEnable(char PositionerName[250])````  XPS Controller function.
+     
+     This function enables the backlash compensation defined in the “stages.ini” file or defined by the “PositionerBacklashSet” function. If the backlash compensation value is null then this function will have not effect, and backlash compensation will remain disabled. For a more thorough description of the backlash compensation, please refer to the XPS Motion Tutorial section Compensation/Backlash compensation.
+     
+      The group state must be NOTINIT to enable the backlash compensation. If it is not the case then ERR_NOT_ALLOWED_ACTION (-22) is returned.
+     
+      In the “stages.ini” file the parameter “Backlash” allows the user to enable or disable the backlash compensation.
+     
+      Backlash = 0 —> Disable backlash Backlash > 0 —> Enable backlash
+     
+     - Authors:
+        - Owen Hildreth
+    
+     - Parameters:
+        - stage: he stage to get value(s) from
+    
+    # Example #
+     ````
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     let stageGroup = StageGroup(controller: controller, stageGroupName: "M")
+     let stage = Stage(stageGroup: stageGroup, stageName: "X")
+     
+     do {
+         try stage.backlashEnable() {
+     } catch {
+         print(error)
+     }
+      ````
+    */
+    func backlashEnable() throws {
+        try self.stageGroup.positioner.backlashEnable(forStage: self)
+    }
     
     
 }
