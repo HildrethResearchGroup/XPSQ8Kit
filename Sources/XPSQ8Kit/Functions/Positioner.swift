@@ -454,18 +454,21 @@ public extension XPSQ8Controller.PositionerController.SGammaController {
     
     
     /**
-    Gets the motion and the settling time
+     Gets the motion and the settling time
      
-      This function returns the motion (setting) and settling times from the previous motion. The motion time represents the defined time to complete the previous displacement. The settling time represents the effective settling time for a motion done.
+     Implements the  ````void PositionerSGammaPreviousMotionTimesGet( char PositionerName[250], double* SettingTime, double* SettlingTime)````  XPS Controller function.
      
-     - Author: Steven DiGregorio
+     This function returns the motion (setting) and settling times from the previous motion. The motion time represents the defined time to complete the previous displacement. The settling time represents the effective settling time for a motion done.
+     
+     - Authors:
+        - Steven DiGregorio
 
       - Parameters:
          - positioner: The name of the positioner that will be moved.
      
-      - returns:
-         - settingTime
-         - settlingTime
+      - Returns:
+         - settingTime (seconds)
+         - settlingTime (seconds)
      
      # Example #
       ````

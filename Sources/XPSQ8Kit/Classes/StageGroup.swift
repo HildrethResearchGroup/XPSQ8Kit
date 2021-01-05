@@ -1124,4 +1124,50 @@ public extension StageGroup.Positioner.SGamma {
         try controller?.positioner.SGamma.setParameters(positioner: completeStageName, velocity: velocity, acceleration: acceleration, minimumTjerkTime: minimumTjerkTime, maximumTjerkTime: maximumTjerkTime)
     }
     
+    
+    /**
+     Gets the motion and the settling time
+     
+     Implements the  ````void PositionerSGammaPreviousMotionTimesGet( char PositionerName[250], double* SettingTime, double* SettlingTime)````  XPS Controller function.
+     
+     This function returns the motion (setting) and settling times from the previous motion. The motion time represents the defined time to complete the previous displacement. The settling time represents the effective settling time for a motion done.
+     
+     - Authors:
+        - Owen Hildreth
+
+      - Parameters:
+         - positioner: The name of the positioner that will be moved.
+     
+      - Returns:
+         - settingTime (seconds)
+         - settlingTime (seconds)
+     
+     # Example #
+      ````
+     let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
+     let stageGroup = StageGroup(controller: controller, stageGroupName: "M")
+     let stage = Stage(stageGroup: stageGroup, stageName: "X")
+     
+     do {
+         if let parameters =  try group.positioner.sGamma.getPreviousMotionTimes(forStage: stage) {
+            let settingTime = parameters.settingTime
+            let settlingTime = parameters.settlingTime
+     
+            print("settingTime  = \(settingTime)")
+            print("settlingTime = \(settlingTime)")
+        }
+     } catch {
+         print(error)
+     }
+       ````
+     */
+    func getPreviousMotionTimes(forStage stage: Stage) throws -> (setting: Double, settling: Double)? {
+        
+        let completeStageName = stage.completeStageName()
+        
+        let parameters = try controller?.positioner.SGamma.getPreviousMotionTimes(positioner: completeStageName)
+        
+        return parameters
+    }
+    
 }
