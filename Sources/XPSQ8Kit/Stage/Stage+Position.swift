@@ -1,5 +1,5 @@
 //
-//  Stage+Group.Position.swift
+//  Stage+Position.swift
 //  
 //
 //  Created by Connor Barnes on 7/2/21.
@@ -10,13 +10,15 @@ public extension Stage {
   ///
   /// The “setpoint” position is calculated by the motion profiler and represents the “theoretical” position to reach.
   ///
-  /// #Example#
+  /// # Example #
   /// ````
   /// let currentPosition = try stage.currentPosition
   /// ````
   var currentPosition: Double {
-    get throws {
-      try stageGroup.currentPosition(for: self)
+    get async throws {
+      let message = "GroupPositionCurrentGet(\(fullyQualifiedName), double *)"
+      try await controller.communicator.write(string: message)
+      return try await controller.communicator.read(as: Double.self)
     }
   }
   
@@ -24,13 +26,15 @@ public extension Stage {
   ///
   /// Implements the `void GroupPositionSetpointGet(char groupName[250], double *CurrentEncoderPosition)` XPS function at the Stage Group through the Controller getCurrent function.  The “setpoint” position is calculated by the motion profiler and represents the “theoretical” position to reach.
   ///
-  /// #Example#
+  /// # Example #
   /// ````
   /// let setpoint = try stage.setpoint
   /// ````
   var setpoint: Double {
-    get throws {
-      try stageGroup.setpoint(for: self)
+    get async throws {
+      let message = "GroupPositionSetpointGet(\(fullyQualifiedName), double *)"
+      try await controller.communicator.write(string: message)
+      return try await controller.communicator.read(as: Double.self)
     }
   }
   
@@ -45,13 +49,15 @@ public extension Stage {
   /// - GroupPositionCurrentGet => 5.0005
   /// - GroupPositionSetpointGet => 5.0055
   ///
-  /// #Example#
+  /// # Example #
   /// ````
   /// let target = try stage.target
   /// ````
   var target: Double {
-    get throws {
-      try stageGroup.target(for: self)
+    get async throws {
+      let message = "GroupPositionTargetGet(\(fullyQualifiedName), double *)"
+      try await controller.communicator.write(string: message)
+      return try await controller.communicator.read(as: Double.self)
     }
   }
 }

@@ -12,7 +12,7 @@ public extension Stage {
   ///
   /// The function executes an auto-scaling process and returns the calculated scaling acceleration.
   ///
-  /// #Example#
+  /// # Example #
   /// ````
   /// let accelerationAutoScaling = try stage.accelerationAutoScaling
   /// ````
@@ -21,8 +21,10 @@ public extension Stage {
   ///
   /// - Note: This property will take a long time to return a value
   var accelerationAutoScaling: Double {
-    get throws {
-      try stageGroup.positioner.accelerationAutoScaling(for: self)
+    get async throws {
+      let command = "PositionerAccelerationAutoScaling(\(fullyQualifiedName), double *)"
+      try await controller.communicator.write(string: command)
+      return try await controller.communicator.read(as: (Double.self))
     }
   }/// Disables the backlash compensation.
   ///
@@ -34,12 +36,14 @@ public extension Stage {
   /// - Backlash = 0 → Disable backlash
   /// - Backlash > 0 → Enable backlash
   ///
-  /// #Example#
+  /// # Example #
   /// ````
   /// try stage.disableBacklash()
   /// ````
-  func disableBacklash() throws {
-    try self.stageGroup.positioner.disableBacklash(for: self)
+  func disableBacklash() async throws {
+    let command = "PositionerBacklashDisable(\(fullyQualifiedName))"
+    try await controller.communicator.write(string: command)
+    try await controller.communicator.validateNoReturn()
   }
   
   /// Enables backlash compensation.
@@ -52,14 +56,16 @@ public extension Stage {
   /// - Backlash = 0 → Disable backlash
   /// - Backlash > 0 → Enable backlash
   ///
-  /// #Example#
+  /// # Example #
   /// ````
   /// try stage.enableBacklash()
   /// ````
   ///
   /// - Note: The group state must be NOTINIT to enable the backlash compensation. If it is not the case then ERR\_NOT\_ALLOWED\_ACTION (-22) is returned.
-  func enableBacklash() throws {
-    try self.stageGroup.positioner.enableBacklash(for: self)
+  func enableBacklash() async throws {
+    let command = "PositionerBacklashEnable(\(fullyQualifiedName))"
+    try await controller.communicator.write(string: command)
+    try await controller.communicator.validateNoReturn()
   }
   
   /// The positioner hardware status code.
@@ -68,13 +74,15 @@ public extension Stage {
   ///
   /// This property returns the hardware status of the stage. The positioner hardware status is composed of the “corrector” hardware status and the “servitudes” hardware status. The “Corrector” returns the motor interface and the position encoder hardware status. The “Servitudes” returns the general inhibit and the end of runs hardware. status.
   ///
-  /// #Example#
+  /// # Example #
   /// ````
   /// let status = try stage.hardwareStatus
   /// ````
   var hardwareStatus: Int {
-    get throws {
-      try stageGroup.positioner.hardwareStatus(for: self)
+    get async throws {
+      let command = "PositionerHardwareStatusGet(\(fullyQualifiedName), int *)"
+      try await controller.communicator.write(string: command)
+      return try await controller.communicator.read(as: (Int.self))
     }
   }
   
@@ -85,23 +93,25 @@ public extension Stage {
   ///
   /// This function returns the maximum velocity and acceleration of the profile generators. These parameters represent the limits for the profiler and are defined in the stages.ini file.
   ///
-  /// #Example#
+  /// # Example #
   /// ````
   /// let (velocity, acceleration) = try stage.maximumVelocityAndAcceleration
   /// ````
-  var maximumVelocityAndAcceleration: (velocity: Double, acceleration: Double) {
-    get throws {
-      try stageGroup.positioner.maximumVelocityAndAcceleration(forStage: self)
+  var maximumVelocityAndAcceleration: Jog {
+    get async throws {
+      let command = "PositionerMaximumVelocityAndAccelerationGet(\(fullyQualifiedName), double *, double *)"
+      try await controller.communicator.write(string: command)
+      return try await controller.communicator.read(as: (Double.self, Double.self))
     }
   }
   
   /// The stage's motion done parameters.
   ///
-  /// Implements the  ````void PositionerMotionDoneGet(char PositionerName[250], double* positionWindow, double* velocityWindow, double* checkingTime, double* meanPeriod, double* timeOut)````  XPS Controller function.
+  /// Implements the  `void PositionerMotionDoneGet(char PositionerName[250], double* positionWindow, double* velocityWindow, double* checkingTime, double* meanPeriod, double* timeOut)`  XPS Controller function.
   ///
   /// The “MotionDoneMode” parameter from the stages.ini file defines the motion done mode. The motion done can be defined as “Theoretical” (the motion done mode is not used) or “VelocityAndPositionWindow”. For a more thorough description of the motion done mode, please refer to the XPS Motion Tutorial section Motion/Motion Done.
   ///
-  /// #Example#
+  /// # Example #
   /// ````
   /// let (
   ///   positionWindow,
@@ -113,15 +123,13 @@ public extension Stage {
   /// ````
   ///
   /// - Note: This function returns the motion done parameters only for the “VelocityAndPositionWindow” MotionDone mode. If the MotionDone mode is defined as “Theoretical” then ERR_WRONG_OBJECT_TYPE (-8) is returned.
-  var motionDoneParameters: (
-    positionWindow: Double,
-    velocityWindow: Double,
-    checkingTime: Double,
-    meanPeriod: Double,
-    timeout: Double
-  ) {
-    get throws {
-      try stageGroup.positioner.motionDoneParameters(for: self)
+  var motionDoneParameters: MotionDoneParameters {
+    get async throws {
+      let command = "PositionerMotionDoneGet(\(fullyQualifiedName), double *, double *, double *, double *, double *)"
+      try await controller.communicator.write(string: command)
+      return try await controller.communicator.read(
+        as: (Double.self, Double.self, Double.self, Double.self, Double.self)
+      )
     }
   }
   
@@ -131,13 +139,16 @@ public extension Stage {
   ///
   /// This property returns the user-defined travel limits for the selected positioner.
   ///
-  /// #Example#
+  /// # Example #
   /// ````
   /// let (minimum, maximum) = try stage.userTravelLimits
   /// ````
-  var userTravelLimits: (userMinimumTarget: Double, userMaximumTarget: Double) {
-    get throws {
-      try stageGroup.positioner.userTravelLimits(for: self)
+  var userTravelLimits: UserTravelLimits {
+    get async throws {
+      let command = "PositionerUserTravelLimitsGet(\(fullyQualifiedName), double *, double *)"
+      try await controller.communicator.write(string: command)
+      let targets = try await controller.communicator.read(as: (Double.self, Double.self))
+      return (userMinimumTarget: targets.0, userMaximumTarget: targets.1)
     }
   }
   
@@ -152,7 +163,7 @@ public extension Stage {
   /// - minimumTjerkTime (sec)
   /// - maximumTjerkTime (sec)
   ///
-  /// #Example#
+  /// # Example #
   /// ````
   /// let (
   ///   velocity,
@@ -161,49 +172,15 @@ public extension Stage {
   ///   maximumTjerkTime
   /// ) = try sGammeParameters
   /// ````
-  var sGammaParameters: (
-    velocity: Double,
-    acceleration: Double,
-    minimumTjerkTime: Double,
-    maximumTjerkTime: Double
-  ) {
-    get throws {
-      try stageGroup.positioner.sGamma.sGammaParameters(for: self)
+  var sGammaParameters: SGammaParameters {
+    get async throws {
+      let command = "PositionerSGammaParametersGet(\(fullyQualifiedName), double *, double *, double *, double *)"
+      try await controller.communicator.write(string: command)
+      return try await controller.communicator.read(
+        as: (Double.self, Double.self, Double.self, Double.self)
+      )
     }
   }
-  
-  
-  /**
-   Sets new motion values for the SGamma profiler
-   
-   Implements the  ````int PositionerSGammaParametersSet (int SocketID, char FullPositionerName[250] , double Velocity, double Acceleration, double MinimumJerkTime, double MaximumJerkTime)````  XPS Controller function.
-   
-   This function defines the new SGamma profiler values that will be used in future displacements.
-   
-   - Authors:
-   - Owen Hildreth
-   
-   - Parameters:
-   - positioner: The name of the positioner
-   - velocity: motion velocity (units/seconds)
-   - acceleration: motion acceleration (units/seconds^2)
-   - minimumJerkTime: Minimum jerk time (seconds)
-   - maximumJerkTime: Maximum jerk time (seconds)
-   
-   # Example #
-   ````
-   let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
-   let stageGroup = StageGroup(controller: controller, stageGroupName: "M")
-   let stage = Stage(stageGroup: stageGroup, name: "X")
-   
-   do {
-   try stage.setSGammaParameters(forStage: stage, velocity: velocity, acceleration: acceleration, minimumTjerkTime: minimumTjerkTime, maximumTjerkTime: maximumTjerkTime) {
-   } catch {
-   print(error)
-   }
-   ````
-   */
-  
   
   /// Sets new motion values for the SGamma profiler.
   ///
@@ -211,7 +188,7 @@ public extension Stage {
   ///
   /// This function defines the new SGamma profiler values that will be used in future displacements.
   ///
-  /// #Example#
+  /// # Example #
   /// ````
   /// try setSGammaParameters(
   ///   (velocity: 0.0, acceleration: 0.0, minimumTjerkTime: 0.0, maximumTjerkTime: 0.0)
@@ -219,55 +196,12 @@ public extension Stage {
   /// ````
   ///
   /// - Parameter parameters: The velocity (*UNITS*), acceleration (*UNITS*), minimum jerk time (sec), and maximum jerk time (sec).
-  func setSGammaParameters(
-    _ parameters: (velocity: Double,
-                   acceleration: Double,
-                   minimumTjerkTime: Double,
-                   maximumTjerkTime: Double)
-  ) throws {
-    try stageGroup.positioner.sGamma.setSGammaParameters(
-      for: self,
-      parameters: (parameters.velocity, parameters.acceleration, parameters.minimumTjerkTime, parameters.maximumTjerkTime)
-    )
+  func setSGammaParameters(_ parameters: SGammaParameters) async throws {
+    let (velocity, acceleration, minimumTjerkTime, maximumTjerkTime) = parameters
+    let command = "PositionerSGammaParametersSet(\(fullyQualifiedName), \(velocity), \(acceleration), \(minimumTjerkTime), \(maximumTjerkTime))"
+    try await controller.communicator.write(string: command)
+    try await controller.communicator.validateNoReturn()
   }
-  
-  /**
-   Gets the motion and the settling time
-   
-   Implements the  ````void PositionerSGammaPreviousMotionTimesGet( char PositionerName[250], double* SettingTime, double* SettlingTime)````  XPS Controller function.
-   
-   This function returns the motion (setting) and settling times from the previous motion. The motion time represents the defined time to complete the previous displacement. The settling time represents the effective settling time for a motion done.
-   
-   - Authors:
-   - Owen Hildreth
-   
-   - Parameters:
-   - positioner: The name of the positioner that will be moved.
-   
-   - Returns:
-   - settingTime (seconds)
-   - settlingTime (seconds)
-   
-   # Example #
-   ````
-   let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
-   let stageGroup = StageGroup(controller: controller, stageGroupName: "M")
-   let stage = Stage(stageGroup: stageGroup, name: "X")
-   
-   do {
-   if let parameters =  try stage.getPreviousMotionTimes(forStage: stage) {
-   let settingTime = parameters.settingTime
-   let settlingTime = parameters.settlingTime
-   
-   print("settingTime  = \(settingTime)")
-   print("settlingTime = \(settlingTime)")
-   }
-   } catch {
-   print(error)
-   }
-   ````
-   */
-  
   
   /// The motion and the settling time in seconds.
   ///
@@ -275,13 +209,15 @@ public extension Stage {
   ///
   /// This function returns the motion (setting) and settling times from the previous motion. The motion time represents the defined time to complete the previous displacement. The settling time represents the effective settling time for a motion done.
   ///
-  /// #Example#
+  /// # Example #
   /// ````
   /// let (setting, settling) = try stage.previousMotionTimes
   /// ````
-  var previousMotionTimes: (setting: Double, settling: Double)? {
-    get throws {
-      try stageGroup.positioner.sGamma.previousMotionTimes(for: self)
+  var previousMotionTimes: MotionTimes {
+    get async throws {
+      let command = "PositionerSGammaPreviousMotionTimesGet(\(fullyQualifiedName), double *, double *)"
+      try await controller.communicator.write(string: command)
+      return try await controller.communicator.read(as: (Double.self, Double.self))
     }
   }
 }

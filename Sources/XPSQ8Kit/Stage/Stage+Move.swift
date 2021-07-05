@@ -14,9 +14,11 @@ public extension Stage {
   /// try stage.moveRelative(by: -5)
   /// ````
   ///
-  /// - Parameter targetDisplacement: The distance in millimeters that the stage should be moved.
-  func moveRelative(by targetDisplacement: Double) throws {
-    try stageGroup.moveRelative(to: targetDisplacement, for: self)
+  /// - Parameter displacement: The distance in millimeters that the stage should be moved.
+  func moveRelative(by displacement: Double) async throws {
+    let command = "GroupMoveRelative(\(fullyQualifiedName),\(displacement))"
+    try await controller.communicator.write(string: command)
+    try await controller.communicator.validateNoReturn()
   }
   
   /// Moves the stage to an absolute location.
@@ -28,8 +30,10 @@ public extension Stage {
   /// ````
   ///
   /// - Parameter toLocation: The location in mm to move the stage to.
-  func moveAbsolute(to location: Double) throws {
-    try stageGroup.moveAbsolute(to: location, for: self)
+  func moveAbsolute(to location: Double) async throws {
+    let command = "GroupMoveAbsolute(\(fullyQualifiedName),\(location))"
+    try await controller.communicator.write(string: command)
+    try await controller.communicator.validateNoReturn()
   }
   
   /// Returns the motion status for the stage.
@@ -41,8 +45,16 @@ public extension Stage {
   ///
   /// - Returns: Positioner or group  status.
   var motionStatus: MotionStatus {
-    get throws {
-      try stageGroup.motionStatus(for: self)
+    get async throws {
+      let command = "GroupMotionStatusGet(\(fullyQualifiedName), int *)"
+      try await controller.communicator.write(string: command)
+      let status = try await controller.communicator.read(as: Int.self)
+      
+      if let motionStatus = Stage.MotionStatus(rawValue: status) {
+        return motionStatus
+      } else {
+        throw XPSQ8Communicator.Error.couldNotDecode
+      }
     }
   }
   
@@ -67,8 +79,10 @@ public extension Stage {
   /// // The stage will stop moving
   /// try abortMove()
   /// ````
-  func abortMove() throws {
-    try stageGroup.abortMove(for: self)
+  func abortMove() async throws {
+    let command = "GroupMoveAbort(\(fullyQualifiedName))"
+    try await controller.communicator.write(string: command)
+    try await controller.communicator.validateNoReturn()
   }
   
   // FIXME: Determine the unit of velocity
@@ -79,8 +93,10 @@ public extension Stage {
   /// let velocity = try stage.currentVelocity
   /// ````
   var currentVelocity: Double {
-    get throws {
-      try stageGroup.currentVelocity(for: self)
+    get async throws {
+      let command = "GroupVelocityCurrentGet(\(fullyQualifiedName), double *)"
+      try await controller.communicator.write(string: command)
+      return try await controller.communicator.read(as: (Double.self))
     }
   }
 }

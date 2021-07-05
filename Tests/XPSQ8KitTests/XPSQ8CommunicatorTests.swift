@@ -19,21 +19,21 @@ final class XPSQ8CommunicatorTests: XCTestCase {
 	/// Tests that the read write functionality is working by sending the function `ElapsedTimeGet(double *)`.
 	///
 	/// The choise of function is arbitrary - `ElapsedTimeGet(double *)` was chosen because its ouput is a single Double value.
-	func testReadWrite() {
+	func testReadWrite() async {
 		guard let communicator = Self.communicator else {
 			XCTFail("Could not create communicator.")
 			return
 		}
 		
 		do {
-			try communicator.write(string: "ElapsedTimeGet(double *)")
+      try await communicator.write(string: "ElapsedTimeGet(double *)")
 		} catch {
 			XCTFail("Could not write.")
 			return
 		}
 		
 		do {
-			_ = try communicator.read(as: Double.self)
+			_ = try await communicator.read(as: Double.self)
 		} catch {
 			XCTFail("Could not read.")
 			return

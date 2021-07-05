@@ -1,11 +1,9 @@
 //
-//  File.swift
+//  StageGroup.swift
 //  
 //
 //  Created by Owen Hildreth on 1/24/20.
 //
-
-import Foundation
 
 /// An External class to manage a Group of Stages for use by the XPS Hardware. Many stages are part of a larger Stage Group (Example: "MacroStages.X", where "MacroStages" is the stage group and "X" is this specific name.
 ///
@@ -53,7 +51,7 @@ public extension XPSQ8Controller {
   ///
   /// From the XPS Controller manual, all stages belong to a Stage Group and are addressed by stageGroupName.name.   This is actually set on the hardware itself.  The StageGroup is used to hold the name of the Group (e.g. "MacroStages") and the name holds the name of the specific stage (e.g. "X" for a stage that moves in the "x" direction).  Setting these values will make sure function calls can pass the stage and the stage will provide the necessary characterstring (e.g. MacroStages.X) using the completeStageName function.
   ///
-  /// #Example#
+  /// # Example #
   /// ````
   /// let group = try controller.makeStageGroup(named: "M")
   /// ````

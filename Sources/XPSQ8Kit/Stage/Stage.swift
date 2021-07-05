@@ -43,11 +43,11 @@ public class Stage {
   }
 }
 
-// MARK: Public Factory
+// MARK: - Public Factory
 public extension StageGroup {
   /// Creates a stage in the specified ``StageGroup``.
   ///
-  /// #Example#
+  /// # Example #
   /// ````
   /// let xStage = try group.makeStage(named: "X")
   /// ````
@@ -57,4 +57,44 @@ public extension StageGroup {
   func makeStage(named name: String) throws -> Stage {
     try .init(in: self, named: name)
   }
+}
+
+// MARK: - Helpers
+extension Stage {
+  var controller: XPSQ8Controller {
+    stageGroup.controller
+  }
+}
+
+// MARK: - Types
+public extension Stage {
+  typealias MotionDoneParameters = (
+    positionWindow: Double,
+    velocityWindow: Double,
+    checkingTime: Double,
+    meanPeriod: Double,
+    timeout: Double
+  )
+  
+  typealias Jog = (
+    velocity: Double,
+    acceleration: Double
+  )
+  
+  typealias UserTravelLimits = (
+    userMinimumTarget: Double,
+    userMaximumTarget: Double
+  )
+  
+  typealias SGammaParameters = (
+    velocity: Double,
+    acceleration: Double,
+    minimumTjerkTime: Double,
+    maximumTjerkTime: Double
+  )
+  
+  typealias MotionTimes = (
+    setting: Double,
+    settling: Double
+  )
 }

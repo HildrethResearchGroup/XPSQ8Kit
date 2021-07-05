@@ -1,396 +1,221 @@
 //
-//  File.swift
+//  Gathering.swift
 //  
 //
 //  Created by Connor Barnes on 1/13/20.
 //
 
 import Foundation
+import CoreImage
 
 public extension XPSQ8Controller {
-  struct GatheringController {
+  /// A namespace for gathering commands.
+  struct Gathering {
     var controller: XPSQ8Controller
-    
-    public struct ExternalController {
-      var controller: XPSQ8Controller
-    }
   }
 }
 
-
-// MARK: Access Gathering Namespace
+// MARK: - Access Gathering Namespace
 public extension XPSQ8Controller {
-  /// The set of commands dealing with globals.
-  var gathering: GatheringController {
-    return GatheringController(controller: self)
+  /// A namespace for gathering commands
+  var gathering: Gathering {
+    return Gathering(controller: self)
   }
 }
-
-public extension XPSQ8Controller.GatheringController {
-  // The set of commands deailed with gathering external data
-  var external: ExternalController {
-    return ExternalController(controller: controller)
-  }
-}
-
-
 
 // MARK: - Gathering Functions
-public extension XPSQ8Controller.GatheringController {
-  /// Gets a value in the global double array at the given index.
+public extension XPSQ8Controller.Gathering {
+  // TODO: Convert the configuration string into a Configuration
+  /// The current configuration as a string.
   ///
-  /// - returns:  A String containing the current configuration.
-  func getConfiguration() throws -> String {
-    let message = "GatheringConfigurationGet(char *)"
-    try controller.communicator.write(string: message)
-    return try controller.communicator.read(as: String.self)
-  }
-  
-  // TODO: make a list of accetpable configurations
-  /**
-   Sets the configuration of the controller
-   
-   Implements  the ````void GatheringConfigurationSet(char Type[250])````  XPS function
-   
-   # Example #
-   ````
-   do {
-   let configurationString = "Some correct configuration string"
-   try controller?.gathering.setConfiguration(configurationString)
-   } catch {print(error)}
-   ````
-   
-   - parameters:
-   - type: A string containing a valid configuration command.  See XPS documentation for examples.
-   */
-  func setConfiguration(withConfiguration type: String) throws {
-    let message = "GatheringConfigurationSet(\(type))"
-    try controller.communicator.write(string: message)
-  }
-  
-  
-  /**
-   Returns the current maximum number of samples and current number during acquisition as set by the configuration.
-   
-   Implements  the ````void GatheringCurrentNumberGet(int* CurrentNumber, int* MaximumSamplesNumber))```` XPS function
-   
-   - returns:
-   - currentNumber:  The current number of samples that have been gathered.
-   - maximumSamples:  The maximum number of samples that can be gathered.
-   
-   # Example #
-   ````
-   do {
-   let tuple = try controller?.gathering.getCurrentNumber()
-   let currentNumber = tuple?.currentNumber
-   let maximumSamples = tuple?.maximumSamples
-   print("currentNumber = \(currentNumber ?? -1)")
-   print("maximumSamples = \(maximumSamples ?? -1)")
-   } catch {print(error)}
-   ````
-   */
-  func getCurrentNumber() throws -> (currentNumber: Int, maximumSamples: Int) {
-    let message = "GatheringCurrentNumberGet(int *,int *)"
-    
-    try controller.communicator.write(string: message)
-    let configuration = try controller.communicator.read(as: (Int.self, Int.self))
-    
-    return (currentNumber: configuration.0, maximumSamples: configuration.1)
-  }
-  
-  /**
-   Acquire a configured data
-   
-   Implements the ````void GatheringDataAcquire()```` XPS function
-   
-   # Example #
-   ````
-   do {
-   try controller?.gathering.acquireData()
-   } catch {print(error)}
-   ````
-   */
-  func acquireData() throws {
-    let message = "GatheringDataAcquire()"
-    try controller.communicator.write(string: message)
-  }
-  
-  
-  /**
-   Get a data line from gathering buffer.
-   
-   Implements the ````void GatheringDataGet(int IndexPoint, char DataBufferLine[])````  XPS function.
-   
-   - parameters:
-   - indexPoint: The starting index of the data buffer.
-   
-   - returns: A string containing the current firmware vision.
-   
-   # Example #
-   ````
-   do {
-   let data = try controller?.gathering.getData(fromIndex: 0)
-   } catch {print(error)}
-   ````
-   */
-  func getData(fromIndex indexPoint: Int) throws -> String {
-    let message = "GatheringDataGet(\(indexPoint), char *)"
-    try controller.communicator.write(string: message)
-    let data = try controller.communicator.read(as: (String.self))
-    return data
-  }
-  
-  
-  
-  /**
-   Get a data line from gathering buffer.
-   
-   Implements the ````void GatheringDataMultipleLinesGet(int IndexPoint, int NumberOfLines, char DataBufferLine[])````  XPS function.
-   
-   - parameters:
-   - indexPoint: The starting index of the data buffer.
-   - numberOfLines: The number of lines to collect data
-   
-   - returns: A string containing the current firmware vision.
-   
-   # Example #
-   ````
-   do {
-   let data = try controller.gathering.getData(fromIndex: 0, forMultipleLines: 10)
-   } catch {print(error)}
-   ````
-   */
-  func getData(fromIndex indexPoint: Int, forMultipleLines numberOfLines: Int) throws -> String {
-    var data = ""
-    if numberOfLines == 0 {return data}
-    
-    for line in 1 ... numberOfLines {
-      let index = indexPoint + ((line - 1) * 1024)
-      let message = "GatheringDataMultipleLinesGet(\(index), char *)"
-      try controller.communicator.write(string: message)
-      let nextLine = try controller.communicator.read(as: (String.self))
-      data.append(contentsOf: nextLine)
+  /// Implements the `void GatheringConfigurationGet()` XPS function.
+  ///
+  /// # Example #
+  /// ````
+  /// let configuration = try controller.gathering.configuration
+  /// ````
+  var configuration: String {
+    get async throws {
+      let message = "GatheringConfigurationGet(char *)"
+      try await controller.communicator.write(string: message)
+      return try await controller.communicator.read(as: String.self)
     }
+  }
+  
+  /// Sets the configuration.
+  ///
+  /// Implements the `void GatheringConfigurationSet(char Type[250])` XPS function.
+  ///
+  /// # Example #
+  /// ````
+  /// let configuration = Configuration(
+  ///   dataTypes: [.currentPosition(xStage), .currentVelocity(xStage)]
+  /// )
+  /// try controller.gathering..external.setConfiguration(configuration)
+  /// ````
+  ///
+  /// - Parameter configuration: A configuration of the types of data to collect.
+  func setConfiguration(_ configuration: Configuration) async throws {
+    let message = "GatheringConfigurationSet(\(configuration.dataTypes.count), \(configuration.rawValue))"
+    try await controller.communicator.write(string: message)
+    try await controller.communicator.validateNoReturn()
+  }
+  
+  /// The current sample number during acquisition and maximum sample count as set by the configuration.
+  ///
+  /// Implements the `void GatheringCurrentNumberGet(int* CurrentNumber, int* MaximumSamplesNumber))` XPS function.
+  ///
+  /// # Example #
+  /// ````
+  /// let (currentSampleNumber, maximumSamples) = try controller.gathering.sampleInformation
+  /// ````
+  ///
+  /// - Returns:
+  ///   - `currentSampleNumber`: The current number of samples that have been gathered.
+  ///   - `maximumSamples`: The maximum number of samples that can be gathered.
+  var sampleInformation: (currentSampleNumber: Int, maximumSampleCount: Int) {
+    get async throws {
+      let message = "GatheringCurrentNumberGet(int *,int *)"
+      try await controller.communicator.write(string: message)
+      let configuration = try await controller.communicator.read(as: (Int.self, Int.self))
+      return (currentSampleNumber: configuration.0, maximumSampleCount: configuration.1)
+    }
+  }
+  
+  /// Acquire one set of the configured data.
+  ///
+  /// Implements the `void GatheringDataAcquire()` XPS function.
+  ///
+  /// # Example #
+  /// ````
+  /// try controller.gathering.configure(...)
+  /// try controller.gathering.acquireData()
+  /// ````
+  func acquireData() async throws {
+    let message = "GatheringDataAcquire()"
+    try await controller.communicator.write(string: message)
+    try await controller.communicator.validateNoReturn()
+  }
+  
+  /// Get a data line from the gathering buffer.
+  ///
+  /// Implements the `void GatheringDataGet(int IndexPoint, char DataBufferLine[])`  XPS function.
+  ///
+  /// # Example #
+  /// ````
+  /// let lineData = try controller.gathering.data(atIndex: 0)
+  /// ````
+  ///
+  /// - Parameter index: The starting index of the data.
+  /// - Returns: The string data.
+  func data(atIndex index: Int) async throws -> String {
+    let message = "GatheringDataGet(\(index), char *)"
+    try await controller.communicator.write(string: message)
+    let data = try await controller.communicator.read(as: (String.self))
     return data
   }
   
+  /// Get multiple data lines from the gathering buffer.
+  ///
+  /// Implements the `void GatheringDataMultipleLinesGet(int IndexPoint, int NumberOfLines, char DataBufferLine[])` XPS function.
+  ///
+  /// # Example #
+  /// ````
+  /// let data = try controller.gathering.data(atIndex: 0, numberOfLines: 10)
+  /// ````
+  ///
+  /// - Parameters:
+  ///   - index: The staring index of the data.
+  ///   - numberOfLines: The number of lines to collect.
+  /// - Returns: The joined string data.
+  func data(atIndex index: Int, numberOfLines: Int) async throws -> String {
+    guard numberOfLines > 0 else { throw XPSQ8Communicator.Error.parameterError }
+    
+    let message = "GatheringDataMultipleLinesGet(\(index), \(numberOfLines), char *)"
+    try await controller.communicator.write(string: message)
+    return try await controller.communicator.read(as: (String.self))
+  }
   
-  /**
-   Empty the gathered data in memory to start new gathering from scratch.
-   
-   Implements the ````void GatheringReset()````  XPS function.
-   
-   # Example #
-   ````
-   do {
-   try controller?.gathering.reset()
-   } catch {print(error)}
-   ````
-   */
-  func reset() throws {
+  /// Empties the gathered data in memory in order to start a new gathering from scratch.
+  ///
+  /// Implements the `void GatheringReset()` XPS function.
+  ///
+  /// # Example #
+  /// ````
+  /// try controller.gathering.reset()
+  /// ````
+  func reset() async throws {
     let message = "GatheringReset()"
-    try controller.communicator.write(string: message)
+    try await controller.communicator.write(string: message)
+    try await controller.communicator.validateNoReturn()
   }
   
-  
-  /**
-   Re-start the stopped gathering to add new data.
-   
-   Implements the ````void GatheringRunAppend()````  XPS function.
-   
-   # Example #
-   ````
-   do {
-   let data = try controller.gathering.runAppend()
-   } catch {print(error)}
-   ````
-   */
-  func runAppend() throws {
+  /// Resumes the stopped gathering and appends new data.
+  ///
+  /// Implements the `void GatheringRunAppend()` XPS function.
+  ///
+  /// # Example #
+  /// ````
+  /// // Collect data for 5 seconds
+  /// try controller.gathering.setConfiguration(...)
+  /// try controller.gathering.run(count: 5, divisor: 10)
+  /// sleep(5)
+  /// // Stop collecting data for 60 seconds
+  /// try controller.gathering.stop()
+  /// sleep(60)
+  /// // Resume collecting data (without discarding the first 5 seconds of data)
+  /// try controller.gathering.runAppending()
+  /// ````
+  ///
+  /// - Note: The gathering must be configured, executed, and stopped before calling this function.
+  func resume() async throws {
     let message = "GatheringRunAppend()"
-    try controller.communicator.write(string: message)
+    try await controller.communicator.write(string: message)
+    try await controller.communicator.validateNoReturn()
   }
   
-  
-  /**
-   Start a new gathering.
-   
-   Implements the ````void GatheringRun(int DataNumber, int Divisor)````  XPS function.
-   
-   - parameters:
-   - dataNumber: The number of data to collect? (need to consult XPS documentation).
-   - divisor: The divisor separating the data.
-   
-   # Example #
-   ````
-   do {
-   let data = try controller.gathering.run(fromDataNumber: 0, withDivisor:  4)
-   } catch {print(error)}
-   ````
-   */
-  func run(fromDataNumber dataNumber: Int, withDivisor divisor: Int) throws {
-    let message = "GatheringRun(\(dataNumber), \(divisor))"
-    try controller.communicator.write(string: message)
+  /// Runs a new gathering.
+  ///
+  /// Implements the `void GatheringRun(int DataNumber, int Divisor)`  XPS function.
+  ///
+  /// ## Example #
+  /// ````
+  /// // Must set the configuration before running
+  /// try controller.gathering.setConfiguration(...)
+  /// try controller.gathering.run(count: 5, divisor: 10)
+  /// ````
+  ///
+  /// - Note: You must set the configuration using ``setConfiguration(_:)`` before calling this.
+  ///
+  /// - Parameters:
+  ///   - count: The number of datapoints to be gathered
+  ///   - divisor: The divisor the the frequency (servo frequency) at which the data gathering will be done.
+  func run(count: Int, divisor: Int) async throws {
+    let message = "GatheringRun(\(count), \(divisor))"
+    try await controller.communicator.write(string: message)
+    try await controller.communicator.validateNoReturn()
   }
   
-  /**
-   Stop acquisition and save data.
-   
-   Implements the ````void GatheringStopAndSave()````  XPS function.
-   
-   # Example #
-   ````
-   do {
-   let data = try controller.gathering.stopAndSave()
-   } catch {print(error)}
-   ````
-   */
-  func stopAndSave() throws {
-    let message = "GatheringStopAndSave()"
-    try controller.communicator.write(string: message)
-  }
-  
-  
-  
-  /**
-   Stop the data gathering (without saving to file).
-   
-   Implements the ````void GatheringStop()```` XPS function.
-   
-   # Example #
-   ````
-   do {
-   let data = try controller.gathering.stop()
-   } catch {print(error)}
-   ````
-   */
-  func stop() throws {
-    let message = "GatheringStop()"
-    try controller.communicator.write(string: message)
-  }
-  
-}
-
-
-
-// MARK: - External Functions
-public extension XPSQ8Controller.GatheringController.ExternalController {
-  
-  // TODO: make a list of accetpable configurations
-  /**
-   Sets the configuration of the controller using a differnt mnumonique type.
-   
-   Implements  the ````void GatheringExternalConfigurationGet(char Type[]))````  XPS function
-   
-   - returns:
-   - A string with the external configuration.
-   
-   # Example #
-   ````
-   do {
-   let externalConfiguration = try controller?.gathering.external.getConfiguration()
-   } catch {print(error)}
-   ````
-   */
-  func getConfiguration() throws -> String {
-    let message = "GatheringExternalConfigurationGet(char *)"
-    try controller.communicator.write(string: message)
-    let externalConfiguration = try controller.communicator.read(as: (String.self))
-    
-    return externalConfiguration
-  }
-  
-  
-  // TODO: make a list of accetpable configurations
-  /**
-   Sets the configuration of the controller using an External Configuration acquisition
-   
-   Implements  the ````void GatheringExternalConfigurationSet(char Type[250])````  XPS function
-   
-   - parameters:
-   - type: A string containing a valid configuration command.  See XPS documentation for examples.
-   
-   # Example #
-   ````
-   do {
-   let configurationString = "Some correct configuration string"
-   try controller?.gathering.external..setConfiguration(configurationString)
-   } catch {print(error)}
-   ````
-   */
-  func setConfiguration(withConfiguration type: String) throws {
-    let message = "GatheringExternalConfigurationSet(\(type))"
-    try controller.communicator.write(string: message)
-  }
-  
-  
-  /**
-   Returns the current maximum number of samples and current number during acquisition as set by the External configuration.
-   
-   Implements  the ````void GatheringExternalCurrentNumberGet(int* CurrentNumber, int* MaximumSamplesNumber))````  XPS function
-   
-   - returns:
-   - currentNumber:  The current number of samples that have been gathered.
-   - maximumSamples:  The maximum number of samples that can be gathered.
-   
-   # Example #
-   ````
-   do {
-   let tuple = try controller?.gathering.external.getCurrentNumber()
-   let currentNumber = tuple?.currentNumber
-   let maximumSamples = tuple?.maximumSamples
-   print("currentNumber = \(currentNumber ?? -1)")
-   print("maximumSamples = \(maximumSamples ?? -1)")
-   } catch {print(error)}
-   ````
-   */
-  func getCurrentNumber() throws -> (currentNumber: Int, maximumSamples: Int) {
-    let message = "GatheringExternalCurrentNumberGet(int *,int *)"
-    
-    try controller.communicator.write(string: message)
-    let configuration = try controller.communicator.read(as: (Int.self, Int.self))
-    
-    return (currentNumber: configuration.0, maximumSamples: configuration.1)
-  }
-  
-  
-  /**
-   Get a data line from an external gathering buffer.
-   Implements the ````void GatheringExternalDataGet(int IndexPoint, char DataBufferLine[])````  XPS function.
-   
-   - parameters:
-   - indexPoint: The starting index of the data buffer.
-   
-   - returns: A string containing the current firmware vision.
-   # Example #
-   ````
-   do {
-   let data = try controller?.gathering.external.getData(fromIndex: 0)
-   } catch {print(error)}
-   ````
-   */
-  func getData(fromIndex indexPoint: Int) throws -> String {
-    let message = "GatheringExternalDataGet(\(indexPoint), char *)"
-    try controller.communicator.write(string: message)
-    let data = try controller.communicator.read(as: (String.self))
-    return data
-  }
-  
-  
-  /**
-   Stop acquisition and save data
-   
-   Implements the ````void GatheringExternalStopAndSave()````  XPS function
-   # Example #
-   ````
-   do {
-   try controller?.gathering.external.stopAndSave()
-   } catch {print(error)}
-   ````
-   */
-  func stopAndSave() throws {
-    let message = "GatheringExternalStopAndSave()"
-    try controller.communicator.write(string: message)
+  /// Stops internally and externally trigged data gathering and saves the data to disk.
+  ///
+  /// If `saveToDisk` is set to `true`, the data is saved to the file GATHERING.DAT in the "..\\Public" folder which can be accessed over FTP. If any previous data is here, it will be overwritten. See the XPS manual for more information about this file.
+  ///
+  /// Implements the `void GatheringStop()` or `void GatheringStopAndSave()` XPS functions depending on if `saveToDisk` is set.
+  ///
+  /// # Example #
+  /// ````
+  /// // Stop gathering after 2 seconds and save to disk
+  /// try controller.gathering.setConfiguration(...)
+  /// try controller.gathering.run(count: 10, divisor: 5)
+  /// sleep(2)
+  /// try controller.gathering.stop(saveToDisk: true)
+  /// ````
+  ///
+  /// - Parameter saveToDisk: Wether to save the data to disk or not. (`false` by default).
+  func stop(saveToDisk: Bool = false) async throws {
+    let message = saveToDisk ? "GatheringStopAndSave()" : "GatheringStop()"
+    try await controller.communicator.write(string: message)
+    try await controller.communicator.validateNoReturn()
   }
 }
-
 

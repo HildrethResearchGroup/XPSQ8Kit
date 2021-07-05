@@ -8,10 +8,10 @@
 import Foundation
 import Socket
 
-/// An internal class for managing communicating with an XPSQ8 instrument.
+/// An internal class for managing communication with an XPSQ8 instrument.
 ///
 /// This class is used by the `XPSQ8Controller` class to abstract away the communication details.
-final class XPSQ8Communicator {
+actor XPSQ8Communicator {
   /// The socket used for communicating with an XPSQ8 instrument.
   let socket: Socket
   
@@ -42,8 +42,7 @@ final class XPSQ8Communicator {
     } catch { throw Error.couldNotConnect }
     
     do {
-      // Timeout is set as an integer in milliseconds, but it is clearer to pass in a TimeInterval into the function because TimeInterval is used
-      // thoughout Foundation to represent time in seconds.
+      // Timeout is set as an integer in milliseconds, but it is clearer to pass in a TimeInterval into the function because TimeInterval is used throughout Foundation to represent time in seconds.
       let timeoutInMilliseconds = UInt(timeout * 1_000.0)
       try socket.setReadTimeout(value: timeoutInMilliseconds)
       try socket.setWriteTimeout(value: timeoutInMilliseconds)
@@ -61,15 +60,14 @@ final class XPSQ8Communicator {
   }
 }
 
-// MARK: Reading
-
+// MARK: - Reading
 extension XPSQ8Communicator {
   /// Reads a message from the instrument.
   ///
   /// - Throws: If a reading or decoding error occurred.
   ///
   /// - Returns: The message string and integer code returned by the instrument.
-  func read() throws -> (message: String, code: Int) {
+  func read() async throws -> (message: String, code: Int) {
     // The message may not fit in a single buffer (only 1024 bytes). To overcome this, we continue to request data until we are at the end of the message.
     // The API ends all of its messages in the string ",EndOfAPI", so we continue to append values to `string` until it ends in ",EndOfAPI".
     var string = ""
@@ -104,12 +102,12 @@ extension XPSQ8Communicator {
   }
 }
 
-// MARK: Writing
+// MARK: - Writing
 
 extension XPSQ8Communicator {
   /// Sends a string to the instrument. This should be a function such as `"ElapsedTimeGet(double *)"`.
   /// - Parameter string: The string to sent the instrument.
-  func write(string: String) throws {
+  func write(string: String) async throws {
     do {
       try socket.write(from: string)
     } catch {
@@ -118,7 +116,7 @@ extension XPSQ8Communicator {
   }
 }
 
-// MARK: Error
+// MARK: - Error
 extension XPSQ8Communicator {
   /// An error associated with an XPSQ8Communicator.
   ///
@@ -135,10 +133,11 @@ extension XPSQ8Communicator {
     case failedReadOperation
     case couldNotDecode
     case stringTooLong
+    case parameterError
   }
 }
 
-// MARK: Error Descriptions
+// MARK: - Error Descriptions
 extension XPSQ8Communicator.Error {
   var localizedDescription: String {
     switch self {
@@ -157,7 +156,9 @@ extension XPSQ8Communicator.Error {
     case .couldNotDecode:
       return "Could not decode."
     case .stringTooLong:
-      return "String too long"
+      return "String too long."
+    case .parameterError:
+      return "Parameter error."
     }
   }
 }
