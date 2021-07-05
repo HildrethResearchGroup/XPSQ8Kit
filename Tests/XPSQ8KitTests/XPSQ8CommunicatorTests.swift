@@ -38,7 +38,16 @@ final class XPSQ8CommunicatorTests: XCTestCase {
 			XCTFail("Could not read.")
 			return
 		}
+    
+    
 	}
+  
+  func testController() {
+    Task(priority: .default) {
+      try! await XPSQ8Controller(address: "", port: 0).login(username: "", password: "")
+    }
+    
+  }
 	
 	static var allTests = [
 		("testConnectToInstrument", testConnectToInstrument),
