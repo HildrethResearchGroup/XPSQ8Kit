@@ -22,7 +22,7 @@ public extension StageGroup {
   ///
   /// # Example #
   /// ````
-  /// try group.searchForHome()
+  /// try await group.searchForHome()
   /// ````
   ///
   /// - Note: The group must be initialized and the group must be in “NOT REFERENCED” state else this function returns the ERR_NOT_ALLOWED_ACTION (-22) error. If no error then the group status becomes “HOMING”.
@@ -39,7 +39,7 @@ public extension StageGroup {
   ///
   /// # Example #
   /// ````
-  /// try group.kill()
+  /// try await group.kill()
   /// ````
   func kill() async throws {
     let command = "GroupKill(\(name))"
@@ -54,7 +54,7 @@ public extension StageGroup {
   ///
   /// # Example #
   /// ````
-  /// try group.disableMotion()
+  /// try await group.disableMotion()
   /// ````
   func disableMotion() async throws {
     let command = "GroupMotionDisable(\(name))"
@@ -69,7 +69,7 @@ public extension StageGroup {
   ///
   /// # Example #
   /// ````
-  /// try group.enableMotion()
+  /// try await group.enableMotion()
   /// ````
   func enableMotion() async throws {
     let command = "GroupMotionEnable(\(name))"
@@ -81,7 +81,7 @@ public extension StageGroup {
   ///
   /// # Example #
   /// ````
-  /// let groupStatus = try group.groupMotionStatus
+  /// let groupStatus = try await group.groupMotionStatus
   /// ````
   var motionStatus: Stage.MotionStatus {
     get async throws {
@@ -118,7 +118,7 @@ public extension StageGroup {
   ///
   /// # Example #
   /// ````
-  /// let statusCode = try group.statusCoe
+  /// let statusCode = try await group.statusCoe
   /// ````
   var statusCode: Int {
     get async throws {
@@ -128,7 +128,7 @@ public extension StageGroup {
     }
   }
   
-  // TODO: Deprecate this function after converting the status codes into an enum (make sure to provide the localizedString property to describe the error). It may also be beneficial to add conformance to CustomStringConvertable providing a description of the error in the `var description: String { get }` property.
+  // TODO: Deprecate this function after converting the status codes into an enum (make sure to provide the localizedString property to describe the error). It may also be beneficial to add conformance to CustomStringConvertible providing a description of the error in the `var description: String { get }` property.
   /// Gets the description of the state of the group.
   ///
   /// This function returns the group state description corresponding to a group state code (see § 0 Group state list).
@@ -137,7 +137,7 @@ public extension StageGroup {
   /// # Example #
   /// ````
   /// // Get the description for the state 25
-  /// let stateDescription = group.statusString(for: 25)
+  /// let stateDescription = try await group.statusString(for: 25)
   /// ````
   ///
   /// - Parameter code: The state code of the group.

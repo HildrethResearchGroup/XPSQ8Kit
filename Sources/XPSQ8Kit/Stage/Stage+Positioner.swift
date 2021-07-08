@@ -14,7 +14,7 @@ public extension Stage {
   ///
   /// # Example #
   /// ````
-  /// let accelerationAutoScaling = try stage.accelerationAutoScaling
+  /// let accelerationAutoScaling = try await stage.accelerationAutoScaling
   /// ````
   ///
   /// - Note: The selected group must be in “NOTINIT” state, else ERR\_NOT\_ALLOWED\_ACTION (-22) is returned. More information in the programmer manual.
@@ -26,7 +26,9 @@ public extension Stage {
       try await controller.communicator.write(string: command)
       return try await controller.communicator.read(as: (Double.self))
     }
-  }/// Disables the backlash compensation.
+  }
+  
+  /// Disables the backlash compensation.
   ///
   /// Implements the  `void PositionerBacklashDisable(char PositionerName[250])`  XPS Controller function.
   ///
@@ -38,7 +40,7 @@ public extension Stage {
   ///
   /// # Example #
   /// ````
-  /// try stage.disableBacklash()
+  /// try await stage.disableBacklash()
   /// ````
   func disableBacklash() async throws {
     let command = "PositionerBacklashDisable(\(fullyQualifiedName))"
@@ -58,7 +60,7 @@ public extension Stage {
   ///
   /// # Example #
   /// ````
-  /// try stage.enableBacklash()
+  /// try await stage.enableBacklash()
   /// ````
   ///
   /// - Note: The group state must be NOTINIT to enable the backlash compensation. If it is not the case then ERR\_NOT\_ALLOWED\_ACTION (-22) is returned.
@@ -76,7 +78,7 @@ public extension Stage {
   ///
   /// # Example #
   /// ````
-  /// let status = try stage.hardwareStatus
+  /// let status = try await stage.hardwareStatus
   /// ````
   var hardwareStatus: Int {
     get async throws {
@@ -95,7 +97,7 @@ public extension Stage {
   ///
   /// # Example #
   /// ````
-  /// let (velocity, acceleration) = try stage.maximumVelocityAndAcceleration
+  /// let (velocity, acceleration) = try await stage.maximumVelocityAndAcceleration
   /// ````
   var maximumVelocityAndAcceleration: Jog {
     get async throws {
@@ -119,7 +121,7 @@ public extension Stage {
   ///   checkingTime,
   ///   meanPeriod,
   ///   timeout
-  /// ) = try stage.motionDoneParameters
+  /// ) = try await stage.motionDoneParameters
   /// ````
   ///
   /// - Note: This function returns the motion done parameters only for the “VelocityAndPositionWindow” MotionDone mode. If the MotionDone mode is defined as “Theoretical” then ERR_WRONG_OBJECT_TYPE (-8) is returned.
@@ -141,7 +143,7 @@ public extension Stage {
   ///
   /// # Example #
   /// ````
-  /// let (minimum, maximum) = try stage.userTravelLimits
+  /// let (minimum, maximum) = try await stage.userTravelLimits
   /// ````
   var userTravelLimits: UserTravelLimits {
     get async throws {
@@ -170,7 +172,7 @@ public extension Stage {
   ///   acceleration,
   ///   minimumTjerkTime,
   ///   maximumTjerkTime
-  /// ) = try sGammeParameters
+  /// ) = try await sGammeParameters
   /// ````
   var sGammaParameters: SGammaParameters {
     get async throws {
@@ -190,7 +192,7 @@ public extension Stage {
   ///
   /// # Example #
   /// ````
-  /// try setSGammaParameters(
+  /// try await setSGammaParameters(
   ///   (velocity: 0.0, acceleration: 0.0, minimumTjerkTime: 0.0, maximumTjerkTime: 0.0)
   /// )
   /// ````
@@ -211,7 +213,7 @@ public extension Stage {
   ///
   /// # Example #
   /// ````
-  /// let (setting, settling) = try stage.previousMotionTimes
+  /// let (setting, settling) = try await stage.previousMotionTimes
   /// ````
   var previousMotionTimes: MotionTimes {
     get async throws {

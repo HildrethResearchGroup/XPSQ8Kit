@@ -11,7 +11,7 @@ public extension Stage {
   /// # Example #
   /// ````
   /// // Move the stage in the reverse direction by 5 mm.
-  /// try stage.moveRelative(by: -5)
+  /// try await stage.moveRelative(by: -5)
   /// ````
   ///
   /// - Parameter displacement: The distance in millimeters that the stage should be moved.
@@ -26,7 +26,7 @@ public extension Stage {
   /// # Example #
   /// ````
   /// // Move the stage to -5 mm from the origin along the stage's axis
-  /// try stage.moveAbsolute(to: -5)
+  /// try await stage.moveAbsolute(to: -5)
   /// ````
   ///
   /// - Parameter toLocation: The location in mm to move the stage to.
@@ -40,7 +40,7 @@ public extension Stage {
   ///
   /// # Example #
   /// ````
-  /// let status = try stage.motionStatus
+  /// let status = try await stage.motionStatus
   /// ````
   ///
   /// - Returns: Positioner or group  status.
@@ -75,9 +75,9 @@ public extension Stage {
   ///
   /// # Example #
   /// ````
-  /// try stage.moveRelative(to: -100)
+  /// try await stage.moveRelative(to: -100)
   /// // The stage will stop moving
-  /// try abortMove()
+  /// try await abortMove()
   /// ````
   func abortMove() async throws {
     let command = "GroupMoveAbort(\(fullyQualifiedName))"
@@ -90,7 +90,7 @@ public extension Stage {
   ///
   /// # Example #
   /// ````
-  /// let velocity = try stage.currentVelocity
+  /// let velocity = try await stage.currentVelocity
   /// ````
   var currentVelocity: Double {
     get async throws {

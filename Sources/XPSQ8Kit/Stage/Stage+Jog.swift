@@ -10,7 +10,7 @@ public extension Stage {
   ///
   /// # Example #
   /// ````
-  /// let (velocity, acceleration) = try stage.currentJog
+  /// let (velocity, acceleration) = try await stage.currentJog
   /// ````
   var currentJog: Jog {
     get async throws {
@@ -28,7 +28,7 @@ public extension Stage {
   ///
   /// # Example #
   /// ````
-  /// let (velocity, acceleration) = try stage.jogParameters
+  /// let (velocity, acceleration) = try await stage.jogParameters
   /// ````
   ///
   /// - Note:

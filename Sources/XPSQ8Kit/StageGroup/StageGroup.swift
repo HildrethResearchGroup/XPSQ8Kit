@@ -31,8 +31,8 @@ public class StageGroup {
    # Example #
    ````
    // Setup Controller, StageGroup, and Stage
-   let controller = XPSQ8Controller(address: "192.168.0.254", port: 5001)
-   let stageGroup = StageGroup(controller: controller, stageGroupName: "M")
+   let controller = try XPSQ8Controller(address: "192.168.0.254", port: 5001)
+   let stageGroup = try StageGroup(controller: controller, stageGroupName: "M")
    ````
    */
   init(controller: XPSQ8Controller, stageGroupName: String) throws {

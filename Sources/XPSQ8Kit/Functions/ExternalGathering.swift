@@ -29,7 +29,7 @@ public extension XPSQ8Controller.Gathering.External {
   ///
   /// # Example #
   /// ````
-  /// let configuration = try controller.gathering.external.configuration
+  /// let configuration = try await controller.gathering.external.configuration
   /// ````
   var configuration: String {
     get async throws {
@@ -48,7 +48,7 @@ public extension XPSQ8Controller.Gathering.External {
   /// let configuration = Configuration(
   ///   dataTypes: [.currentPosition(xStage), .currentVelocity(xStage)]
   /// )
-  /// try controller.gathering..external.setConfiguration(configuration)
+  /// try await controller.gathering..external.setConfiguration(configuration)
   /// ````
   ///
   /// - Parameter configuration: A configuration of the types of data to collect.
@@ -64,7 +64,7 @@ public extension XPSQ8Controller.Gathering.External {
   ///
   /// # Example #
   /// ````
-  /// let (currentSampleNumber, maximumSamples) = try controller.gathering.external.sampleInformation
+  /// let (currentSampleNumber, maximumSamples) = try await controller.gathering.external.sampleInformation
   /// ````
   ///
   /// - Returns:
@@ -84,7 +84,7 @@ public extension XPSQ8Controller.Gathering.External {
   ///
   /// # Example #
   /// ````
-  /// let lineData = try controller.gathering.external.data(atIndex: 0)
+  /// let lineData = try await controller.gathering.external.data(atIndex: 0)
   /// ````
   ///
   /// - Parameter index: The starting index of the data.
@@ -103,7 +103,7 @@ public extension XPSQ8Controller.Gathering.External {
   ///
   /// # Example #
   /// ````
-  /// try controller.gathering.external.stop(saveToDisk: true)
+  /// try await controller.gathering.external.stop(saveToDisk: true)
   /// ````
   ///
   /// - Parameter saveToDisk: Wether to save the data to disk or not. (`false` by default).

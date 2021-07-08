@@ -12,7 +12,7 @@ public extension Stage {
   ///
   /// # Example #
   /// ````
-  /// let currentPosition = try stage.currentPosition
+  /// let currentPosition = try await stage.currentPosition
   /// ````
   var currentPosition: Double {
     get async throws {
@@ -28,7 +28,7 @@ public extension Stage {
   ///
   /// # Example #
   /// ````
-  /// let setpoint = try stage.setpoint
+  /// let setpoint = try await stage.setpoint
   /// ````
   var setpoint: Double {
     get async throws {
@@ -51,7 +51,7 @@ public extension Stage {
   ///
   /// # Example #
   /// ````
-  /// let target = try stage.target
+  /// let target = try await stage.target
   /// ````
   var target: Double {
     get async throws {

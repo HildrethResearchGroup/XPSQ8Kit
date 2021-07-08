@@ -39,7 +39,7 @@ public extension XPSQ8Controller {
   ///
   /// # Example #
   /// ````
-  /// let version = try controller.firmwareVersion
+  /// let version = try await controller.firmwareVersion
   /// ````
   var firmwareVersion: String {
     get async throws {
@@ -110,7 +110,7 @@ public extension XPSQ8Controller {
   ///
   /// # Example #
   /// ````
-  /// try controller.killAll()
+  /// try await controller.killAll()
   /// ````
   func killAll() async throws {
     let command = "KillAll()"
@@ -122,7 +122,7 @@ public extension XPSQ8Controller {
   ///
   /// # Example #
   /// ````
-  /// try controller.login(username: "User", password: "Pa55w0rd")
+  /// try await controller.login(username: "User", password: "Pa55w0rd")
   /// ````
   ///
   /// - Parameters:
@@ -138,7 +138,7 @@ public extension XPSQ8Controller {
   ///
   /// # Example #
   /// ````
-  /// try controller.reboot()
+  /// try await controller.reboot()
   /// ````
   ///
   /// - Note: This is a firmware reboot, not a hardware reboot.
@@ -152,7 +152,7 @@ public extension XPSQ8Controller {
   ///
   /// # Example #
   /// ````
-  /// try controller.restart()
+  /// try await controller.restart()
   /// ````
   func restart() async throws {
     let command = "RestartApplication()"

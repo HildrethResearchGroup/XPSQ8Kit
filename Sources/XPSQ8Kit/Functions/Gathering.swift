@@ -32,7 +32,7 @@ public extension XPSQ8Controller.Gathering {
   ///
   /// # Example #
   /// ````
-  /// let configuration = try controller.gathering.configuration
+  /// let configuration = try await controller.gathering.configuration
   /// ````
   var configuration: String {
     get async throws {
@@ -51,7 +51,7 @@ public extension XPSQ8Controller.Gathering {
   /// let configuration = Configuration(
   ///   dataTypes: [.currentPosition(xStage), .currentVelocity(xStage)]
   /// )
-  /// try controller.gathering..external.setConfiguration(configuration)
+  /// try await controller.gathering..external.setConfiguration(configuration)
   /// ````
   ///
   /// - Parameter configuration: A configuration of the types of data to collect.
@@ -67,7 +67,7 @@ public extension XPSQ8Controller.Gathering {
   ///
   /// # Example #
   /// ````
-  /// let (currentSampleNumber, maximumSamples) = try controller.gathering.sampleInformation
+  /// let (currentSampleNumber, maximumSamples) = try await controller.gathering.sampleInformation
   /// ````
   ///
   /// - Returns:
@@ -88,8 +88,8 @@ public extension XPSQ8Controller.Gathering {
   ///
   /// # Example #
   /// ````
-  /// try controller.gathering.configure(...)
-  /// try controller.gathering.acquireData()
+  /// try await controller.gathering.configure(...)
+  /// try await controller.gathering.acquireData()
   /// ````
   func acquireData() async throws {
     let message = "GatheringDataAcquire()"
@@ -103,7 +103,7 @@ public extension XPSQ8Controller.Gathering {
   ///
   /// # Example #
   /// ````
-  /// let lineData = try controller.gathering.data(atIndex: 0)
+  /// let lineData = try await controller.gathering.data(atIndex: 0)
   /// ````
   ///
   /// - Parameter index: The starting index of the data.
@@ -121,7 +121,7 @@ public extension XPSQ8Controller.Gathering {
   ///
   /// # Example #
   /// ````
-  /// let data = try controller.gathering.data(atIndex: 0, numberOfLines: 10)
+  /// let data = try await controller.gathering.data(atIndex: 0, numberOfLines: 10)
   /// ````
   ///
   /// - Parameters:
@@ -142,7 +142,7 @@ public extension XPSQ8Controller.Gathering {
   ///
   /// # Example #
   /// ````
-  /// try controller.gathering.reset()
+  /// try await controller.gathering.reset()
   /// ````
   func reset() async throws {
     let message = "GatheringReset()"
@@ -157,14 +157,14 @@ public extension XPSQ8Controller.Gathering {
   /// # Example #
   /// ````
   /// // Collect data for 5 seconds
-  /// try controller.gathering.setConfiguration(...)
-  /// try controller.gathering.run(count: 5, divisor: 10)
+  /// try await controller.gathering.setConfiguration(...)
+  /// try await controller.gathering.run(count: 5, divisor: 10)
   /// sleep(5)
   /// // Stop collecting data for 60 seconds
-  /// try controller.gathering.stop()
+  /// try await controller.gathering.stop()
   /// sleep(60)
   /// // Resume collecting data (without discarding the first 5 seconds of data)
-  /// try controller.gathering.runAppending()
+  /// try await controller.gathering.runAppending()
   /// ````
   ///
   /// - Note: The gathering must be configured, executed, and stopped before calling this function.
@@ -181,8 +181,8 @@ public extension XPSQ8Controller.Gathering {
   /// ## Example #
   /// ````
   /// // Must set the configuration before running
-  /// try controller.gathering.setConfiguration(...)
-  /// try controller.gathering.run(count: 5, divisor: 10)
+  /// try await controller.gathering.setConfiguration(...)
+  /// try await controller.gathering.run(count: 5, divisor: 10)
   /// ````
   ///
   /// - Note: You must set the configuration using ``setConfiguration(_:)`` before calling this.
@@ -205,10 +205,10 @@ public extension XPSQ8Controller.Gathering {
   /// # Example #
   /// ````
   /// // Stop gathering after 2 seconds and save to disk
-  /// try controller.gathering.setConfiguration(...)
-  /// try controller.gathering.run(count: 10, divisor: 5)
+  /// try await controller.gathering.setConfiguration(...)
+  /// try await controller.gathering.run(count: 10, divisor: 5)
   /// sleep(2)
-  /// try controller.gathering.stop(saveToDisk: true)
+  /// try await controller.gathering.stop(saveToDisk: true)
   /// ````
   ///
   /// - Parameter saveToDisk: Wether to save the data to disk or not. (`false` by default).

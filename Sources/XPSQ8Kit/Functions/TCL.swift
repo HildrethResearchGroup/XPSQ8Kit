@@ -27,7 +27,7 @@ public extension XPSQ8Controller.TCL {
   ///
   /// # Example #
   /// ````
-  /// try controller.tcl.killScript(named: "MyScript")
+  /// try await controller.tcl.killScript(named: "MyScript")
   /// ````
   ///
   /// - Parameter taskName: the name of the TCL task to kill.
@@ -41,7 +41,7 @@ public extension XPSQ8Controller.TCL {
   ///
   /// # Example #
   /// ````
-  /// controller.tcl.killAllScripts()
+  /// try await controller.tcl.killAllScripts()
   /// ````
   func killAllScripts() async throws {
     let command = "TCLScriptKillAll()"

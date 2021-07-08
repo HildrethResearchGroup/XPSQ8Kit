@@ -15,7 +15,7 @@ public extension StageGroup {
   ///
   /// # Example #
   /// ````
-  /// try group.disableJogging()
+  /// try await group.disableJogging()
   /// ````
   func disableJogging() async throws {
     let message = "GroupJogModeDisable(\(name))"
@@ -32,7 +32,7 @@ public extension StageGroup {
   ///
   /// # Example #
   /// ````
-  /// try group.enableJogging()
+  /// try await group.enableJogging()
   /// ````
   func enableJogging() async throws {
     let message = "GroupJogModeEnable(\(name))"
