@@ -29,4 +29,9 @@ public final class XPSQ8Controller {
   public init(address: String, port: Int, timeout: TimeInterval = 5.0) async throws {
     communicator = try await .init(address: address, port: port, timeout: timeout)
   }
+  
+  /// Disconnects from the instrument.
+  public func disconnect() async {
+    await communicator.disconnect()
+  }
 }

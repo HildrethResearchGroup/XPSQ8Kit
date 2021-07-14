@@ -51,9 +51,14 @@ actor XPSQ8Communicator {
     } catch { throw Error.couldNotEnableBlocking }
   }
   
+  /// Disconnects from the instrument.
+  func disconnect() {
+    socket.close()
+  }
+  
   deinit {
     // Close the connection to the socket because we will no longer need it.
-    socket.close()
+    disconnect()
   }
 }
 
