@@ -26,7 +26,7 @@ public final class XPSQ8Controller {
   ///   - address: The IPV4 address of the instrument in dot notation.
   ///   - port: The port of the instrument.
   ///   - timeout: The maximum time to wait in seconds before timing out when communicating with the instrument.
-  public init(address: String, port: Int, timeout: TimeInterval = 5.0) throws {
-    communicator = try .init(address: address, port: port, timeout: timeout)
+  public init(address: String, port: Int, timeout: TimeInterval = 5.0) async throws {
+    communicator = try await .init(address: address, port: port, timeout: timeout)
   }
 }

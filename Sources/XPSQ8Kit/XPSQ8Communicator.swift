@@ -24,7 +24,7 @@ actor XPSQ8Communicator {
   ///
   /// - Throws: An error if a socket could not be created, connected, or configured properly.
   ///
-  init(address: String, port: Int, timeout: TimeInterval) throws {
+  init(address: String, port: Int, timeout: TimeInterval) async throws {
     // Try to create a socket:
     // - XPSQ8 uses an IPV4 address, so the protocol family .inet is used.
     // - We would like to read to and write from the socket, so .stream is used.
@@ -36,10 +36,7 @@ actor XPSQ8Communicator {
     // XPSQ8 sends data in packets of 1024 bytes.
     socket.readBufferSize = 1024
     
-    
-    do {
-      try socket.connect(to: address, port: Int32(port))
-    } catch { throw Error.couldNotConnect }
+    try socket.connect(to: address, port: Int32(port), timeout: UInt(1_000 * timeout))
     
     do {
       // Timeout is set as an integer in milliseconds, but it is clearer to pass in a TimeInterval into the function because TimeInterval is used throughout Foundation to represent time in seconds.
@@ -49,7 +46,7 @@ actor XPSQ8Communicator {
     } catch { throw Error.couldNotSetTimeout }
     
     do {
-      // I'm not sure why we need to senable blocking, but the python drivers enabled it, so we will too.
+      // I'm not sure why we need to enable blocking, but the python drivers enabled it, so we will too.
       try socket.setBlocking(mode: true)
     } catch { throw Error.couldNotEnableBlocking }
   }

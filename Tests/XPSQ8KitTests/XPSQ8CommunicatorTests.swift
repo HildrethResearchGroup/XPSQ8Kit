@@ -4,10 +4,12 @@ import XCTest
 final class XPSQ8CommunicatorTests: XCTestCase {
 	
 	/// The communicator to be used by the tests
-	static var communicator: XPSQ8Communicator!
+	static var communicator: XPSQ8Communicator?
 	
 	override class func setUp() {
-		communicator = try? .init(address: "192.168.0.254", port: 5001, timeout: 5.0)
+    unsafeWaitFor {
+      communicator = try? await .init(address: "192.168.0.254", port: 5001, timeout: 5.0)
+    }
 	}
 	
 	/// Tests that an instrument is connected to properly. If this is failing, check the connection between the instrument. This will cause most other tests to fail.
@@ -21,7 +23,6 @@ final class XPSQ8CommunicatorTests: XCTestCase {
 	/// The choise of function is arbitrary - `ElapsedTimeGet(double *)` was chosen because its ouput is a single Double value.
 	func testReadWrite() async {
 		guard let communicator = Self.communicator else {
-			XCTFail("Could not create communicator.")
 			return
 		}
 		
@@ -38,19 +39,20 @@ final class XPSQ8CommunicatorTests: XCTestCase {
 			XCTFail("Could not read.")
 			return
 		}
-    
-    
 	}
-  
-  func testController() {
-    Task(priority: .default) {
-      try! await XPSQ8Controller(address: "", port: 0).login(username: "", password: "")
-    }
-    
-  }
 	
 	static var allTests = [
 		("testConnectToInstrument", testConnectToInstrument),
 		("testGetTimeElapsed", testReadWrite),
 	]
+}
+
+// MARK: - Unsafe Wait For
+func unsafeWaitFor(_ operation: @escaping () async -> ()) {
+  let semaphore = DispatchSemaphore(value: 0)
+  Task {
+    await operation()
+    semaphore.signal()
+  }
+  semaphore.wait()
 }
