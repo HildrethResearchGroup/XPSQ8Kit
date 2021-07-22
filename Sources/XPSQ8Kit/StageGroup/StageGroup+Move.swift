@@ -6,6 +6,15 @@
 //
 
 public extension StageGroup {
+  /// Initializes the stage group.
+  ///
+  /// This corresponds to the GroupInitialize() XPS-Q8 function
+  func initialize() async throws {
+    let command = "GroupInitialize(\(name))"
+    try await controller.communicator.write(string: command)
+    try await controller.communicator.validateNoReturn()
+  }
+  
   /// Starts the home search sequence.
   ///
   /// This function initiates a home search for each positioner of the selected group.
@@ -27,7 +36,7 @@ public extension StageGroup {
   ///
   /// - Note: The group must be initialized and the group must be in “NOT REFERENCED” state else this function returns the ERR_NOT_ALLOWED_ACTION (-22) error. If no error then the group status becomes “HOMING”.
   func searchForHome() async throws {
-    let command = "GroupHomeSearch(\"\(name)\")"
+    let command = "GroupHomeSearch(\(name))"
     try await controller.communicator.write(string: command)
     try await controller.communicator.validateNoReturn()
   }
