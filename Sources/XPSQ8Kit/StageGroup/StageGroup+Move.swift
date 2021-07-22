@@ -27,7 +27,7 @@ public extension StageGroup {
   ///
   /// - Note: The group must be initialized and the group must be in “NOT REFERENCED” state else this function returns the ERR_NOT_ALLOWED_ACTION (-22) error. If no error then the group status becomes “HOMING”.
   func searchForHome() async throws {
-    let command = "GroupHomeSearch(\(name))"
+    let command = "GroupHomeSearch(\"\(name))\""
     try await controller.communicator.write(string: command)
     try await controller.communicator.validateNoReturn()
   }
