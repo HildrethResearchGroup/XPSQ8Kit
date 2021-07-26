@@ -77,10 +77,9 @@ public extension StageGroup {
       let now = Date()
       guard now.timeIntervalSince(start) < timeout else { throw Error.timeout }
       
-      if let statusCode = try? await statusCode {
-        if codes.contains(statusCode) {
-          return
-        }
+      let statusCode = try await self.statusCode
+      if codes.contains(statusCode) {
+        return
       }
       
       await Task.sleep(UInt64(1_000_000_000 * interval))
