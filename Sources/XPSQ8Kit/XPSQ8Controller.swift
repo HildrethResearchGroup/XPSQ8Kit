@@ -34,4 +34,36 @@ public final class XPSQ8Controller {
   public func disconnect() async {
     await communicator.disconnect()
   }
+	
+	public func waitForStatus(
+		withCodes codes: Set<Int>,
+		interval: TimeInterval = 0.25,
+		timeout: TimeInterval = 10.0
+	) async throws {
+		let start = Date()
+		while true {
+			let now = Date()
+			guard now.timeIntervalSince(start) < timeout else { throw Error.timeout }
+			
+			if let status = try? await status {
+				if codes.contains(status.code) {
+					return
+				}
+			}
+			
+			await Task.sleep(UInt64(1_000_000_000 * interval))
+		}
+	}
+	
+	public func waitForStatus(
+		withCode code: Int,
+		interval: TimeInterval = 0.25,
+		timeout: TimeInterval = 10.0
+	) async throws {
+		try await waitForStatus(withCodes: [code], interval: interval, timeout: timeout)
+	}
+	
+	public enum Error: Swift.Error {
+		case timeout
+	}
 }
