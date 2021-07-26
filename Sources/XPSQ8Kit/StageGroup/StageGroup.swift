@@ -5,6 +5,8 @@
 //  Created by Owen Hildreth on 1/24/20.
 //
 
+import Foundation
+
 /// An External class to manage a Group of Stages for use by the XPS Hardware. Many stages are part of a larger Stage Group (Example: "MacroStages.X", where "MacroStages" is the stage group and "X" is this specific name.
 ///
 /// This actor groups stages together and implements group-specific commends owned by various controllers.
@@ -60,5 +62,40 @@ public extension XPSQ8Controller {
   /// - Returns: The stage group.
   func makeStageGroup(named name: String) throws -> StageGroup {
     try .init(controller: self, stageGroupName: name)
+  }
+}
+
+// MARK: - Helpers
+public extension StageGroup {
+  func waitForStatus(
+    withCodes codes: Set<Int>,
+    interval: TimeInterval = 0.25,
+    timeout: TimeInterval = 10.0
+  ) async throws {
+    let start = Date()
+    while true {
+      let now = Date()
+      guard now.timeIntervalSince(start) < timeout else { throw Error.timeout }
+      
+      if let statusCode = try? await statusCode {
+        if codes.contains(statusCode) {
+          return
+        }
+      }
+      
+      await Task.sleep(UInt64(1_000_000_000 * interval))
+    }
+  }
+  
+  func waitForStatus(
+    withCode code: Int,
+    interval: TimeInterval = 0.25,
+    timeout: TimeInterval = 10.0
+  ) async throws {
+    try await waitForStatus(withCodes: [code], interval: interval, timeout: timeout)
+  }
+  
+  enum Error: Swift.Error {
+    case timeout
   }
 }
