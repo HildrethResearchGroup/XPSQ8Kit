@@ -18,7 +18,6 @@ public extension Stage {
   func moveRelative(by displacement: Double) async throws {
     let command = "GroupMoveRelative(\(fullyQualifiedName),\(displacement))"
     try await controller.communicator.write(string: command)
-    try await controller.communicator.validateNoReturn()
   }
   
   /// Moves the stage to an absolute location.
@@ -33,7 +32,6 @@ public extension Stage {
   func moveAbsolute(to location: Double) async throws {
     let command = "GroupMoveAbsolute(\(fullyQualifiedName),\(location))"
     try await controller.communicator.write(string: command)
-    try await controller.communicator.validateNoReturn()
   }
   
   /// Returns the motion status for the stage.

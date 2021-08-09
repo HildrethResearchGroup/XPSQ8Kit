@@ -12,7 +12,7 @@ public extension StageGroup {
   func initialize() async throws {
     let command = "GroupInitialize(\(name))"
     try await controller.communicator.write(string: command)
-    try await controller.communicator.validateNoReturn()
+//    try await controller.communicator.validateNoReturn()
   }
   
   /// Starts the home search sequence.
@@ -118,23 +118,6 @@ public extension StageGroup {
     let command = "GroupMoveAbort(\(name))"
     try await controller.communicator.write(string: command)
     try await controller.communicator.validateNoReturn()
-  }
-  
-  // TODO: Change the return type to an enum containing all possible status codes
-  /// The status code of the group.
-  ///
-  /// The group status codes are listed in the “Group status list” § 0. The description of the group status code can be retrieved from the “GroupStatusStringGet” function.
-  ///
-  /// # Example #
-  /// ````
-  /// let statusCode = try await group.statusCoe
-  /// ````
-  var statusCode: Int {
-    get async throws {
-      let command = "GroupStatusGet(\(name), int *)"
-      try await controller.communicator.write(string: command)
-      return try await controller.communicator.read(as: (Int.self))
-    }
   }
   
   // TODO: Deprecate this function after converting the status codes into an enum (make sure to provide the localizedString property to describe the error). It may also be beneficial to add conformance to CustomStringConvertible providing a description of the error in the `var description: String { get }` property.

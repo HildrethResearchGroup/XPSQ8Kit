@@ -65,36 +65,10 @@ public extension XPSQ8Controller {
   }
 }
 
-// MARK: - Helpers
+// MARK: - Error
 public extension StageGroup {
-  func waitForStatus(
-    withCodes codes: Set<Int>,
-    interval: TimeInterval = 0.25,
-    timeout: TimeInterval = 10.0
-  ) async throws {
-    let start = Date()
-    while true {
-      let now = Date()
-      guard now.timeIntervalSince(start) < timeout else { throw Error.timeout }
-      
-      let statusCode = try await self.statusCode
-      if codes.contains(statusCode) {
-        return
-      }
-      
-      await Task.sleep(UInt64(1_000_000_000 * interval))
-    }
-  }
-  
-  func waitForStatus(
-    withCode code: Int,
-    interval: TimeInterval = 0.25,
-    timeout: TimeInterval = 10.0
-  ) async throws {
-    try await waitForStatus(withCodes: [code], interval: interval, timeout: timeout)
-  }
-  
   enum Error: Swift.Error {
+    case unknownStatus
     case timeout
   }
 }
