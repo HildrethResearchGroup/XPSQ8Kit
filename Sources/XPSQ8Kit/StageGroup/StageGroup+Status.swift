@@ -126,30 +126,30 @@ public extension StageGroup {
 
 // MARK: - Helpers
 public extension StageGroup {
-  func waitForStatus(
-    _ statuses: Set<Status>,
-    interval: TimeInterval = 0.25,
-    timeout: TimeInterval = 10.0
-  ) async throws {
-    let start = Date()
-    while true {
-      let now = Date()
-      guard now.timeIntervalSince(start) < timeout else { throw Error.timeout }
-      
-      let status = try await self.status
-      if statuses.contains(status) {
-        return
-      }
-      
-      await Task.sleep(UInt64(1_000_000_000 * interval))
-    }
-  }
-  
-  func waitForStatus(
-    _ status: Status,
-    interval: TimeInterval = 0.25,
-    timeout: TimeInterval = 10.0
-  ) async throws {
-    try await waitForStatus([status], interval: interval, timeout: timeout)
-  }
+//  func waitForStatus(
+//    _ statuses: Set<Status>,
+//    interval: TimeInterval = 0.25,
+//    timeout: TimeInterval = 10.0
+//  ) async throws {
+//    let start = Date()
+//    while true {
+//      let now = Date()
+//      guard now.timeIntervalSince(start) < timeout else { throw Error.timeout }
+//      
+//      let status = try await self.status
+//      if statuses.contains(status) {
+//        return
+//      }
+//      
+//			try await Task.sleep(nanoseconds: UInt64(1_000_000_000 * interval))
+//    }
+//  }
+//  
+//  func waitForStatus(
+//    _ status: Status,
+//    interval: TimeInterval = 0.25,
+//    timeout: TimeInterval = 10.0
+//  ) async throws {
+//    try await waitForStatus([status], interval: interval, timeout: timeout)
+//  }
 }
