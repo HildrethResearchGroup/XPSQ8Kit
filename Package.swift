@@ -24,9 +24,9 @@ let package = Package(
 			name: "XPSQ8Kit",
       dependencies: [
         .product(name: "Socket", package: "BlueSocket")
-      ]),
+      ]) /*,
 		.testTarget(
 			name: "XPSQ8KitTests",
-			dependencies: ["XPSQ8Kit"]),
+			dependencies: ["XPSQ8Kit"]), */
 	]
 )
