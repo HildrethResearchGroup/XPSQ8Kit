@@ -52,13 +52,16 @@ actor XPSQ8Communicator {
   }
   
   /// Disconnects from the instrument.
-  func disconnect() {
+  func disconnect() async {
     socket.close()
   }
   
   deinit {
     // Close the connection to the socket because we will no longer need it.
-    disconnect()
+      Task {
+          await disconnect()
+      }
+    
   }
 }
 
