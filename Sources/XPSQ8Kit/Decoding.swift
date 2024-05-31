@@ -117,8 +117,9 @@ extension XPSQ8Communicator {
                 T4.init(xpsq8String: components[4]),
                 T5.init(xpsq8String: components[5]))
   }
+}
   
-  
+  /*
   /// Read for 7 variadic components.
   func read<T0: XPSQ8Decodable, T1: XPSQ8Decodable, T2: XPSQ8Decodable, T3: XPSQ8Decodable, T4: XPSQ8Decodable, T5: XPSQ8Decodable, T6: XPSQ8Decodable>(as: (T0.Type, T1.Type, T2.Type, T3.Type, T4.Type, T5.Type, T6.Type)) async throws -> (T0, T1, T2, T3, T4, T5, T6) {
     let components = try await readComponents()
@@ -183,9 +184,7 @@ extension XPSQ8Communicator {
                 T8.init(xpsq8String:components[8]),
                 T9.init(xpsq8String:components[9]))
   }
-}
-  
-  /*
+
 
   /// Read for 11 variadic components.
   func read<T0: XPSQ8Decodable, T1: XPSQ8Decodable, T2: XPSQ8Decodable, T3: XPSQ8Decodable, T4: XPSQ8Decodable, T5: XPSQ8Decodable, T6: XPSQ8Decodable, T7: XPSQ8Decodable, T8: XPSQ8Decodable, T9: XPSQ8Decodable, T10: XPSQ8Decodable>(as: (T0.Type, T1.Type, T2.Type, T3.Type, T4.Type, T5.Type, T6.Type, T7.Type, T8.Type, T9.Type, T10.Type)) async throws -> (T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10) {
